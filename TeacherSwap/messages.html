@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <div class="sidebar-label">Main Menu</div>
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="find-match.html" class="sidebar-link"><i class="fas fa-search"></i> Find Match</a>
+      <a href="messages.html" class="sidebar-link active"><i class="fas fa-comments"></i> Messages</a>
+      <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
+      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
+      <div class="sidebar-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i> Profile</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="login.html" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Messages</h1>
+      <p>Chat with your swap partners.</p>
+    </div>
+
+    <!-- Messenger -->
+    <div class="messenger-container">
+      <!-- Conversations Sidebar -->
+      <div class="conversations-sidebar">
+        <div class="conversations-header">
+          <h3>Conversations</h3>
+        </div>
+        <div class="conversation-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search conversations...">
+        </div>
+        <div class="conversation-list">
+          <div class="conversation-item active" data-name="Jane Mwangi">
+            <div class="conversation-avatar" style="background:var(--primary);">JM</div>
+            <div class="conversation-info">
+              <h4>Jane Mwangi <span class="unread-count">2</span></h4>
+              <p>I'm interested in the swap! Can we discuss details?</p>
+            </div>
+            <div class="conversation-meta">
+              <div class="time">5m</div>
+            </div>
+          </div>
+          <div class="conversation-item" data-name="Peter Kilonzo">
+            <div class="conversation-avatar" style="background:var(--success);">PK</div>
+            <div class="conversation-info">
+              <h4>Peter Kilonzo</h4>
+              <p>Yes, I accept the swap request. Let's talk.</p>
+            </div>
+            <div class="conversation-meta">
+              <div class="time">1h</div>
+            </div>
+          </div>
+          <div class="conversation-item" data-name="Amina Hassan">
+            <div class="conversation-avatar" style="background:var(--warning);">AH</div>
+            <div class="conversation-info">
+              <h4>Amina Hassan</h4>
+              <p>Thanks for your interest. Let me think about it.</p>
+            </div>
+            <div class="conversation-meta">
+              <div class="time">3h</div>
+            </div>
+          </div>
+          <div class="conversation-item" data-name="Sarah Mwita">
+            <div class="conversation-avatar" style="background:var(--info);">SM</div>
+            <div class="conversation-info">
+              <h4>Sarah Mwita</h4>
+              <p>Hello! I saw your profile and...</p>
+            </div>
+            <div class="conversation-meta">
+              <div class="time">1d</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Window -->
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="conversation-avatar" style="background:var(--primary);width:40px;height:40px;font-size:0.85rem;">JM</div>
+          <div class="chat-header-info">
+            <h4 id="chat-name">Jane Mwangi</h4>
+            <p><i class="fas fa-circle" style="font-size:0.5rem;margin-right:4px;"></i> Online</p>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="message-bubble received">
+            Hi there! I noticed you're looking to swap to Dar es Salaam. I'm based there!
+            <span class="msg-time">10:30</span>
+          </div>
+          <div class="message-bubble sent">
+            Hello! Yes, I'm very interested. I teach at Mwanza Secondary School.
+            <span class="msg-time">10:32</span>
+          </div>
+          <div class="message-bubble received">
+            That's great! I teach at Dar es Salaam International. What subjects do you teach?
+            <span class="msg-time">10:33</span>
+          </div>
+          <div class="message-bubble sent">
+            I teach Mathematics and Physics. I've been teaching for 8 years now.
+            <span class="msg-time">10:35</span>
+          </div>
+          <div class="typing-indicator" id="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-actions">
+            <button><i class="far fa-smile"></i></button>
+            <button><i class="fas fa-paperclip"></i></button>
+          </div>
+          <input type="text" id="chat-input" placeholder="Type a message...">
+          <div class="chat-actions">
+            <button class="send-btn" id="chat-send"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

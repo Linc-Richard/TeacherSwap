@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Match - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <div class="relative nav-notif-btn">
+          <button class="theme-toggle" id="notif-btn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-dropdown-header">
+              <span>Notifications</span>
+              <a href="#" style="font-size:0.8rem;color:var(--primary);">Mark all read</a>
+            </div>
+            <div class="notif-dropdown-list">
+              <div class="notif-dropdown-item">
+                <div class="notification-icon blue"><i class="fas fa-handshake"></i></div>
+                <div><p style="font-size:0.85rem;line-height:1.4;">New swap request from John M.</p><span style="font-size:0.75rem;color:var(--text-muted);">2 min ago</span></div>
+              </div>
+              <div class="notif-dropdown-item">
+                <div class="notification-icon green"><i class="fas fa-check-circle"></i></div>
+                <div><p style="font-size:0.85rem;line-height:1.4;">Swap request accepted!</p><span style="font-size:0.75rem;color:var(--text-muted);">1 hour ago</span></div>
+              </div>
+              <div class="notif-dropdown-item">
+                <div class="notification-icon red"><i class="fas fa-user-plus"></i></div>
+                <div><p style="font-size:0.85rem;line-height:1.4;">New teacher joined your region.</p><span style="font-size:0.75rem;color:var(--text-muted);">3 hours ago</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <div class="sidebar-label">Main Menu</div>
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="find-match.html" class="sidebar-link active"><i class="fas fa-search"></i> Find Match</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a>
+      <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
+      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
+      <div class="sidebar-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i> Profile</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="login.html" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Find Your Match</h1>
+      <p>Browse teachers looking to swap. Use filters to narrow your search.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="search-filters">
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>Region</label>
+          <select id="filter-region">
+            <option value="all">All Regions</option>
+            <option>Arusha</option><option>Dar es Salaam</option><option>Dodoma</option>
+            <option>Iringa</option><option>Kagera</option><option>Kigoma</option>
+            <option>Kilimanjaro</option><option>Mbeya</option><option>Morogoro</option>
+            <option>Mwanza</option><option>Tanga</option><option>Pwani</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>District</label>
+          <input type="text" id="filter-district" placeholder="Any district">
+        </div>
+        <div class="filter-group">
+          <label>Subject</label>
+          <select id="filter-subject">
+            <option value="all">All Subjects</option>
+            <option>Mathematics</option><option>English</option><option>Swahili</option>
+            <option>Physics</option><option>Chemistry</option><option>Biology</option>
+            <option>History</option><option>Geography</option><option>Civics</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Teaching Level</label>
+          <select id="filter-level">
+            <option value="all">All Levels</option>
+            <option>Primary</option><option>Secondary</option><option>High School</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Experience</label>
+          <select>
+            <option>Any Experience</option>
+            <option>0-3 years</option><option>4-7 years</option>
+            <option>8-12 years</option><option>12+ years</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>School Type</label>
+          <select>
+            <option>Any Type</option>
+            <option>Government</option><option>Private</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Swap Type</label>
+          <select>
+            <option>Any</option>
+            <option>Permanent</option><option>Temporary</option>
+          </select>
+        </div>
+        <div class="filter-group" style="display:flex;align-items:flex-end;">
+          <button id="search-btn" class="btn btn-primary btn-block"><i class="fas fa-search"></i> Search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sort Bar -->
+    <div class="sort-bar">
+      <div class="results-count">Showing <strong>6</strong> teachers</div>
+      <div>
+        <label style="font-size:0.85rem;color:var(--text-muted);margin-right:8px;">Sort by:</label>
+        <select id="sort-select" class="sort-select">
+          <option value="match">Highest Match</option>
+          <option value="newest">Newest</option>
+          <option value="nearest">Nearest</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Teacher Cards -->
+    <div class="teacher-grid">
+
+      <!-- Card 1 -->
+      <div class="card teacher-card tilt-card" data-match="95" data-region="Dar es Salaam" data-subjects="Mathematics">
+        <div class="teacher-card-header">
+          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--primary),#1E40AF);">
+            JM
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <h3>Jane Mwangi</h3>
+          <div class="school-name">Mwanza Secondary School</div>
+          <div class="teacher-match high"><i class="fas fa-robot"></i> 95% Match</div>
+        </div>
+        <div class="teacher-card-body">
+          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Mwanza → Wants: Dar es Salaam</div>
+          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Mathematics, Physics</div>
+          <div class="info-row"><i class="fas fa-clock"></i> 8 years experience</div>
+          <div class="subjects">
+            <span class="subject-tag">Mathematics</span>
+            <span class="subject-tag">Physics</span>
+            <span class="subject-tag">Secondary</span>
+          </div>
+        </div>
+        <div class="teacher-card-footer">
+          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
+          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
+          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card teacher-card tilt-card" data-match="88" data-region="Arusha" data-subjects="English">
+        <div class="teacher-card-header">
+          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--success),#059669);">
+            PK
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <h3>Peter Kilonzo</h3>
+          <div class="school-name">Arusha Primary School</div>
+          <div class="teacher-match high"><i class="fas fa-robot"></i> 88% Match</div>
+        </div>
+        <div class="teacher-card-body">
+          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Arusha → Wants: Mwanza</div>
+          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> English, Literature</div>
+          <div class="info-row"><i class="fas fa-clock"></i> 5 years experience</div>
+          <div class="subjects">
+            <span class="subject-tag">English</span>
+            <span class="subject-tag">Literature</span>
+            <span class="subject-tag">Primary</span>
+          </div>
+        </div>
+        <div class="teacher-card-footer">
+          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
+          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
+          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card teacher-card tilt-card" data-match="82" data-region="Dodoma" data-subjects="Science">
+        <div class="teacher-card-header">
+          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--warning),#D97706);">
+            AH
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <h3>Amina Hassan</h3>
+          <div class="school-name">Dodoma High School</div>
+          <div class="teacher-match high"><i class="fas fa-robot"></i> 82% Match</div>
+        </div>
+        <div class="teacher-card-body">
+          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Dodoma → Wants: Arusha</div>
+          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Biology, Chemistry</div>
+          <div class="info-row"><i class="fas fa-clock"></i> 12 years experience</div>
+          <div class="subjects">
+            <span class="subject-tag">Biology</span>
+            <span class="subject-tag">Chemistry</span>
+            <span class="subject-tag">High School</span>
+          </div>
+        </div>
+        <div class="teacher-card-footer">
+          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
+          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
+          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card teacher-card tilt-card" data-match="76" data-region="Mbeya" data-subjects="History">
+        <div class="teacher-card-header">
+          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--info),#4F46E5);">
+            SM
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <h3>Sarah Mwita</h3>
+          <div class="school-name">Mbeya Girls Secondary</div>
+          <div class="teacher-match medium"><i class="fas fa-robot"></i> 76% Match</div>
+        </div>
+        <div class="teacher-card-body">
+          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Mbeya → Wants: Dar es Salaam</div>
+          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> History, Geography</div>
+          <div class="info-row"><i class="fas fa-clock"></i> 6 years experience</div>
+          <div class="subjects">
+            <span class="subject-tag">History</span>
+            <span class="subject-tag">Geography</span>
+            <span class="subject-tag">Secondary</span>
+          </div>
+        </div>
+        <div class="teacher-card-footer">
+          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
+          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
+          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card teacher-card tilt-card" data-match="71" data-region="Tanga" data-subjects="Swahili">
+        <div class="teacher-card-header">
+          <div class="teacher-photo" style="background:linear-gradient(135deg,#EC4899,#BE185D);">
+            MJ
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <h3>Mary John</h3>
+          <div class="school-name">Tanga Primary School</div>
+          <div class="teacher-match medium"><i class="fas fa-robot"></i> 71% Match</div>
+        </div>
+        <div class="teacher-card-body">
+          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Tanga → Wants: Kilimanjaro</div>
+          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Swahili, English</div>
+          <div class="info-row"><i class="fas fa-clock"></i> 4 years experience</div>
+          <div class="subjects">
+            <span class="subject-tag">Swahili</span>
+            <span class="subject-tag">English</span>
+            <span class="subject-tag">Primary</span>
+          </div>
+        </div>
+        <div class="teacher-card-footer">
+          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
+          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
+          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="card teacher-card tilt-card" data-match="65" data-region="Kilimanjaro" data-subjects="Physics">
+        <div class="teacher-card-header">
+          <div class="teacher-photo" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">
+            DM
+            <div class="verified-badge"><i class="fas fa-check"></i></div>
+          </div>
+          <h3>David Moshi</h3>
+          <div class="school-name">Kilimanjaro High</div>
+          <div class="teacher-match medium"><i class="fas fa-robot"></i> 65% Match</div>
+        </div>
+        <div class="teacher-card-body">
+          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Kilimanjaro → Wants: Mbeya</div>
+          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Physics, Mathematics</div>
+          <div class="info-row"><i class="fas fa-clock"></i> 10 years experience</div>
+          <div class="subjects">
+            <span class="subject-tag">Physics</span>
+            <span class="subject-tag">Mathematics</span>
+            <span class="subject-tag">High School</span>
+          </div>
+        </div>
+        <div class="teacher-card-footer">
+          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
+          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
+          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Request Swap Modal -->
+  <div class="modal-overlay" id="request-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Request Swap</h3>
+        <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+      </div>
+      <p style="color:var(--text-muted);margin-bottom:16px;">Send a swap request to this teacher. They will be notified and can accept or decline.</p>
+      <div class="form-group">
+        <label>Message (optional)</label>
+        <textarea class="form-control" style="padding-left:16px;min-height:100px;" placeholder="Hi, I noticed you want to swap to my region. I'd love to discuss the possibility..."></textarea>
+      </div>
+      <div class="flex-between" style="margin-top:16px;">
+        <span style="font-size:0.85rem;color:var(--text-muted);"><i class="fas fa-info-circle"></i> The teacher will be notified</span>
+        <button class="btn btn-primary" id="confirm-swap"><i class="fas fa-paper-plane"></i> Send Request</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

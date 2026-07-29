@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="settings.html" class="btn btn-ghost btn-icon"><i class="fas fa-cog"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <div class="sidebar-label">Main Menu</div>
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="find-match.html" class="sidebar-link"><i class="fas fa-search"></i> Find Match</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a>
+      <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
+      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
+      <div class="sidebar-label">Account</div>
+      <a href="profile.html" class="sidebar-link active"><i class="fas fa-user"></i> Profile</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="login.html" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>My Profile</h1>
+      <p>Manage your teacher profile and swap preferences.</p>
+    </div>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-cover"></div>
+      <div class="profile-info">
+        <div class="upload-preview profile-photo" style="background:linear-gradient(135deg,var(--primary),#1E40AF);border-radius:50%;border:4px solid var(--card-bg);cursor:pointer;position:relative;">
+          <div class="upload-placeholder" style="display:flex;flex-direction:column;align-items:center;">
+            <span style="font-size:3rem;font-weight:600;color:white;">JM</span>
+            <span style="font-size:0.65rem;color:rgba(255,255,255,0.7);margin-top:4px;"><i class="fas fa-camera"></i> Change</span>
+          </div>
+          <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+          <div class="verified-badge"><i class="fas fa-check"></i></div>
+        </div>
+        <div class="profile-details">
+          <h2>Jane Mwangi</h2>
+          <div class="profile-title">Mathematics & Physics Teacher</div>
+          <div class="profile-location"><i class="fas fa-map-marker-alt"></i> Mwanza Secondary School, Mwanza</div>
+        </div>
+        <div class="profile-actions">
+          <a href="settings.html" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Profile</a>
+          <a href="find-match.html" class="btn btn-secondary"><i class="fas fa-search"></i> Find Match</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Grid -->
+    <div class="profile-grid">
+      <!-- Left Column -->
+      <div>
+        <div class="card profile-section">
+          <h3><i class="fas fa-user"></i> Personal Information</h3>
+          <div class="info-list">
+            <div class="info-item"><div class="label">Full Name</div><div class="value">Jane Mwangi</div></div>
+            <div class="info-item"><div class="label">Email</div><div class="value">jane.mwangi@email.com</div></div>
+            <div class="info-item"><div class="label">Phone</div><div class="value">+255 712 345 678</div></div>
+            <div class="info-item"><div class="label">TSC Number</div><div class="value">TSC/2024/12345</div></div>
+            <div class="info-item"><div class="label">Gender</div><div class="value">Female</div></div>
+            <div class="info-item"><div class="label">Member Since</div><div class="value">January 2026</div></div>
+          </div>
+        </div>
+
+        <div class="card profile-section">
+          <h3><i class="fas fa-graduation-cap"></i> Teaching Information</h3>
+          <div class="info-list">
+            <div class="info-item"><div class="label">Teaching Level</div><div class="value">Secondary School</div></div>
+            <div class="info-item"><div class="label">Subjects</div><div class="value">Mathematics, Physics</div></div>
+            <div class="info-item"><div class="label">Experience</div><div class="value">8 years</div></div>
+            <div class="info-item"><div class="label">School Type</div><div class="value">Government</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div>
+        <div class="card profile-section">
+          <h3><i class="fas fa-school"></i> School & Location</h3>
+          <div class="info-list">
+            <div class="info-item"><div class="label">Current School</div><div class="value">Mwanza Secondary School</div></div>
+            <div class="info-item"><div class="label">Region</div><div class="value">Mwanza</div></div>
+            <div class="info-item"><div class="label">District</div><div class="value">Ilemela</div></div>
+            <div class="info-item"><div class="label">Preferred Region</div><div class="value">Dar es Salaam</div></div>
+          </div>
+        </div>
+
+        <div class="card profile-section">
+          <h3><i class="fas fa-arrows-rotate"></i> Swap Preferences</h3>
+          <div class="info-list">
+            <div class="info-item"><div class="label">Swap Type</div><div class="value">Permanent</div></div>
+            <div class="info-item"><div class="label">Reason</div><div class="value">Family relocation</div></div>
+            <div class="info-item"><div class="label">Availability</div><div class="value">Immediately</div></div>
+            <div class="info-item"><div class="label">Status</div><div class="value"><span class="request-status accepted">Active</span></div></div>
+          </div>
+        </div>
+
+        <div class="card profile-section">
+          <h3><i class="fas fa-certificate"></i> Certifications</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="subject-tag" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-check-circle"></i> B.Ed Mathematics</span>
+            <span class="subject-tag" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-check-circle"></i> TSC Certified</span>
+            <span class="subject-tag" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-check-circle"></i> CPC Leadership</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
