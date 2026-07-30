@@ -90,7 +90,7 @@ body.dark-mode .mobile-nav-item.active {
 @media (hover: none) and (pointer: coarse) {
   .btn, .sidebar-link, .nav-links a, .mobile-nav-item,
   .payment-method, .quick-action-btn, .filter-btn,
-  .chatbot-quick-btn, .settings-nav-item {
+  .settings-nav-item {
     min-height: 44px;
   }
 
@@ -335,13 +335,6 @@ body.dark-mode .page-header {
     padding-bottom: calc(60px + var(--sab));
   }
 
-  /* Move chatbot and lang toggle above bottom nav */
-  .chatbot-widget {
-    bottom: calc(80px + var(--sab));
-  }
-  .chatbot-toggle {
-    bottom: calc(80px + var(--sab));
-  }
   .lang-toggle {
     bottom: calc(136px + var(--sab));
   }

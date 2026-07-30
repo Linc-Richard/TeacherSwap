@@ -12,24 +12,30 @@ const PORT = config.PORT;
 
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(cors({ origin: '*', credentials: true }));
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
 app.use('/api/', limiter);
 
 // Static files
 app.use(express.static(path.join(__dirname, '..')));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/auth', require('./routes/google'));
+app.use('/api/auth/password', require('./routes/password'));
 app.use('/api/schools', require('./routes/schools'));
 app.use('/api/swaps', require('./routes/swaps'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/meetings', require('./routes/meetings'));
+app.use('/api/messages', require('./routes/messages'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/favorites', require('./routes/favorites'));
 app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/2fa', require('./routes/twofa'));
 app.use('/api/recommendations', require('./routes/recommendations'));
+app.use('/api', require('./routes/payments'));
 
 // SPA fallback
 app.get('*', (req, res) => {

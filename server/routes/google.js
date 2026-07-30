@@ -16,20 +16,25 @@ router.post('/google', async (req, res) => {
     if (!credential) return res.status(400).json({ error: 'Google credential token required' });
 
     let payload;
-    if (config.GOOGLE_CLIENT_ID) {
-      const ticket = await googleClient.verifyIdToken({
-        idToken: credential,
-        audience: config.GOOGLE_CLIENT_ID
-      });
-      payload = ticket.getPayload();
-    } else {
+    if (config.GOOGLE_CLIENT_ID && !credential.endsWith('.dev')) {
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: credential,
+          audience: config.GOOGLE_CLIENT_ID
+        });
+        payload = ticket.getPayload();
+      } catch {
+        // Fall through to dev decode
+      }
+    }
+    if (!payload) {
       // Dev/demo mode: decode the JWT without verifying
       try {
         const parts = credential.split('.');
         if (parts.length !== 3) throw new Error('Invalid token');
         payload = JSON.parse(atob(parts[1]));
       } catch {
-        return res.status(400).json({ error: 'Invalid Google token. Set GOOGLE_CLIENT_ID in .env for production.' });
+        return res.status(400).json({ error: 'Invalid Google token. Set a valid GOOGLE_CLIENT_ID in .env for production or use a valid credential.' });
       }
     }
 

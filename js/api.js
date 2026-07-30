@@ -76,6 +76,59 @@ const api = {
   disable2FA: function() { return this.post('/2fa/disable'); },
   get2FAStatus: function() { return this.get('/2fa/status'); },
 
+  // Regions / Districts
+  getRegions: async function() { var d = await this.get('/schools/regions'); return d.regions || []; },
+  getDistricts: async function() { var d = await this.get('/schools/districts'); return d.districts || []; },
+
+  // Messages
+  sendMessage: function(receiverId, content) { return this.post('/messages', { receiverId, content }); },
+  getConversations: async function() { var d = await this.get('/messages'); return d.conversations || []; },
+  getMessages: async function(conversationId) { var d = await this.get('/messages/' + encodeURIComponent(conversationId)); return d.messages || []; },
+  markMessageRead: function(id) { return this.put('/messages/' + id + '/read'); },
+
+  // Notifications
+  getNotifications: async function() { var d = await this.get('/notifications'); return d.notifications || []; },
+  getUnreadCount: async function() { var d = await this.get('/notifications'); return d.unreadCount || 0; },
+  markNotificationRead: function(id) { return this.put('/notifications/' + id + '/read'); },
+  markAllNotificationsRead: function() { return this.put('/notifications/read-all'); },
+
+  // Password
+  forgotPassword: function(email) { return this.post('/auth/password/forgot', { email }); },
+  resetPassword: function(token, newPassword) { return this.post('/auth/password/reset', { token, newPassword }); },
+  changePassword: function(currentPassword, newPassword) { return this.post('/auth/password/change-password', { currentPassword, newPassword }); },
+
+  // Favorites
+  addFavorite: function(targetUserId) { return this.post('/favorites', { targetUserId }); },
+  getFavorites: async function() { var d = await this.get('/favorites'); return d.favorites || []; },
+  checkFavorite: async function(targetUserId) { var d = await this.get('/favorites/check/' + targetUserId); return d.favorited || false; },
+  removeFavorite: function(targetUserId) { return this.del('/favorites/' + targetUserId); },
+
+  // Payments / Subscriptions
+  getPlans: async function() { var d = await this.get('/plans'); return d.plans || []; },
+  getPaymentMethods: async function() { var d = await this.get('/payment-methods'); return d.methods || []; },
+  submitPayment: function(data) { return this.post('/payments/submit', data); },
+  getPaymentHistory: async function() { var d = await this.get('/payments/history'); return d.payments || []; },
+  getSubscriptionStatus: async function() { return this.get('/subscription/status'); },
+
+  // Admin: Plans
+  adminGetPlans: async function() { var d = await this.get('/admin/plans'); return d.plans || []; },
+  adminCreatePlan: function(data) { return this.post('/admin/plans', data); },
+  adminUpdatePlan: function(id, data) { return this.put('/admin/plans/' + id, data); },
+  adminDeletePlan: function(id) { return this.del('/admin/plans/' + id); },
+
+  // Admin: Payment Methods
+  adminGetPaymentMethods: async function() { var d = await this.get('/admin/payment-methods'); return d.methods || []; },
+  adminCreatePaymentMethod: function(data) { return this.post('/admin/payment-methods', data); },
+  adminUpdatePaymentMethod: function(id, data) { return this.put('/admin/payment-methods/' + id, data); },
+  adminDeletePaymentMethod: function(id) { return this.del('/admin/payment-methods/' + id); },
+
+  // Admin: Payments
+  adminGetPayments: async function(status) { var d = await this.get('/admin/payments' + (status ? '?status=' + status : '')); return d.payments || []; },
+  adminVerifyPayment: function(id) { return this.put('/admin/payments/' + id + '/verify'); },
+  adminRejectPayment: function(id, reason) { return this.put('/admin/payments/' + id + '/reject', { reason: reason || '' }); },
+  adminFailPayment: function(id) { return this.put('/admin/payments/' + id + '/fail'); },
+  adminGetPaymentOverview: function() { return this.get('/admin/payments/overview'); },
+
   // Logout
   logout: function() {
     localStorage.removeItem('ts-token');

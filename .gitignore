@@ -1,8 +1,10 @@
 node_modules/
 .env
+server/.env
 *.log
 .DS_Store
 Thumbs.db
 server/db/*.db
 server/db/*.db-wal
 server/db/*.db-shm
+uploads/

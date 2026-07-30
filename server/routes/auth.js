@@ -78,7 +78,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    const fields = ['fullName', 'phone', 'tscNumber', 'gender', 'teachingLevel', 'subjects', 'experience', 'schoolName', 'region', 'district', 'preferredRegion', 'preferredDistrict', 'swapType', 'reason', 'avatar'];
+    const fields = ['fullName', 'phone', 'tscNumber', 'gender', 'teachingLevel', 'subjects', 'experience', 'schoolName', 'region', 'district', 'preferredRegion', 'preferredDistrict', 'swapType', 'reason', 'avatar', 'bio'];
     const updates = [];
     const values = [];
     fields.forEach(f => {
