@@ -62,7 +62,7 @@
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
           <i class="fas fa-moon" id="theme-icon"></i>
         </button>
-        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+        <a href="register.html" class="btn btn-primary btn-sm" style="background:rgba(255,255,255,0.15);color:var(--white);border:1px solid rgba(255,255,255,0.3);box-shadow:none;" data-i18n="Register">Register</a>
         <button class="hamburger" id="hamburger" aria-label="Menu">
           <span></span><span></span><span></span>
         </button>
@@ -84,8 +84,8 @@
         <h1 class="reveal">Find Your Perfect <span class="gradient-text">Teaching Swap</span></h1>
         <p class="reveal">Connect with teachers across all 26 regions of Tanzania and exchange teaching stations with confidence. Join thousands of educators who have found their ideal match on TeacherSwap.</p>
         <div class="hero-buttons reveal">
-          <a href="find-match.html" class="btn btn-primary btn-lg magnetic-btn"><i class="fas fa-search"></i> Find Teacher</a>
-          <a href="register.html" class="btn btn-secondary btn-lg magnetic-btn">Register Now</a>
+          <a href="find-match.html" class="btn btn-cta btn-lg magnetic-btn"><i class="fas fa-search"></i> <span data-i18n="Find Teacher">Find Teacher</span></a>
+          <a href="register.html" class="btn btn-cta-outline btn-lg magnetic-btn" data-i18n="Register Now">Register Now</a>
         </div>
         <div class="hero-stats reveal">
           <div class="hero-stat">
@@ -540,6 +540,21 @@
   <!-- ============================
        CHATBOT WIDGET
        ============================ -->
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item active"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en" title="English">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw" title="Kiswahili">SW</button>
+  </div>
 
   <!-- Chatbot toggle button -->
   <button class="chatbot-toggle" id="chatbot-toggle" aria-label="Open chat assistant">

@@ -271,6 +271,66 @@
     </div>
   </main>
 
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+  <script src="js/api.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+      var user = api.getUser();
+
+      // Welcome banner
+      var nameEl = document.querySelector('.dashboard-welcome h2');
+      if (nameEl) nameEl.textContent = 'Welcome back, ' + user.fullName + '!';
+
+      try {
+        // AI Recommendations via the server endpoint
+        var recs = await api.getRecommendations();
+        var grid = document.querySelector('.dashboard-grid');
+        if (grid && recs.length) {
+          var recCard = document.createElement('div');
+          recCard.className = 'card dashboard-card';
+          recCard.innerHTML = '<div class="dashboard-card-header"><h3><i class="fas fa-robot text-primary mr-2"></i> AI Recommended Matches</h3><a href="find-match.html">View All</a></div>' +
+            recs.slice(0, 3).map(function(r) {
+              var initials = r.fullName ? r.fullName.split(' ').map(function(w) { return w[0]; }).join('') : '??';
+              var matchClass = r.score >= 60 ? 'high' : (r.score >= 40 ? 'medium' : 'low');
+              return '<div class="request-item"><div class="request-info"><div class="request-avatar">' + initials + '</div><div class="request-details"><h4>' + (r.fullName || r.email) + '</h4><p>' + (r.subjects || '') + ' &middot; ' + (r.schoolName || '') + '</p></div></div><span class="request-status ' + matchClass + '">' + r.score + '%</span></div>';
+            }).join('');
+          grid.prepend(recCard);
+        }
+      } catch(e) {}
+
+      try {
+        // Swap requests
+        var swaps = await api.getSwapRequests();
+        var swapSection = document.querySelector('.dashboard-card:has(.request-item)');
+        if (swaps.length && swapSection) {
+          var container = swapSection.querySelector('.dashboard-card-header') || swapSection;
+          var items = swaps.slice(0, 5).map(function(s) {
+            var initials = (s.toName || '??').split(' ').map(function(w) { return w[0]; }).join('');
+            var statusClass = s.status === 'completed' ? 'accepted' : (s.status === 'pending' ? 'pending' : 'declined');
+            return '<div class="request-item"><div class="request-info"><div class="request-avatar">' + initials + '</div><div class="request-details"><h4>' + (s.toName || 'Unknown') + '</h4><p>' + (s.fromName ? 'From: ' + s.fromName : '') + '</p></div></div><span class="request-status ' + statusClass + '">' + s.status + '</span></div>';
+          }).join('');
+          var existingItems = swapSection.querySelectorAll('.request-item');
+          existingItems.forEach(function(el) { el.remove(); });
+          if (container) container.insertAdjacentHTML('afterend', items);
+        }
+      } catch(e) {}
+    });
+  </script>
 </body>
 </html>
+
+

@@ -89,7 +89,7 @@
           <li><i class="fas fa-check"></i> Advanced filters</li>
           <li class="disabled"><i class="fas fa-times"></i> API access</li>
         </ul>
-        <button class="btn btn-primary btn-block">Upgrade Now</button>
+        <button class="btn btn-cta btn-block">Upgrade Now</button>
       </div>
 
       <div class="card pricing-card">
@@ -109,19 +109,243 @@
       </div>
     </div>
 
-    <!-- Payment Methods -->
+    <!-- Payment Order Form -->
     <div class="card" style="padding:28px;margin-bottom:28px;">
-      <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:16px;"><i class="fas fa-credit-card text-primary mr-2"></i> Payment Methods</h3>
-      <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:20px;">Select your preferred payment method</p>
-      <div class="payment-methods">
-        <div class="payment-method selected"><i class="fas fa-mobile-alt"></i><span>M-Pesa</span></div>
-        <div class="payment-method"><i class="fas fa-mobile-alt"></i><span>Airtel Money</span></div>
-        <div class="payment-method"><i class="fas fa-mobile-alt"></i><span>Tigo Pesa</span></div>
-        <div class="payment-method"><i class="fas fa-mobile-alt"></i><span>HaloPesa</span></div>
-        <div class="payment-method"><i class="fab fa-cc-visa"></i><span>Visa</span></div>
-        <div class="payment-method"><i class="fab fa-cc-mastercard"></i><span>MasterCard</span></div>
+      <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:16px;"><i class="fas fa-file-invoice text-amber mr-2"></i> <span data-i18n="Payment Order">Payment Order</span></h3>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:20px;" id="order-desc">Complete your payment for <strong>Premium</strong> plan &mdash; TSh 5,000/month</p>
+
+      <!-- Order Summary -->
+      <div class="order-summary" style="background:var(--hover-bg);border-radius:var(--radius-sm);padding:16px;margin-bottom:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-weight:600;font-size:0.9rem;" id="order-plan-label" data-i18n="Plan:">Plan:</span>
+          <span style="font-weight:700;color:var(--primary);" id="order-plan-value">Premium</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:0.88rem;color:var(--text-muted);" data-i18n="Amount:">Amount:</span>
+          <span style="font-weight:700;font-size:1.1rem;" id="order-amount-value">TSh 5,000</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:0.88rem;color:var(--text-muted);" data-i18n="Billing:">Billing:</span>
+          <span style="font-size:0.88rem;" data-i18n="Monthly">Monthly</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border-color);">
+          <span style="font-weight:600;font-size:0.9rem;" data-i18n="Total Due:">Total Due:</span>
+          <span style="font-weight:800;font-size:1.2rem;color:var(--amber);" id="order-total-value">TSh 5,000</span>
+        </div>
       </div>
-      <button class="btn btn-primary"><i class="fas fa-lock"></i> Pay Now</button>
+
+      <!-- Payment Method Selection -->
+      <h4 style="font-size:0.95rem;font-weight:600;margin-bottom:12px;"><i class="fas fa-credit-card text-amber mr-2"></i> <span data-i18n="Select Payment Method">Select Payment Method</span></h4>
+      <div class="payment-methods" id="payment-methods">
+        <div class="payment-method selected" data-method="mpesa"><i class="fas fa-mobile-alt" style="color:#00A82D;"></i><span>M-Pesa</span></div>
+        <div class="payment-method" data-method="airtel"><i class="fas fa-mobile-alt" style="color:#E30000;"></i><span>Airtel Money</span></div>
+        <div class="payment-method" data-method="tigo"><i class="fas fa-mobile-alt" style="color:#0047AB;"></i><span>Tigo Pesa</span></div>
+        <div class="payment-method" data-method="halopesa"><i class="fas fa-mobile-alt" style="color:#6C2BD9;"></i><span>HaloPesa</span></div>
+        <div class="payment-method" data-method="bank"><i class="fas fa-university" style="color:#1A1F71;"></i><span>Bank Transfer</span></div>
+        <div class="payment-method" data-method="visa"><i class="fab fa-cc-visa" style="color:#1A1F71;"></i><span>Visa</span></div>
+        <div class="payment-method" data-method="mastercard"><i class="fab fa-cc-mastercard" style="color:#F79E1B;"></i><span>MasterCard</span></div>
+      </div>
+
+      <!-- Dynamic Payment Form -->
+      <div id="payment-form-area" style="margin-top:20px;">
+
+        <!-- M-Pesa Form (default) -->
+        <div class="payment-dynamic-form" id="form-mpesa" style="display:block;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">M-Pesa Phone Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-phone"></i>
+              <input type="tel" class="form-control" id="mpesa-number" placeholder="e.g. 0712 345 678" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">M-Pesa Transaction Reference</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-receipt"></i>
+              <input type="text" class="form-control" id="mpesa-ref" placeholder="Enter M-Pesa transaction ID after payment">
+            </div>
+            <span style="font-size:0.78rem;color:var(--text-muted);">You will receive an M-Pesa prompt on your phone. Enter the transaction ID here after confirming.</span>
+          </div>
+        </div>
+
+        <!-- Airtel Money Form -->
+        <div class="payment-dynamic-form" id="form-airtel" style="display:none;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Airtel Money Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-phone"></i>
+              <input type="tel" class="form-control" id="airtel-number" placeholder="e.g. 0712 345 678">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Transaction Reference</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-receipt"></i>
+              <input type="text" class="form-control" id="airtel-ref" placeholder="Enter transaction ID">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tigo Pesa Form -->
+        <div class="payment-dynamic-form" id="form-tigo" style="display:none;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Tigo Pesa Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-phone"></i>
+              <input type="tel" class="form-control" id="tigo-number" placeholder="e.g. 0712 345 678">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Transaction Reference</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-receipt"></i>
+              <input type="text" class="form-control" id="tigo-ref" placeholder="Enter transaction ID">
+            </div>
+          </div>
+        </div>
+
+        <!-- HaloPesa Form -->
+        <div class="payment-dynamic-form" id="form-halopesa" style="display:none;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">HaloPesa Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-phone"></i>
+              <input type="tel" class="form-control" id="halopesa-number" placeholder="e.g. 0712 345 678">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Transaction Reference</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-receipt"></i>
+              <input type="text" class="form-control" id="halopesa-ref" placeholder="Enter transaction ID">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bank Transfer Form -->
+        <div class="payment-dynamic-form" id="form-bank" style="display:none;">
+          <div class="alert" style="background:var(--amber-bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:20px;font-size:0.85rem;border-left:4px solid var(--amber);">
+            <i class="fas fa-info-circle text-amber mr-2"></i> Transfer the exact amount to the bank account below, then enter the details for verification.
+          </div>
+          <div style="background:var(--hover-bg);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.88rem;">
+              <span style="color:var(--text-muted);">Bank:</span>
+              <span style="font-weight:600;">NMB Bank Tanzania</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.88rem;">
+              <span style="color:var(--text-muted);">Account Name:</span>
+              <span style="font-weight:600;">TeacherSwap Ltd</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.88rem;">
+              <span style="color:var(--text-muted);">Account Number:</span>
+              <span style="font-weight:700;font-size:1rem;color:var(--primary);">2341 0067 8910</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.88rem;">
+              <span style="color:var(--text-muted);">Branch:</span>
+              <span style="font-weight:600;">Mlimani City, Dar es Salaam</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Your Bank Name</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-university"></i>
+              <input type="text" class="form-control" id="bank-name" placeholder="e.g. CRDB Bank">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Your Account Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-hashtag"></i>
+              <input type="text" class="form-control" id="bank-account" placeholder="Enter your account number">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Branch</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-map-pin"></i>
+              <input type="text" class="form-control" id="bank-branch" placeholder="e.g. Posta, Dar es Salaam">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Transaction Reference / Slip Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-receipt"></i>
+              <input type="text" class="form-control" id="bank-ref" placeholder="Enter bank transaction reference">
+            </div>
+          </div>
+        </div>
+
+        <!-- Visa Form -->
+        <div class="payment-dynamic-form" id="form-visa" style="display:none;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Card Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fab fa-cc-visa" style="color:#1A1F71;"></i>
+              <input type="text" class="form-control" id="visa-number" placeholder="4111 1111 1111 1111" maxlength="19">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Expiry Date</label>
+              <div class="input-icon-wrapper">
+                <i class="fas fa-calendar"></i>
+                <input type="text" class="form-control" id="visa-expiry" placeholder="MM/YY" maxlength="5">
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">CVV</label>
+              <div class="input-icon-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="text" class="form-control" id="visa-cvv" placeholder="123" maxlength="4">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Cardholder Name</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-user"></i>
+              <input type="text" class="form-control" id="visa-name" placeholder="Name on card">
+            </div>
+          </div>
+        </div>
+
+        <!-- MasterCard Form -->
+        <div class="payment-dynamic-form" id="form-mastercard" style="display:none;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Card Number</label>
+            <div class="input-icon-wrapper">
+              <i class="fab fa-cc-mastercard" style="color:#F79E1B;"></i>
+              <input type="text" class="form-control" id="mc-number" placeholder="5555 5555 5555 4444" maxlength="19">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Expiry Date</label>
+              <div class="input-icon-wrapper">
+                <i class="fas fa-calendar"></i>
+                <input type="text" class="form-control" id="mc-expiry" placeholder="MM/YY" maxlength="5">
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">CVV</label>
+              <div class="input-icon-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="text" class="form-control" id="mc-cvv" placeholder="123" maxlength="4">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:500;margin-bottom:6px;display:block;">Cardholder Name</label>
+            <div class="input-icon-wrapper">
+              <i class="fas fa-user"></i>
+              <input type="text" class="form-control" id="mc-name" placeholder="Name on card">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="btn btn-cta btn-block" id="pay-now-btn" style="margin-top:24px;"><i class="fas fa-lock"></i> <span data-i18n="Pay Now">Pay Now</span> &mdash; TSh 5,000</button>
     </div>
 
     <!-- Payment History -->
@@ -142,6 +366,21 @@
     </div>
   </main>
 
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
   <script src="js/app.js"></script>
 </body>
 </html>
+
+

@@ -1004,6 +1004,152 @@
       });
     });
 
+    /* ----- Language Toggle (EN / SW) ----- */
+    var translations = {
+      en: {
+        'Welcome Back': 'Welcome Back',
+        'Sign in to continue your journey': 'Sign in to continue your journey',
+        'Login': 'Login',
+        'Email address': 'Email address',
+        'Password': 'Password',
+        'Remember me': 'Remember me',
+        'Forgot password?': 'Forgot password?',
+        'or continue with': 'or continue with',
+        'Sign in with Google': 'Sign in with Google',
+        "Don't have an account?": "Don't have an account?",
+        'Sign up': 'Sign up',
+        'Create Account': 'Create Account',
+        'Join the teacher community in Tanzania': 'Join the teacher community in Tanzania',
+        'Full Name': 'Full Name',
+        'Phone number': 'Phone number',
+        'Next': 'Next',
+        'Previous': 'Previous',
+        'Complete Registration': 'Complete Registration',
+        'or sign up with': 'or sign up with',
+        'Sign up with Google': 'Sign up with Google',
+        'Already have an account?': 'Already have an account?',
+        'Sign in': 'Sign in',
+        'Find Teacher': 'Find Teacher',
+        'Register Now': 'Register Now',
+        'Register': 'Register',
+        'Premium': 'Premium',
+        'Payment Order': 'Payment Order',
+        'Plan:': 'Plan:',
+        'Amount:': 'Amount:',
+        'Billing:': 'Billing:',
+        'Monthly': 'Monthly',
+        'Total Due:': 'Total Due:',
+        'Select Payment Method': 'Select Payment Method',
+        'Pay Now': 'Pay Now',
+        'Payment successful!': 'Payment successful!',
+        'Your payment has been processed successfully.': 'Your payment has been processed successfully.',
+        'Search teachers, schools...': 'Search teachers, schools...'
+      },
+      sw: {
+        'Welcome Back': 'Karibu Tena',
+        'Sign in to continue your journey': 'Ingia ili kuendelea na safari yako',
+        'Login': 'Ingia',
+        'Email address': 'Barua pepe',
+        'Password': 'Nywila',
+        'Remember me': 'Nikumbuke',
+        'Forgot password?': 'Umesahau nywila?',
+        'or continue with': 'au endelea na',
+        'Sign in with Google': 'Ingia kwa Google',
+        "Don't have an account?": 'Huna akaunti?',
+        'Sign up': 'Jisajili',
+        'Create Account': 'Fungua Akaunti',
+        'Join the teacher community in Tanzania': 'Jiunge na jumuiya ya walimu Tanzania',
+        'Full Name': 'Jina Kamili',
+        'Phone number': 'Namba ya simu',
+        'Next': 'Ijayo',
+        'Previous': 'Nyuma',
+        'Complete Registration': 'Maliza Usajili',
+        'or sign up with': 'au jisajili kwa',
+        'Sign up with Google': 'Jisajili kwa Google',
+        'Already have an account?': 'Tayari una akaunti?',
+        'Sign in': 'Ingia',
+        'Find Teacher': 'Tafuta Mwalimu',
+        'Register Now': 'Jisajili Sasa',
+        'Register': 'Jisajili',
+        'Premium': 'Premium',
+        'Payment Order': 'Agizo la Malipo',
+        'Plan:': 'Mpango:',
+        'Amount:': 'Kiasi:',
+        'Billing:': 'Malipo:',
+        'Monthly': 'Kila Mwezi',
+        'Total Due:': 'Jumla:',
+        'Select Payment Method': 'Chagua Njia ya Malipo',
+        'Pay Now': 'Lipa Sasa',
+        'Payment successful!': 'Malipo yamekamilika!',
+        'Your payment has been processed successfully.': 'Malipo yako yamekubaliwa.',
+        'Search teachers, schools...': 'Tafuta walimu, shule...'
+      }
+    };
+
+    var currentLang = 'en';
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      var t = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+      document.querySelectorAll('input[placeholder]').forEach(function(el) {
+        var key = el.getAttribute('placeholder');
+        if (key && t[key]) el.placeholder = t[key];
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-title');
+        if (t[key]) el.title = t[key];
+      });
+      try { localStorage.setItem('ts-lang', lang); } catch(e) {}
+    }
+
+    var langBtns = document.querySelectorAll('.lang-toggle-btn');
+    langBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        langBtns.forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        applyLanguage(this.getAttribute('data-lang'));
+      });
+    });
+
+    try {
+      var savedLang = localStorage.getItem('ts-lang');
+      if (savedLang === 'sw') {
+        document.querySelector('.lang-toggle-btn[data-lang="sw"]').click();
+      }
+    } catch(e) {}
+
+    /* ----- Payment Method Switching ----- */
+    var payMethods = document.querySelectorAll('#payment-methods .payment-method');
+    payMethods.forEach(function(m) {
+      m.addEventListener('click', function() {
+        payMethods.forEach(function(p) { p.classList.remove('selected'); });
+        this.classList.add('selected');
+        var method = this.getAttribute('data-method');
+        document.querySelectorAll('.payment-dynamic-form').forEach(function(f) { f.style.display = 'none'; });
+        var target = document.getElementById('form-' + method);
+        if (target) target.style.display = 'block';
+      });
+    });
+
+    /* ----- Payment Submit ----- */
+    var payBtn = document.getElementById('pay-now-btn');
+    if (payBtn) {
+      payBtn.addEventListener('click', function() {
+        showToast('success', translations[currentLang]['Payment successful!'], translations[currentLang]['Your payment has been processed successfully.']);
+      });
+    }
+
+    /* ----- Mobile Bottom Nav Active State ----- */
+    var currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.mobile-nav-item').forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (href === currentPath) link.classList.add('active');
+    });
+
     console.log('TeacherSwap initialized successfully!');
   });
 })();

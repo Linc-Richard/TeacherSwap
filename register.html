@@ -24,6 +24,19 @@
 
   <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+
   <button class="auth-theme-toggle" id="theme-toggle" aria-label="Toggle theme">
     <i class="fas fa-moon" id="theme-icon"></i>
   </button>
@@ -41,8 +54,8 @@
           <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
           <span>TeacherSwap</span>
         </div>
-        <h2 class="auth-title">Create Account</h2>
-        <p class="auth-subtitle">Join the teacher community in Tanzania</p>
+        <h2 class="auth-title" data-i18n="Create Account">Create Account</h2>
+        <p class="auth-subtitle" data-i18n="Join the teacher community in Tanzania">Join the teacher community in Tanzania</p>
 
         <!-- Registration Content -->
         <div id="registration-form-content">
@@ -74,7 +87,7 @@
               <div class="form-group">
                 <div class="input-icon-wrapper">
                   <i class="fas fa-user"></i>
-                  <input type="text" class="form-control" name="fullName" placeholder="Full Name" required>
+                  <input type="text" class="form-control" name="fullName" placeholder="Full Name" data-i18n="Full Name" required>
                 </div>
                 <span class="form-error"></span>
               </div>
@@ -88,7 +101,7 @@
               <div class="form-group">
                 <div class="input-icon-wrapper">
                   <i class="fas fa-phone"></i>
-                  <input type="tel" class="form-control" name="phone" placeholder="Phone number" required>
+                  <input type="tel" class="form-control" name="phone" placeholder="Phone number" data-i18n="Phone number" required>
                 </div>
                 <span class="form-error"></span>
               </div>
@@ -280,9 +293,9 @@
 
             <!-- Navigation Buttons -->
             <div class="btn-row" style="display:flex;gap:12px;margin-top:24px;">
-              <button type="button" class="btn btn-ghost" id="prev-step" style="display:none;"><i class="fas fa-arrow-left"></i> Previous</button>
-              <button type="button" class="btn btn-primary" id="next-step" style="flex:1;">Next <i class="fas fa-arrow-right"></i></button>
-              <button type="submit" class="btn btn-primary" id="submit-reg" style="display:none;flex:1;"><i class="fas fa-check"></i> Complete Registration</button>
+              <button type="button" class="btn btn-ghost" id="prev-step" style="display:none;"><i class="fas fa-arrow-left"></i> <span data-i18n="Previous">Previous</span></button>
+              <button type="button" class="btn btn-primary" id="next-step" style="flex:1;"><span data-i18n="Next">Next</span> <i class="fas fa-arrow-right"></i></button>
+              <button type="submit" class="btn btn-primary" id="submit-reg" style="display:none;flex:1;"><i class="fas fa-check"></i> <span data-i18n="Complete Registration">Complete Registration</span></button>
             </div>
 
           </form>
@@ -300,12 +313,61 @@
           </div>
         </div>
 
-        <p class="form-footer">Already have an account? <a href="login.html">Sign in</a></p>
+        <div class="divider"><span data-i18n="or sign up with">or sign up with</span></div>
+
+          <div id="google-register-button"></div>
+
+        <p class="form-footer" data-i18n="Already have an account?">Already have an account? <a href="login.html" data-i18n="Sign in">Sign in</a></p>
 
       </div>
     </div>
   </section>
 
+  <script src="js/api.js"></script>
+  <script src="js/google-auth.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.getElementById('register-form');
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!validateStep(currentStep)) { showToast('Please fill all required fields', 'error'); return; }
+        var data = {};
+        form.querySelectorAll('.form-control').forEach(function(el) {
+          var name = el.getAttribute('name');
+          if (name) data[name] = el.value;
+        });
+        delete data.confirmPassword;
+        try {
+          var result = await api.register(data);
+          showToast('Registration successful! Welcome to TeacherSwap!', 'success');
+          fireConfetti(80);
+          document.getElementById('registration-form-content').style.display = 'none';
+          document.getElementById('registration-success').style.display = 'block';
+          setTimeout(function() { window.location.href = 'login.html'; }, 2500);
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+
+      // Google Sign-Up
+      async function handleGoogleCredential(credential) {
+        try {
+          var data = await api.request('POST', '/auth/google', { credential: credential });
+          api.saveUser(data.user);
+          localStorage.setItem('ts-token', data.token);
+          showToast('Signed up with Google! Welcome!', 'success');
+          fireConfetti(50);
+          setTimeout(function() { window.location.href = 'dashboard.html'; }, 1000);
+        } catch(err) {
+          showToast(err.message || 'Google sign-up failed', 'error');
+        }
+      }
+
+      googleAuth.init('', handleGoogleCredential);
+      googleAuth.renderButton('google-register-button');
+    });
+  </script>
 </body>
 </html>
+
