@@ -3,7 +3,6 @@ const { getDb, saveDb } = require('./database');
 async function initSchema() {
   const db = await getDb();
 
-  db.run(`PRAGMA journal_mode=WAL`);
   db.run(`PRAGMA foreign_keys=ON`);
 
   // ─── USERS ───────────────────────────────────────────────

@@ -2,7 +2,9 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'teacherswap.db');
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+const DB_PATH = path.join(DATA_DIR, 'teacherswap.db');
 
 let db = null;
 
@@ -15,7 +17,6 @@ async function getDb() {
   } else {
     db = new SQL.Database();
   }
-  db.run('PRAGMA journal_mode=WAL');
   db.run('PRAGMA foreign_keys=ON');
   return db;
 }
