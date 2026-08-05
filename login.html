@@ -90,6 +90,20 @@
           <div id="google-signin-button"></div>
         </form>
 
+        <div id="twofa-step" style="display:none;">
+          <h2 class="auth-title">Two-Factor Authentication</h2>
+          <p class="auth-subtitle">Enter the 6-digit code from your authenticator app or a backup code.</p>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-shield-alt"></i>
+              <input type="text" class="form-control" id="twofa-code" placeholder="6-digit code" maxlength="10" inputmode="numeric" autocomplete="one-time-code">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="twofa-verify-btn">Verify Code</button>
+          <p class="form-footer"><a href="#" id="twofa-back">Back to login</a></p>
+        </div>
+
         <p class="form-footer">Don't have an account? <a href="register.html" data-i18n="Sign up">Sign up</a></p>
       </div>
     </div>
@@ -102,12 +116,20 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Email/Password login
       const form = document.getElementById('login-form');
+      let pendingTempToken = null;
       form.addEventListener('submit', async function(e) {
         e.preventDefault();
         const email = form.querySelector('[name="email"]').value;
         const password = form.querySelector('[name="password"]').value;
         try {
           const data = await api.login(email, password);
+          if (data.requires2FA) {
+            pendingTempToken = data.tempToken;
+            form.style.display = 'none';
+            document.getElementById('twofa-step').style.display = 'block';
+            document.getElementById('twofa-code').focus();
+            return;
+          }
           api.saveUser(data.user);
           localStorage.setItem('ts-token', data.token);
           showToast('Welcome back, ' + data.user.fullName + '!', 'success');
@@ -115,6 +137,35 @@
         } catch (err) {
           showToast(err.message, 'error');
         }
+      });
+
+      // 2FA code verification
+      document.getElementById('twofa-verify-btn').addEventListener('click', async function() {
+        const code = document.getElementById('twofa-code').value.trim();
+        if (!code) { showToast('Enter your authentication code', 'error'); return; }
+        const btn = this;
+        btn.disabled = true;
+        try {
+          const data = await api.request('POST', '/2fa/verify-login', { tempToken: pendingTempToken, code: code });
+          api.saveUser(data.user);
+          localStorage.setItem('ts-token', data.token);
+          showToast('Welcome back, ' + data.user.fullName + '!', 'success');
+          setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+        } catch (err) {
+          showToast(err.message || 'Invalid code', 'error');
+          btn.disabled = false;
+        }
+      });
+
+      document.getElementById('twofa-code').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('twofa-verify-btn').click();
+      });
+
+      document.getElementById('twofa-back').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('twofa-step').style.display = 'none';
+        form.style.display = '';
+        pendingTempToken = null;
       });
 
       // Google Sign-In

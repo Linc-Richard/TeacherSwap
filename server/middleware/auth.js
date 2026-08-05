@@ -13,6 +13,14 @@ function generateToken(user) {
   );
 }
 
+function generateTempToken(user, purpose) {
+  return jwt.sign(
+    { id: user.id, email: user.email, role: user.role, purpose: purpose || '2fa' },
+    JWT_SECRET,
+    { expiresIn: '5m' }
+  );
+}
+
 function verifyToken(token) {
   return jwt.verify(token, JWT_SECRET);
 }
@@ -47,4 +55,4 @@ async function logAudit(userId, action, details, ip) {
   );
 }
 
-module.exports = { generateToken, verifyToken, authMiddleware, adminOnly, logAudit, JWT_SECRET };
+module.exports = { generateToken, generateTempToken, verifyToken, authMiddleware, adminOnly, logAudit, JWT_SECRET };

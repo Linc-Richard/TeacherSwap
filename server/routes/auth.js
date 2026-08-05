@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { v4: uuid } = require('uuid');
 const { getDb, saveDb } = require('../db/database');
-const { generateToken, authMiddleware, logAudit } = require('../middleware/auth');
+const { generateToken, generateTempToken, authMiddleware, logAudit } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -47,6 +47,17 @@ router.post('/login', async (req, res) => {
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
 
     logAudit(user.id, 'LOGIN', 'User logged in', req.ip);
+
+    if (user.isTwoFactorEnabled) {
+      const tempToken = generateTempToken({ id: user.id, email: user.email, role: user.role }, '2fa');
+      logAudit(user.id, 'LOGIN_2FA_PENDING', '2FA challenge issued', req.ip);
+      return res.json({
+        requires2FA: true,
+        tempToken,
+        user: { id: user.id, email: user.email, fullName: user.fullName }
+      });
+    }
+
     const token = generateToken({ id: user.id, email: user.email, role: user.role });
     res.json({
       token,

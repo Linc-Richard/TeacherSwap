@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const { initSchema } = require('./db/schema');
+const { getDb } = require('./db/database');
 const config = require('./config');
 
 const app = express();
@@ -16,6 +17,24 @@ app.use(express.json({ limit: '50mb' }));
 
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
 app.use('/api/', limiter);
+
+// Block access to sensitive server files (env, database, source, config, logs)
+const SENSITIVE_STATIC_PATTERNS = [
+  /^\/server(\/|$)/i,
+  /^\/node_modules(\/|$)/i,
+  /\.env(\.|$)/i,
+  /\.db(-wal|-shm)?$/i,
+  /\.log$/i
+];
+app.use((req, res, next) => {
+  const p = req.path;
+  const segments = p.split('/').filter(Boolean);
+  const hiddenSegment = segments.some(seg => seg.length > 1 && seg.startsWith('.'));
+  if (hiddenSegment || SENSITIVE_STATIC_PATTERNS.some(re => re.test(p))) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  next();
+});
 
 // Static files
 app.use(express.static(path.join(__dirname, '..')));
@@ -37,6 +56,11 @@ app.use('/api/2fa', require('./routes/twofa'));
 app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api', require('./routes/payments'));
 
+// API 404 handler (must come before the SPA fallback)
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
 // SPA fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'index.html'));
@@ -44,6 +68,12 @@ app.get('*', (req, res) => {
 
 async function start() {
   await initSchema();
+  const db = await getDb();
+  const userRows = db.exec('SELECT COUNT(*) FROM users');
+  const userCount = userRows.length && userRows[0].values.length ? userRows[0].values[0][0] : 0;
+  if (userCount === 0) {
+    require('./db/seed');
+  }
   app.listen(PORT, () => {
     console.log(`TeacherSwap API running at http://localhost:${PORT}`);
     console.log(`Serving static files from ${path.join(__dirname, '..')}`);

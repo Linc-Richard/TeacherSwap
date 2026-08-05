@@ -7,6 +7,7 @@ primary_region = "arn" # Arusha, Tanzania - closest region
 [env]
   PORT = "8080"
   NODE_ENV = "production"
+  DATA_DIR = "/data"
 
 [http_service]
   internal_port = 8080

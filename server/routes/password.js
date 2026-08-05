@@ -22,7 +22,10 @@ router.post('/forgot', async (req, res) => {
       [uuid(), userId, token, expiresAt]);
     saveDb();
     logAudit(userId, 'PASSWORD_RESET_REQUEST', 'Password reset requested');
-    res.json({ success: true, message: 'If the email exists, a reset link has been sent', resetToken: token });
+    const isProduction = process.env.NODE_ENV === 'production';
+    const resp = { success: true, message: 'If the email exists, a reset link has been sent' };
+    if (!isProduction) resp.resetToken = token;
+    res.json(resp);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

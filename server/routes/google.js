@@ -16,7 +16,10 @@ router.post('/google', async (req, res) => {
     if (!credential) return res.status(400).json({ error: 'Google credential token required' });
 
     let payload;
-    if (config.GOOGLE_CLIENT_ID && !credential.endsWith('.dev')) {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const isDevToken = typeof credential === 'string' && credential.endsWith('.dev');
+
+    if (config.GOOGLE_CLIENT_ID && !isDevToken) {
       try {
         const ticket = await googleClient.verifyIdToken({
           idToken: credential,
@@ -24,11 +27,17 @@ router.post('/google', async (req, res) => {
         });
         payload = ticket.getPayload();
       } catch {
-        // Fall through to dev decode
+        if (isProduction) {
+          return res.status(401).json({ error: 'Invalid Google token' });
+        }
       }
     }
+
     if (!payload) {
-      // Dev/demo mode: decode the JWT without verifying
+      if (isProduction) {
+        return res.status(401).json({ error: 'Google sign-in is not configured in production' });
+      }
+      // Dev/demo mode only: decode the JWT without verifying
       try {
         const parts = credential.split('.');
         if (parts.length !== 3) throw new Error('Invalid token');
