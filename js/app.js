@@ -359,23 +359,23 @@
 
       if (input.hasAttribute('required') && !input.value.trim()) {
         valid = false;
-        message = 'This field is required';
+        message = __('This field is required');
       } else if (input.type === 'email' && input.value.trim()) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(input.value.trim())) {
           valid = false;
-          message = 'Please enter a valid email';
+          message = __('Please enter a valid email');
         }
       } else if (input.type === 'password' && input.value.trim()) {
         if (input.value.length < 6) {
           valid = false;
-          message = 'Password must be at least 6 characters';
+          message = __('Password must be at least 6 characters');
         }
       } else if (input.id === 'confirm-password') {
         const password = document.getElementById('reg-password');
         if (password && input.value !== password.value) {
           valid = false;
-          message = 'Passwords do not match';
+          message = __('Passwords do not match');
         }
       }
 
@@ -421,10 +421,10 @@
           if (!validateField(input)) allValid = false;
         });
         if (allValid) {
-          showToast('Login successful! Redirecting...', 'success');
+          showToast(__('Login successful! Redirecting...'), 'success');
           setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
         } else {
-          showToast('Please fix the errors above', 'error');
+          showToast(__('Please fix the errors above'), 'error');
         }
       });
     }
@@ -478,7 +478,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         } else {
-          showToast('Please fill all required fields', 'error');
+          showToast(__('Please fill all required fields'), 'error');
         }
       });
     }
@@ -500,11 +500,11 @@
         if (validateStep(currentStep)) {
           document.getElementById('registration-form-content').style.display = 'none';
           document.getElementById('registration-success').style.display = 'block';
-          showToast('Registration successful! Welcome to TeacherSwap!', 'success');
+          showToast(__('Registration successful! Welcome to TeacherSwap!'), 'success');
           fireConfetti(80);
           setTimeout(() => { window.location.href = 'dashboard.html'; }, 2500);
         } else {
-          showToast('Please fill all required fields', 'error');
+          showToast(__('Please fill all required fields'), 'error');
         }
       });
     }
@@ -520,7 +520,7 @@
         const level = document.getElementById('filter-level')?.value;
         const district = document.getElementById('filter-district')?.value?.toLowerCase().trim();
 
-        showToast('Searching teachers' + (region && region !== 'all' ? ' in ' + region : '') + '...', 'info');
+        showToast(__('Searching teachers') + (region && region !== 'all' ? ' ' + __('in') + ' ' + region : '') + '...', 'info');
 
         const teacherCards = document.querySelectorAll('.teacher-card');
         let visibleCount = 0;
@@ -605,9 +605,9 @@
       btn.addEventListener('click', function() {
         const card = this.closest('.teacher-card');
         if (card && requestModal) {
-          const name = card.querySelector('h3')?.textContent || 'this teacher';
+          const name = card.querySelector('h3')?.textContent || __('this teacher');
           const msg = requestModal.querySelector('textarea');
-          if (msg) msg.placeholder = 'Hi ' + name + ', I noticed you want to swap...';
+          if (msg) msg.placeholder = __('Hi') + ' ' + name + ', ' + __('I noticed you want to swap...');
           requestModal.classList.add('show');
         }
       });
@@ -622,7 +622,7 @@
 
     if (confirmSwap) {
       confirmSwap.addEventListener('click', () => {
-        showToast('Swap request sent successfully!', 'success');
+        showToast(__('Swap request sent successfully!'), 'success');
         if (requestModal) requestModal.classList.remove('show');
       });
     }
@@ -656,13 +656,13 @@
         setTimeout(() => {
           if (typingIndicator) typingIndicator.classList.remove('show');
           const replies = [
-            "That sounds great! Let me check my schedule.",
-            "I'd be happy to discuss the swap further.",
-            "Can we talk more about the subjects you teach?",
-            "I'm definitely interested in this exchange!",
-            "Let me know when you're available to meet.",
-            "Perfect! I've been looking for someone like you.",
-            "Would you like to arrange a video call?"
+            __('That sounds great! Let me check my schedule.'),
+            __('I\'d be happy to discuss the swap further.'),
+            __('Can we talk more about the subjects you teach?'),
+            __('I\'m definitely interested in this exchange!'),
+            __('Let me know when you\'re available to meet.'),
+            __('Perfect! I\'ve been looking for someone like you.'),
+            __('Would you like to arrange a video call?')
           ];
           addMessage(replies[Math.floor(Math.random() * replies.length)], 'received');
         }, 2000);
@@ -678,12 +678,12 @@
       item.addEventListener('click', () => {
         document.querySelectorAll('.conversation-item').forEach(c => c.classList.remove('active'));
         item.classList.add('active');
-        const name = item.getAttribute('data-name') || 'Teacher';
+        const name = item.getAttribute('data-name') || __('Teacher');
         const nameEl = document.getElementById('chat-name');
         if (nameEl) nameEl.textContent = name;
         if (chatMessages) {
           chatMessages.innerHTML = '';
-          addMessage('Start your conversation with ' + name, 'received');
+          addMessage(__('Start your conversation with') + ' ' + name, 'received');
         }
       });
     });
@@ -715,7 +715,7 @@
       method.addEventListener('click', function() {
         document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
         this.classList.add('selected');
-        showToast('Selected: ' + this.querySelector('span').textContent, 'info');
+        showToast(__('Selected:') + ' ' + this.querySelector('span').textContent, 'info');
       });
     });
 
@@ -755,8 +755,8 @@
     const deleteAccountBtn = document.getElementById('delete-account-btn');
     if (deleteAccountBtn) {
       deleteAccountBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-          showToast('Account deletion requested', 'warning');
+        if (confirm(__('Are you sure you want to delete your account? This action cannot be undone.'))) {
+          showToast(__('Account deletion requested'), 'warning');
         }
       });
     }
@@ -770,7 +770,7 @@
         e.preventDefault();
         const input = newsletterForm.querySelector('input');
         if (input && input.value.trim()) {
-          showToast('Subscribed successfully! Welcome to TeacherSwap.', 'success');
+          showToast(__('Subscribed successfully! Welcome to TeacherSwap.'), 'success');
           input.value = '';
         }
       });
@@ -866,123 +866,7 @@
 
 
 
-    /* ----- Language Toggle (EN / SW) ----- */
-    var translations = {
-      en: {
-        'Welcome Back': 'Welcome Back',
-        'Sign in to continue your journey': 'Sign in to continue your journey',
-        'Login': 'Login',
-        'Email address': 'Email address',
-        'Password': 'Password',
-        'Remember me': 'Remember me',
-        'Forgot password?': 'Forgot password?',
-        'or continue with': 'or continue with',
-        'Sign in with Google': 'Sign in with Google',
-        "Don't have an account?": "Don't have an account?",
-        'Sign up': 'Sign up',
-        'Create Account': 'Create Account',
-        'Join the teacher community in Tanzania': 'Join the teacher community in Tanzania',
-        'Full Name': 'Full Name',
-        'Phone number': 'Phone number',
-        'Next': 'Next',
-        'Previous': 'Previous',
-        'Complete Registration': 'Complete Registration',
-        'or sign up with': 'or sign up with',
-        'Sign up with Google': 'Sign up with Google',
-        'Already have an account?': 'Already have an account?',
-        'Sign in': 'Sign in',
-        'Find Teacher': 'Find Teacher',
-        'Register Now': 'Register Now',
-        'Register': 'Register',
-        'Premium': 'Premium',
-        'Payment Order': 'Payment Order',
-        'Plan:': 'Plan:',
-        'Amount:': 'Amount:',
-        'Billing:': 'Billing:',
-        'Monthly': 'Monthly',
-        'Total Due:': 'Total Due:',
-        'Select Payment Method': 'Select Payment Method',
-        'Pay Now': 'Pay Now',
-        'Payment successful!': 'Payment successful!',
-        'Your payment has been processed successfully.': 'Your payment has been processed successfully.',
-        'Search teachers, schools...': 'Search teachers, schools...'
-      },
-      sw: {
-        'Welcome Back': 'Karibu Tena',
-        'Sign in to continue your journey': 'Ingia ili kuendelea na safari yako',
-        'Login': 'Ingia',
-        'Email address': 'Barua pepe',
-        'Password': 'Nywila',
-        'Remember me': 'Nikumbuke',
-        'Forgot password?': 'Umesahau nywila?',
-        'or continue with': 'au endelea na',
-        'Sign in with Google': 'Ingia kwa Google',
-        "Don't have an account?": 'Huna akaunti?',
-        'Sign up': 'Jisajili',
-        'Create Account': 'Fungua Akaunti',
-        'Join the teacher community in Tanzania': 'Jiunge na jumuiya ya walimu Tanzania',
-        'Full Name': 'Jina Kamili',
-        'Phone number': 'Namba ya simu',
-        'Next': 'Ijayo',
-        'Previous': 'Nyuma',
-        'Complete Registration': 'Maliza Usajili',
-        'or sign up with': 'au jisajili kwa',
-        'Sign up with Google': 'Jisajili kwa Google',
-        'Already have an account?': 'Tayari una akaunti?',
-        'Sign in': 'Ingia',
-        'Find Teacher': 'Tafuta Mwalimu',
-        'Register Now': 'Jisajili Sasa',
-        'Register': 'Jisajili',
-        'Premium': 'Premium',
-        'Payment Order': 'Agizo la Malipo',
-        'Plan:': 'Mpango:',
-        'Amount:': 'Kiasi:',
-        'Billing:': 'Malipo:',
-        'Monthly': 'Kila Mwezi',
-        'Total Due:': 'Jumla:',
-        'Select Payment Method': 'Chagua Njia ya Malipo',
-        'Pay Now': 'Lipa Sasa',
-        'Payment successful!': 'Malipo yamekamilika!',
-        'Your payment has been processed successfully.': 'Malipo yako yamekubaliwa.',
-        'Search teachers, schools...': 'Tafuta walimu, shule...'
-      }
-    };
-
-    var currentLang = 'en';
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      var t = translations[lang];
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n');
-        if (t[key]) el.textContent = t[key];
-      });
-      document.querySelectorAll('input[placeholder]').forEach(function(el) {
-        var key = el.getAttribute('placeholder');
-        if (key && t[key]) el.placeholder = t[key];
-      });
-      document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
-        var key = el.getAttribute('data-i18n-title');
-        if (t[key]) el.title = t[key];
-      });
-      try { localStorage.setItem('ts-lang', lang); } catch(e) {}
-    }
-
-    var langBtns = document.querySelectorAll('.lang-toggle-btn');
-    langBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        langBtns.forEach(function(b) { b.classList.remove('active'); });
-        this.classList.add('active');
-        applyLanguage(this.getAttribute('data-lang'));
-      });
-    });
-
-    try {
-      var savedLang = localStorage.getItem('ts-lang');
-      if (savedLang === 'sw') {
-        document.querySelector('.lang-toggle-btn[data-lang="sw"]').click();
-      }
-    } catch(e) {}
+    /* ----- Language handled by js/i18n.js ----- */
 
     /* ----- Payment Method Switching ----- */
     var payMethods = document.querySelectorAll('#payment-methods .payment-method');
@@ -997,13 +881,7 @@
       });
     });
 
-    /* ----- Payment Submit ----- */
-    var payBtn = document.getElementById('pay-now-btn');
-    if (payBtn) {
-      payBtn.addEventListener('click', function() {
-        showToast('success', translations[currentLang]['Payment successful!'], translations[currentLang]['Your payment has been processed successfully.']);
-      });
-    }
+    /* ----- Payment Submit (handled by payment.html) ----- */
 
     /* ----- Mobile Bottom Nav Active State ----- */
     var currentPath = window.location.pathname.split('/').pop() || 'index.html';

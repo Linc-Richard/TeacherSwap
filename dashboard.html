@@ -284,6 +284,7 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -293,7 +294,7 @@
 
       // Welcome banner
       var nameEl = document.querySelector('.dashboard-welcome h2');
-      if (nameEl) nameEl.textContent = 'Welcome back, ' + user.fullName + '!';
+      if (nameEl) nameEl.textContent = __('Welcome back,') + ' ' + user.fullName + '!';
 
       try {
         // AI Recommendations via the server endpoint
@@ -302,7 +303,7 @@
         if (grid && recs.length) {
           var recCard = document.createElement('div');
           recCard.className = 'card dashboard-card';
-          recCard.innerHTML = '<div class="dashboard-card-header"><h3><i class="fas fa-robot text-primary mr-2"></i> AI Recommended Matches</h3><a href="find-match.html">View All</a></div>' +
+          recCard.innerHTML = '<div class="dashboard-card-header"><h3><i class="fas fa-robot text-primary mr-2"></i> ' + __('AI Recommended Matches') + '</h3><a href="find-match.html">' + __('View All') + '</a></div>' +
             recs.slice(0, 3).map(function(r) {
               var initials = r.fullName ? r.fullName.split(' ').map(function(w) { return w[0]; }).join('') : '??';
               var matchClass = r.score >= 60 ? 'high' : (r.score >= 40 ? 'medium' : 'low');
@@ -321,7 +322,7 @@
           var items = swaps.slice(0, 5).map(function(s) {
             var initials = (s.toName || '??').split(' ').map(function(w) { return w[0]; }).join('');
             var statusClass = s.status === 'completed' ? 'accepted' : (s.status === 'pending' ? 'pending' : 'declined');
-            return '<div class="request-item"><div class="request-info"><div class="request-avatar">' + initials + '</div><div class="request-details"><h4>' + (s.toName || 'Unknown') + '</h4><p>' + (s.fromName ? 'From: ' + s.fromName : '') + '</p></div></div><span class="request-status ' + statusClass + '">' + s.status + '</span></div>';
+            return '<div class="request-item"><div class="request-info"><div class="request-avatar">' + initials + '</div><div class="request-details"><h4>' + (s.toName || __('Unknown')) + '</h4><p>' + (s.fromName ? __('From:') + ' ' + s.fromName : '') + '</p></div></div><span class="request-status ' + statusClass + '">' + s.status + '</span></div>';
           }).join('');
           var existingItems = swapSection.querySelectorAll('.request-item');
           existingItems.forEach(function(el) { el.remove(); });

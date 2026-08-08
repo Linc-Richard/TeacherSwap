@@ -363,6 +363,7 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -379,7 +380,7 @@
           var initials = (t.fullName || '??').split(' ').map(function(w) { return w[0]; }).join('');
           var school = t.schoolName || '';
           var subjects = t.subjects || '';
-          var locationText = (t.region || '') + (t.preferredRegion ? ' → Wants: ' + t.preferredRegion : '');
+          var locationText = (t.region || '') + (t.preferredRegion ? ' ' + __('Wants:') + ' ' + t.preferredRegion : '');
           var card = document.createElement('div');
           card.className = 'card teacher-card tilt-card';
           card.setAttribute('data-id', t.id);
@@ -403,7 +404,7 @@
             currentTeacherId = this.getAttribute('data-id');
             var name = this.getAttribute('data-name');
             var msg = document.querySelector('#request-modal textarea');
-            if (msg) msg.placeholder = 'Hi ' + name + ', I noticed you want to swap...';
+            if (msg) msg.placeholder = __('Hi') + ' ' + name + ', ' + __('I noticed you want to swap...');
             document.getElementById('request-modal').classList.add('show');
           });
         });
@@ -412,7 +413,7 @@
       try {
         var teachers = await api.getTeachers();
         renderTeachers(teachers);
-      } catch(e) { showToast('Failed to load teachers', 'error'); }
+      } catch(e) { showToast(__('Failed to load teachers'), 'error'); }
 
       // Search
       document.getElementById('search-btn').addEventListener('click', async function() {
@@ -423,7 +424,7 @@
           if (region !== 'all') teachers = teachers.filter(function(t) { return t.region === region; });
           if (subject !== 'all') teachers = teachers.filter(function(t) { return (t.subjects || '').toLowerCase().includes(subject.toLowerCase()); });
           renderTeachers(teachers);
-        } catch(e) { showToast('Search failed', 'error'); }
+        } catch(e) { showToast(__('Search failed'), 'error'); }
       });
 
       // Confirm swap
@@ -431,9 +432,9 @@
         if (!currentTeacherId) return;
         try {
           await api.sendSwapRequest(currentTeacherId, '');
-          showToast('Swap request sent!', 'success');
+          showToast(__('Swap request sent!'), 'success');
           document.getElementById('request-modal').classList.remove('show');
-        } catch(e) { showToast(e.message, 'error'); }
+        } catch(e) { showToast(__(e.message), 'error'); }
       });
     });
   </script>

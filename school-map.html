@@ -98,6 +98,7 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -125,7 +126,7 @@
 
       function renderList(schools) {
         schoolList.innerHTML = '';
-        if (!schools.length) { schoolList.innerHTML = '<p style="color:var(--text-muted);">No schools found</p>'; return; }
+        if (!schools.length) { schoolList.innerHTML = '<p style="color:var(--text-muted);">' + __('No schools found') + '</p>'; return; }
         schools.forEach(function(s) {
           var div = document.createElement('div');
           div.className = 'card';
@@ -148,7 +149,7 @@
             iconAnchor: [16, 16]
           });
           var marker = L.marker([s.latitude, s.longitude], { icon: icon }).addTo(map);
-          marker.bindPopup('<h4>' + s.name + '</h4><p>' + s.region + ', ' + s.district + '</p><p>' + (s.subjects || '') + '</p><p>' + (s.teacherCount || '') + ' teachers</p>');
+          marker.bindPopup('<h4>' + s.name + '</h4><p>' + s.region + ', ' + s.district + '</p><p>' + (s.subjects || '') + '</p><p>' + (s.teacherCount || '') + ' ' + __('teachers') + '</p>');
           markers[s.id] = marker;
         });
       }
@@ -181,7 +182,7 @@
 
         // Find nearby
         document.getElementById('map-find-nearby').addEventListener('click', function() {
-          if (!navigator.geolocation) { showToast('Geolocation not supported', 'error'); return; }
+          if (!navigator.geolocation) { showToast(__('Geolocation not supported'), 'error'); return; }
           navigator.geolocation.getCurrentPosition(async function(pos) {
             var radius = parseInt(document.getElementById('map-radius').value) || 50;
             try {
@@ -190,11 +191,11 @@
               renderList(nearby);
               map.setView([pos.coords.latitude, pos.coords.longitude], 10);
               L.circle([pos.coords.latitude, pos.coords.longitude], { radius: radius * 1000, color: '#2563EB', fillOpacity: 0.1 }).addTo(map);
-              showToast('Found ' + nearby.length + ' schools nearby', 'success');
-            } catch(e) { showToast('Failed to find nearby schools', 'error'); }
-          }, function() { showToast('Could not get location', 'error'); });
+              showToast(__('Found') + ' ' + nearby.length + ' ' + __('schools nearby'), 'success');
+            } catch(e) { showToast(__('Failed to find nearby schools'), 'error'); }
+          }, function() { showToast(__('Could not get location'), 'error'); });
         });
-      } catch(e) { showToast('Failed to load school map', 'error'); }
+      } catch(e) { showToast(__('Failed to load school map'), 'error'); }
     });
   </script>
 </body>
