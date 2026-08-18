@@ -12,7 +12,7 @@ router.post('/', authMiddleware, async (req, res) => {
     if (!toUserId || !swapRequestId || !rating) return res.status(400).json({ error: 'toUserId, swapRequestId, and rating required' });
     if (rating < 1 || rating > 5) return res.status(400).json({ error: 'Rating must be 1-5' });
 
-    const existing = db.exec(`SELECT id FROM reviews WHERE fromUserId = '${req.user.id}' AND toUserId = '${toUserId}' AND swapRequestId = '${swapRequestId}'`);
+    const existing = db.exec(`SELECT id FROM reviews WHERE fromUserId = '${req.user.id}' AND toUserId = '${toUserId.replace(/'/g, "''")}' AND swapRequestId = '${String(swapRequestId).replace(/'/g, "''")}'`);
     if (existing.length && existing[0].values.length) return res.status(409).json({ error: 'Already reviewed' });
 
     const id = uuid();
@@ -23,7 +23,7 @@ router.post('/', authMiddleware, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-router.get('/user/:userId', async (req, res) => {
+router.get('/user/:userId', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
     const rows = db.exec(`SELECT r.*, u.fullName as reviewerName, u.avatar as reviewerAvatar FROM reviews r JOIN users u ON r.fromUserId = u.id WHERE r.toUserId = '${req.params.userId.replace(/'/g, "''")}' AND r.isFlagged = 0 ORDER BY r.createdAt DESC`);
@@ -48,18 +48,30 @@ router.get('/user/:userId', async (req, res) => {
 router.post('/:id/flag', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    db.run(`UPDATE reviews SET isFlagged = 1 WHERE id = '${req.params.id.replace(/'/g, "''")}'`);
-    saveDb();
-    res.json({ success: true });
+    const rows = db.exec(`SELECT fromUserId FROM reviews WHERE id = '${req.params.id.replace(/'/g, "''")}'`);
+    if (!rows.length || !rows[0].values.length) return res.status(404).json({ error: 'Review not found' });
+    if (rows[0].values[0][0] === req.user.id || req.user.role === 'admin') {
+      db.run(`UPDATE reviews SET isFlagged = 1 WHERE id = '${req.params.id.replace(/'/g, "''")}'`);
+      saveDb();
+      res.json({ success: true });
+    } else {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    db.run(`DELETE FROM reviews WHERE id = '${req.params.id.replace(/'/g, "''")}'`);
-    saveDb();
-    res.json({ success: true });
+    const rows = db.exec(`SELECT fromUserId FROM reviews WHERE id = '${req.params.id.replace(/'/g, "''")}'`);
+    if (!rows.length || !rows[0].values.length) return res.status(404).json({ error: 'Review not found' });
+    if (rows[0].values[0][0] === req.user.id || req.user.role === 'admin') {
+      db.run(`DELETE FROM reviews WHERE id = '${req.params.id.replace(/'/g, "''")}'`);
+      saveDb();
+      res.json({ success: true });
+    } else {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

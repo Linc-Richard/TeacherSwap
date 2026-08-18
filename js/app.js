@@ -410,26 +410,6 @@
     });
 
     // ============================
-    // LOGIN FORM
-    // ============================
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        let allValid = true;
-        loginForm.querySelectorAll('.form-control').forEach(input => {
-          if (!validateField(input)) allValid = false;
-        });
-        if (allValid) {
-          showToast(__('Login successful! Redirecting...'), 'success');
-          setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
-        } else {
-          showToast(__('Please fix the errors above'), 'error');
-        }
-      });
-    }
-
-    // ============================
     // MULTI-STEP REGISTRATION
     // ============================
     let currentStep = 1;
@@ -466,6 +446,11 @@
       return valid;
     }
 
+    // Expose registration helpers to register.html's inline submit handler
+    window.validateStep = validateStep;
+    window.fireConfetti = fireConfetti;
+    Object.defineProperty(window, 'currentStep', { get: () => currentStep });
+
     const nextBtn = document.getElementById('next-step');
     const prevBtn = document.getElementById('prev-step');
 
@@ -493,197 +478,17 @@
       });
     }
 
-    const regForm = document.getElementById('register-form');
-    if (regForm) {
-      regForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (validateStep(currentStep)) {
-          document.getElementById('registration-form-content').style.display = 'none';
-          document.getElementById('registration-success').style.display = 'block';
-          showToast(__('Registration successful! Welcome to TeacherSwap!'), 'success');
-          fireConfetti(80);
-          setTimeout(() => { window.location.href = 'dashboard.html'; }, 2500);
-        } else {
-          showToast(__('Please fill all required fields'), 'error');
-        }
-      });
-    }
+    // NOTE: registration submission is handled by register.html's inline script,
+    // which calls api.register() with the collected form data.
 
     // ============================
-    // FIND MATCH - SEARCH & FILTER
+    // LOGOUT
     // ============================
-    const searchBtn = document.getElementById('search-btn');
-    if (searchBtn) {
-      searchBtn.addEventListener('click', () => {
-        const region = document.getElementById('filter-region')?.value;
-        const subject = document.getElementById('filter-subject')?.value;
-        const level = document.getElementById('filter-level')?.value;
-        const district = document.getElementById('filter-district')?.value?.toLowerCase().trim();
-
-        showToast(__('Searching teachers') + (region && region !== 'all' ? ' ' + __('in') + ' ' + region : '') + '...', 'info');
-
-        const teacherCards = document.querySelectorAll('.teacher-card');
-        let visibleCount = 0;
-        teacherCards.forEach(card => {
-          let visible = true;
-          if (region && region !== 'all') {
-            const cr = card.getAttribute('data-region');
-            if (cr && cr !== region) visible = false;
-          }
-          if (subject && subject !== 'all') {
-            const cs = card.getAttribute('data-subjects');
-            if (cs && !cs.includes(subject)) visible = false;
-          }
-          if (district) {
-            const school = card.querySelector('.school-name')?.textContent?.toLowerCase() || '';
-            const info = card.querySelector('.teacher-card-body')?.textContent?.toLowerCase() || '';
-            if (!school.includes(district) && !info.includes(district)) visible = false;
-          }
-          card.style.display = visible ? '' : 'none';
-          if (visible) visibleCount++;
-        });
-
-        const countEl = document.querySelector('.results-count strong');
-        if (countEl) countEl.textContent = visibleCount;
-      });
-    }
-
-    // ============================
-    // FIND MATCH - DISTRICT AUTOCOMPLETE
-    // ============================
-    const districtInput = document.getElementById('filter-district');
-    if (districtInput) {
-      const districts = [
-        'Arusha', 'Babati', 'Bagamoyo', 'Bukoba', 'Dar es Salaam', 'Dodoma', 'Geita',
-        'Iringa', 'Kibaha', 'Kigoma', 'Kilimanjaro', 'Lindi', 'Manyara', 'Mara',
-        'Mbeya', 'Morogoro', 'Moshi', 'Mtwara', 'Mwanza', 'Njombe', 'Pwani',
-        'Rukwa', 'Ruvuma', 'Shinyanga', 'Simiyu', 'Singida', 'Songwe', 'Tabora', 'Tanga'
-      ];
-
-      const datalist = document.createElement('datalist');
-      datalist.id = 'district-list';
-      districts.forEach(d => {
-        const opt = document.createElement('option');
-        opt.value = d;
-        datalist.appendChild(opt);
-      });
-      document.body.appendChild(datalist);
-      districtInput.setAttribute('list', 'district-list');
-    }
-
-    // ============================
-    // SORT TEACHER CARDS
-    // ============================
-    const sortSelect = document.getElementById('sort-select');
-    if (sortSelect) {
-      sortSelect.addEventListener('change', () => {
-        const container = document.querySelector('.teacher-grid');
-        if (!container) return;
-        const cards = Array.from(container.querySelectorAll('.teacher-card'));
-        const sortBy = sortSelect.value;
-        cards.sort((a, b) => {
-          if (sortBy === 'match') {
-            return (parseInt(b.getAttribute('data-match') || '0')) - (parseInt(a.getAttribute('data-match') || '0'));
-          }
-          if (sortBy === 'newest') {
-            return 0;
-          }
-          return 0;
-        });
-        cards.forEach(card => container.appendChild(card));
-      });
-    }
-
-    // ============================
-    // REQUEST SWAP MODAL
-    // ============================
-    const requestModal = document.getElementById('request-modal');
-    const modalClose = document.getElementById('modal-close');
-    const confirmSwap = document.getElementById('confirm-swap');
-
-    document.querySelectorAll('.request-swap-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const card = this.closest('.teacher-card');
-        if (card && requestModal) {
-          const name = card.querySelector('h3')?.textContent || __('this teacher');
-          const msg = requestModal.querySelector('textarea');
-          if (msg) msg.placeholder = __('Hi') + ' ' + name + ', ' + __('I noticed you want to swap...');
-          requestModal.classList.add('show');
-        }
-      });
-    });
-
-    if (modalClose && requestModal) {
-      modalClose.addEventListener('click', () => requestModal.classList.remove('show'));
-      requestModal.addEventListener('click', (e) => {
-        if (e.target === requestModal) requestModal.classList.remove('show');
-      });
-    }
-
-    if (confirmSwap) {
-      confirmSwap.addEventListener('click', () => {
-        showToast(__('Swap request sent successfully!'), 'success');
-        if (requestModal) requestModal.classList.remove('show');
-      });
-    }
-
-    // ============================
-    // MESSAGES - SEND CHAT
-    // ============================
-    const chatInput = document.getElementById('chat-input');
-    const chatSend = document.getElementById('chat-send');
-    const chatMessages = document.getElementById('chat-messages');
-    const typingIndicator = document.getElementById('typing-indicator');
-
-    function addMessage(text, type) {
-      if (!chatMessages) return;
-      const now = new Date();
-      const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-      const bubble = document.createElement('div');
-      bubble.className = 'message-bubble ' + type;
-      bubble.innerHTML = text + '<span class="msg-time">' + time + '</span>';
-      chatMessages.appendChild(bubble);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    if (chatSend && chatInput) {
-      chatSend.addEventListener('click', () => {
-        const text = chatInput.value.trim();
-        if (!text) return;
-        addMessage(text, 'sent');
-        chatInput.value = '';
-        if (typingIndicator) typingIndicator.classList.add('show');
-        setTimeout(() => {
-          if (typingIndicator) typingIndicator.classList.remove('show');
-          const replies = [
-            __('That sounds great! Let me check my schedule.'),
-            __('I\'d be happy to discuss the swap further.'),
-            __('Can we talk more about the subjects you teach?'),
-            __('I\'m definitely interested in this exchange!'),
-            __('Let me know when you\'re available to meet.'),
-            __('Perfect! I\'ve been looking for someone like you.'),
-            __('Would you like to arrange a video call?')
-          ];
-          addMessage(replies[Math.floor(Math.random() * replies.length)], 'received');
-        }, 2000);
-      });
-
-      chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') chatSend.click();
-      });
-    }
-
-    // Conversation switching
-    document.querySelectorAll('.conversation-item').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('.conversation-item').forEach(c => c.classList.remove('active'));
-        item.classList.add('active');
-        const name = item.getAttribute('data-name') || __('Teacher');
-        const nameEl = document.getElementById('chat-name');
-        if (nameEl) nameEl.textContent = name;
-        if (chatMessages) {
-          chatMessages.innerHTML = '';
-          addMessage(__('Start your conversation with') + ' ' + name, 'received');
+    document.querySelectorAll('.sidebar-link.logout').forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (typeof api !== 'undefined') {
+          e.preventDefault();
+          api.logout();
         }
       });
     });

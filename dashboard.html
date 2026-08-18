@@ -39,7 +39,7 @@
         <div class="relative nav-notif-btn">
           <button class="theme-toggle" id="notif-btn" aria-label="Notifications">
             <i class="fas fa-bell"></i>
-            <span class="notif-badge">3</span>
+            <span class="notif-badge" style="display:none;"></span>
           </button>
           <div class="notif-dropdown" id="notif-dropdown">
             <div class="notif-dropdown-header">
@@ -48,16 +48,7 @@
             </div>
             <div class="notif-dropdown-list">
               <div class="notif-dropdown-item">
-                <div class="notification-icon blue"><i class="fas fa-handshake"></i></div>
-                <div><p style="font-size:0.85rem;line-height:1.4;">New swap request from John M.</p><span style="font-size:0.75rem;color:var(--text-muted);">2 min ago</span></div>
-              </div>
-              <div class="notif-dropdown-item">
-                <div class="notification-icon green"><i class="fas fa-check-circle"></i></div>
-                <div><p style="font-size:0.85rem;line-height:1.4;">Swap request accepted! Check your messages.</p><span style="font-size:0.75rem;color:var(--text-muted);">1 hour ago</span></div>
-              </div>
-              <div class="notif-dropdown-item">
-                <div class="notification-icon red"><i class="fas fa-user-plus"></i></div>
-                <div><p style="font-size:0.85rem;line-height:1.4;">New teacher joined your region.</p><span style="font-size:0.75rem;color:var(--text-muted);">3 hours ago</span></div>
+                <div><p style="font-size:0.85rem;line-height:1.4;color:var(--text-muted);">Loading notifications...</p></div>
               </div>
             </div>
           </div>
@@ -97,8 +88,8 @@
     <!-- Welcome -->
     <div class="dashboard-welcome" id="welcome-banner">
       <div style="position:relative;z-index:1;">
-        <h2>Welcome back, John!</h2>
-        <p>You have 3 new swap requests and 2 unread messages.</p>
+        <h2 id="welcome-heading">Welcome back, Teacher!</h2>
+        <p id="welcome-sub">Here's your overview.</p>
       </div>
       <div class="welcome-waves">
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;width:100%;height:40px;opacity:0.15;">
@@ -112,28 +103,28 @@
       <div class="card stat-card">
         <div class="stat-card-icon blue"><i class="fas fa-exchange-alt"></i></div>
         <div class="stat-card-info">
-          <h3>12</h3>
+          <h3 id="stat-total">0</h3>
           <p>Total Swaps</p>
         </div>
       </div>
       <div class="card stat-card">
         <div class="stat-card-icon green"><i class="fas fa-check-circle"></i></div>
         <div class="stat-card-info">
-          <h3>8</h3>
+          <h3 id="stat-completed">0</h3>
           <p>Completed</p>
         </div>
       </div>
       <div class="card stat-card">
         <div class="stat-card-icon yellow"><i class="fas fa-clock"></i></div>
         <div class="stat-card-info">
-          <h3>3</h3>
+          <h3 id="stat-pending">0</h3>
           <p>Pending</p>
         </div>
       </div>
       <div class="card stat-card">
         <div class="stat-card-icon purple"><i class="fas fa-heart"></i></div>
         <div class="stat-card-info">
-          <h3>95%</h3>
+          <h3 id="stat-score">0%</h3>
           <p>Match Score</p>
         </div>
       </div>
@@ -148,35 +139,8 @@
             <h3><i class="fas fa-exchange-alt text-primary mr-2"></i> Recent Swap Requests</h3>
             <a href="find-match.html">View All</a>
           </div>
-          <div class="request-item">
-            <div class="request-info">
-              <div class="request-avatar">JM</div>
-              <div class="request-details">
-                <h4>Jane Mwangi</h4>
-                <p>Dodoma → Dar es Salaam</p>
-              </div>
-            </div>
-            <span class="request-status pending">Pending</span>
-          </div>
-          <div class="request-item">
-            <div class="request-info">
-              <div class="request-avatar">PK</div>
-              <div class="request-details">
-                <h4>Peter Kilonzo</h4>
-                <p>Mwanza → Arusha</p>
-              </div>
-            </div>
-            <span class="request-status accepted">Accepted</span>
-          </div>
-          <div class="request-item">
-            <div class="request-info">
-              <div class="request-avatar">AH</div>
-              <div class="request-details">
-                <h4>Amina Hassan</h4>
-                <p>Arusha → Mbeya</p>
-              </div>
-            </div>
-            <span class="request-status declined">Declined</span>
+          <div id="swap-requests-list">
+            <div id="swap-requests-empty" class="empty-inline"><i class="fas fa-exchange-alt"></i> No swap requests yet. Find teachers to start swapping!</div>
           </div>
         </div>
 
@@ -186,26 +150,8 @@
             <h3><i class="fas fa-bell text-primary mr-2"></i> Recent Notifications</h3>
             <a href="#">View All</a>
           </div>
-          <div class="notification-item">
-            <div class="notification-icon blue"><i class="fas fa-handshake"></i></div>
-            <div class="notification-content">
-              <p>New swap request from <strong>Jane Mwangi</strong> - she wants to swap to your region.</p>
-              <div class="time">2 minutes ago</div>
-            </div>
-          </div>
-          <div class="notification-item">
-            <div class="notification-icon green"><i class="fas fa-check-circle"></i></div>
-            <div class="notification-content">
-              <p><strong>Peter Kilonzo</strong> accepted your swap request. Start messaging!</p>
-              <div class="time">1 hour ago</div>
-            </div>
-          </div>
-          <div class="notification-item">
-            <div class="notification-icon blue"><i class="fas fa-user-plus"></i></div>
-            <div class="notification-content">
-              <p>New teacher in your area: <strong>Sarah Kimaro</strong> - Mathematics teacher.</p>
-              <div class="time">3 hours ago</div>
-            </div>
+          <div id="dashboard-notifications">
+            <div class="notification-item"><div class="notification-content"><p style="color:var(--text-muted);font-size:0.88rem;">No notifications yet</p></div></div>
           </div>
         </div>
       </div>
@@ -231,29 +177,8 @@
             <h3><i class="fas fa-comments text-primary mr-2"></i> Recent Messages</h3>
             <a href="messages.html">View All</a>
           </div>
-          <div class="message-preview">
-            <div class="message-preview-avatar" style="background:var(--primary);">JM</div>
-            <div class="message-preview-content">
-              <h4>Jane Mwangi <span class="unread-badge"></span></h4>
-              <p>I'm interested in the swap! Can we...</p>
-            </div>
-            <span class="time">5m</span>
-          </div>
-          <div class="message-preview">
-            <div class="message-preview-avatar" style="background:var(--success);">PK</div>
-            <div class="message-preview-content">
-              <h4>Peter Kilonzo</h4>
-              <p>Yes, I accept the swap request.</p>
-            </div>
-            <span class="time">1h</span>
-          </div>
-          <div class="message-preview">
-            <div class="message-preview-avatar" style="background:var(--warning);">AH</div>
-            <div class="message-preview-content">
-              <h4>Amina Hassan</h4>
-              <p>Thanks for considering my request.</p>
-            </div>
-            <span class="time">3h</span>
+          <div id="dashboard-messages">
+            <div style="padding:16px;color:var(--text-muted);font-size:0.88rem;">No messages yet</div>
           </div>
         </div>
 
@@ -287,14 +212,113 @@
   <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
       if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
       var user = api.getUser();
 
-      // Welcome banner
       var nameEl = document.querySelector('.dashboard-welcome h2');
-      if (nameEl) nameEl.textContent = __('Welcome back,') + ' ' + user.fullName + '!';
+      if (nameEl) nameEl.textContent = __('Welcome back,') + ' ' + (user.fullName || 'Teacher') + '!';
+      var subEl = document.getElementById('welcome-sub');
+
+      function initials(name) {
+        return (name || '?').split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+      }
+
+      // Profile completeness banner
+      try {
+        var me = await api.getProfile();
+        var required = ['teachingLevel', 'subjects', 'schoolName', 'region'];
+        var missing = required.filter(function(f) { return !String(me[f] || '').trim(); });
+        if (missing.length) {
+          var banner = document.createElement('div');
+          banner.className = 'card';
+          banner.style.cssText = 'border-left:4px solid var(--warning);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;';
+          banner.innerHTML = '<i class="fas fa-user-edit" style="color:var(--warning);font-size:1.3rem;"></i>' +
+            '<div style="flex:1;"><strong style="font-size:0.9rem;">' + __('Complete your profile to find matches') + '</strong>' +
+            '<p style="font-size:0.82rem;color:var(--text-muted);margin:2px 0 0;">' + __('Missing:') + ' ' + missing.join(', ') + '</p></div>' +
+            '<a href="onboarding.html" class="btn btn-primary btn-sm"><i class="fas fa-arrow-right"></i> ' + __('Complete Now') + '</a>';
+          document.querySelector('.main-content').insertBefore(banner, document.querySelector('.main-content').firstChild);
+        }
+      } catch(e) {}
+
+      var swaps = [];
+      try {
+        swaps = await api.getSwapRequests();
+      } catch(e) {}
+
+      // Stats
+      var total = swaps.length;
+      var completed = swaps.filter(function(s) { return s.status === 'completed'; }).length;
+      var pending = swaps.filter(function(s) { return s.status === 'pending'; }).length;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-completed').textContent = completed;
+      document.getElementById('stat-pending').textContent = pending;
+
+      // Recent swap requests
+      var swapList = document.getElementById('swap-requests-list');
+      var swapEmpty = document.getElementById('swap-requests-empty');
+      if (swapList) {
+        var items = swaps.slice(0, 5).map(function(s) {
+          var other = s.toUserId === (user.id || '') ? s.fromName : s.toName;
+          var otherId = s.toUserId === (user.id || '') ? s.fromUserId : s.toUserId;
+          var statusClass = s.status === 'completed' || s.status === 'accepted' ? 'accepted' : (s.status === 'declined' || s.status === 'cancelled' ? 'declined' : 'pending');
+          return '<a href="profile.html?id=' + otherId + '" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;">' +
+            '<div class="request-info"><div class="request-avatar">' + initials(other) + '</div><div class="request-details"><h4>' + (other || __('Unknown')) + '</h4><p>' + (s.message ? s.message.substring(0, 40) : (s.status === 'pending' ? __('Pending swap request') : s.status)) + '</p></div></div>' +
+            '<span class="request-status ' + statusClass + '">' + s.status + '</span></a>';
+        }).join('');
+        if (swapEmpty) swapEmpty.style.display = items ? 'none' : 'block';
+        if (items) swapList.innerHTML += items;
+      }
+
+      // Notifications card
+      try {
+        var notifs = await api.getNotifications();
+        var notifCard = document.getElementById('dashboard-notifications');
+        if (notifCard) {
+          if (!notifs.length) {
+            notifCard.innerHTML = '<div class="notification-item"><div class="notification-content"><p style="color:var(--text-muted);font-size:0.88rem;">No notifications yet</p></div></div>';
+          } else {
+            notifCard.innerHTML = notifs.slice(0, 4).map(function(n) {
+              var iconMap = { swap_request: 'blue fa-handshake', swap_accepted: 'green fa-check-circle', message: 'green fa-comments', meeting: 'purple fa-calendar-check', review: 'yellow fa-star', new_match: 'blue fa-robot' };
+              var ic = iconMap[n.type] || 'blue fa-bell';
+              var parts = ic.split(' ');
+              return '<div class="notification-item"><div class="notification-icon ' + parts[0] + '"><i class="fas ' + parts[1] + '"></i></div>' +
+                '<div class="notification-content"><p>' + (n.body || n.title || '') + '</p><div class="time">' + new Date(n.createdAt.replace(' ', 'T')).toLocaleString() + '</div></div></div>';
+            }).join('');
+          }
+        }
+      } catch(e) {}
+
+      // Recent messages
+      try {
+        var convos = await api.getConversations();
+        var msgCard = document.getElementById('dashboard-messages');
+        if (msgCard) {
+          if (!convos.length) {
+            msgCard.innerHTML = '<div style="padding:16px;color:var(--text-muted);font-size:0.88rem;">No messages yet</div>';
+          } else {
+            msgCard.innerHTML = convos.slice(0, 3).map(function(c) {
+              var unread = Number(c.unreadCount) > 0 ? '<span class="unread-badge"></span>' : '';
+              return '<a href="messages.html?teacher=' + c.otherUserId + '" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;">' +
+                '<div class="message-preview-avatar" style="background:var(--primary);">' + initials(c.otherName) + '</div>' +
+                '<div class="message-preview-content"><h4>' + c.otherName + ' ' + unread + '</h4><p>' + (c.lastMessage || '') + '</p></div>' +
+                '<span class="time" style="margin-left:auto;">' + new Date(c.lastMessageAt.replace(' ', 'T')).toLocaleDateString() + '</span></a>';
+            }).join('');
+          }
+        }
+      } catch(e) {}
+
+      // Welcome sub-text with real counts
+      try {
+        var totalNotifs = await api.getNotifications();
+        var unread = totalNotifs.filter(function(n) { return !n.isRead; }).length;
+        var unreadMsgs = 0;
+        var convs = await api.getConversations();
+        convs.forEach(function(c) { unreadMsgs += Number(c.unreadCount) || 0; });
+        if (subEl) subEl.textContent = unread + ' ' + __('unread notification(s)') + ' · ' + unreadMsgs + ' ' + __('unread message(s)');
+      } catch(e) {}
 
       try {
         // AI Recommendations via the server endpoint
@@ -310,25 +334,15 @@
               return '<div class="request-item"><div class="request-info"><div class="request-avatar">' + initials + '</div><div class="request-details"><h4>' + (r.fullName || r.email) + '</h4><p>' + (r.subjects || '') + ' &middot; ' + (r.schoolName || '') + '</p></div></div><span class="request-status ' + matchClass + '">' + r.score + '%</span></div>';
             }).join('');
           grid.prepend(recCard);
-        }
-      } catch(e) {}
 
-      try {
-        // Swap requests
-        var swaps = await api.getSwapRequests();
-        var swapSection = document.querySelector('.dashboard-card:has(.request-item)');
-        if (swaps.length && swapSection) {
-          var container = swapSection.querySelector('.dashboard-card-header') || swapSection;
-          var items = swaps.slice(0, 5).map(function(s) {
-            var initials = (s.toName || '??').split(' ').map(function(w) { return w[0]; }).join('');
-            var statusClass = s.status === 'completed' ? 'accepted' : (s.status === 'pending' ? 'pending' : 'declined');
-            return '<div class="request-item"><div class="request-info"><div class="request-avatar">' + initials + '</div><div class="request-details"><h4>' + (s.toName || __('Unknown')) + '</h4><p>' + (s.fromName ? __('From:') + ' ' + s.fromName : '') + '</p></div></div><span class="request-status ' + statusClass + '">' + s.status + '</span></div>';
-          }).join('');
-          var existingItems = swapSection.querySelectorAll('.request-item');
-          existingItems.forEach(function(el) { el.remove(); });
-          if (container) container.insertAdjacentHTML('afterend', items);
+          var topScore = Math.max.apply(null, recs.map(function(r) { return r.score || 0; }));
+          document.getElementById('stat-score').textContent = topScore + '%';
+        } else {
+          document.getElementById('stat-score').textContent = '0%';
         }
-      } catch(e) {}
+      } catch(e) {
+        document.getElementById('stat-score').textContent = '0%';
+      }
     });
   </script>
 </body>

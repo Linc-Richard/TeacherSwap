@@ -10,14 +10,76 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .messenger-wrap{display:flex;height:calc(100vh - 140px);max-height:600px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+    .conv-sidebar{width:320px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg-card);}
+    .conv-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .conv-header h3{font-size:1rem;font-weight:700;margin:0;}
+    .conv-search{padding:12px 16px;border-bottom:1px solid var(--border);position:relative;}
+    .conv-search i{position:absolute;left:28px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;}
+    .conv-search input{width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border);border-radius:10px;background:var(--bg);font-size:0.88rem;outline:none;}
+    .conv-list{flex:1;overflow-y:auto;}
+    .conv-item{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--border-light);transition:background 0.15s;}
+    .conv-item:hover{background:var(--bg-hover);}
+    .conv-item.active{background:var(--primary-light);border-left:3px solid var(--primary);}
+    .conv-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.9rem;color:#fff;flex-shrink:0;position:relative;}
+    .conv-avatar .online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:var(--success);border:2px solid var(--bg-card);}
+    .conv-info{flex:1;min-width:0;}
+    .conv-info h4{font-size:0.88rem;font-weight:600;margin:0 0 2px;display:flex;align-items:center;gap:6px;}
+    .conv-info .uname{font-size:0.75rem;color:var(--text-muted);font-weight:400;}
+    .conv-info p{font-size:0.8rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;}
+    .conv-meta{text-align:right;flex-shrink:0;}
+    .conv-meta .time{font-size:0.7rem;color:var(--text-muted);}
+    .conv-meta .badge{display:inline-block;background:var(--primary);color:#fff;border-radius:50%;min-width:18px;height:18px;font-size:0.68rem;font-weight:600;line-height:18px;text-align:center;margin-top:4px;}
+    .chat-side{flex:1;display:flex;flex-direction:column;background:var(--bg);}
+    .chat-top{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+    .chat-top .back-btn{display:none;background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--text);padding:4px;}
+    .chat-top .chat-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.8rem;color:#fff;}
+    .chat-top-info{flex:1;}
+    .chat-top-info h4{font-size:0.9rem;font-weight:600;margin:0;}
+    .chat-top-info .status{font-size:0.75rem;color:var(--text-muted);}
+    .chat-menu{position:relative;}
+    .chat-menu-btn{background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--text-muted);padding:8px;}
+    .chat-menu-dropdown{display:none;position:absolute;right:0;top:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:100;min-width:160px;overflow:hidden;}
+    .chat-menu-dropdown.show{display:block;}
+    .chat-menu-dropdown button{width:100%;padding:10px 16px;border:none;background:none;text-align:left;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text);transition:background 0.15s;}
+    .chat-menu-dropdown button:hover{background:var(--bg-hover);}
+    .chat-menu-dropdown button.danger{color:var(--danger);}
+    .chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;}
+    .chat-body .empty-state{text-align:center;padding:48px 16px;color:var(--text-muted);margin:auto;}
+    .chat-body .empty-state i{font-size:2.4rem;opacity:0.3;margin-bottom:12px;}
+    .chat-body .empty-state p{font-size:0.9rem;}
+    .msg-date{text-align:center;padding:12px 0;font-size:0.72rem;color:var(--text-muted);font-weight:500;}
+    .msg-row{display:flex;margin-bottom:2px;}
+    .msg-row.sent{justify-content:flex-end;}
+    .msg-row.received{justify-content:flex-start;}
+    .msg-bubble{max-width:65%;padding:10px 14px;border-radius:16px;font-size:0.88rem;line-height:1.4;position:relative;word-break:break-word;}
+    .msg-row.sent .msg-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px;}
+    .msg-row.received .msg-bubble{background:var(--gray-100);border-bottom-left-radius:4px;}
+    .msg-row .msg-time{font-size:0.65rem;opacity:0.6;margin-top:4px;display:block;}
+    .msg-row.sent .msg-time{text-align:right;}
+    .chat-input-bar{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+    .chat-input-bar input{flex:1;padding:12px 16px;border:1px solid var(--border);border-radius:24px;background:var(--bg);font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+    .chat-input-bar input:focus{border-color:var(--primary);}
+    .chat-input-bar .send-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--primary);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:transform 0.15s;}
+    .chat-input-bar .send-btn:active{transform:scale(0.92);}
+    .chat-input-bar .send-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .no-conv-selected{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.9rem;flex-direction:column;gap:8px;}
+    .no-conv-selected i{font-size:2rem;opacity:0.3;}
+    .blocked-banner{background:var(--warning-light);padding:10px 16px;text-align:center;font-size:0.82rem;color:var(--text);border-bottom:1px solid var(--border);}
+    @media(max-width:768px){
+      .messenger-wrap{height:calc(100vh - 100px);max-height:none;border-radius:0;border:none;}
+      .conv-sidebar{width:100%;}
+      .conv-sidebar.hidden-mobile{display:none;}
+      .chat-side{width:100%;}
+      .chat-side.hidden-mobile{display:none;}
+      .chat-top .back-btn{display:block;}
+    }
+  </style>
 </head>
 <body>
-
   <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
   <div id="toast-container"></div>
-
-  <!-- Scroll Progress Bar -->
-  <div id="scroll-progress"></div>
 
   <nav class="navbar" id="navbar">
     <div class="container">
@@ -36,7 +98,6 @@
   </nav>
 
   <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
-
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-menu">
       <div class="sidebar-label">Main Menu</div>
@@ -44,7 +105,6 @@
       <a href="find-match.html" class="sidebar-link"><i class="fas fa-search"></i> Find Match</a>
       <a href="messages.html" class="sidebar-link active"><i class="fas fa-comments"></i> Messages</a>
       <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
-      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
       <div class="sidebar-label">Account</div>
       <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i> Profile</a>
       <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a>
@@ -53,126 +113,368 @@
   </aside>
 
   <main class="main-content">
-    <div class="page-header">
+    <div class="page-header" style="margin-bottom:12px;">
       <h1>Messages</h1>
-      <p>Chat with your swap partners.</p>
     </div>
-
-    <!-- Messenger -->
-    <div class="messenger-container">
-      <!-- Conversations Sidebar -->
-      <div class="conversations-sidebar">
-        <div class="conversations-header">
-          <h3>Conversations</h3>
+    <div class="messenger-wrap" id="messenger">
+      <div class="conv-sidebar" id="conv-sidebar">
+        <div class="conv-header">
+          <h3>Messages</h3>
+          <span id="total-unsum" style="font-size:0.78rem;color:var(--text-muted);"></span>
         </div>
-        <div class="conversation-search">
+        <div class="conv-search">
           <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search conversations...">
+          <input type="text" placeholder="Search conversations..." id="conv-search-input">
         </div>
-        <div class="conversation-list">
-          <div class="conversation-item active" data-name="Jane Mwangi">
-            <div class="conversation-avatar" style="background:var(--primary);">JM</div>
-            <div class="conversation-info">
-              <h4>Jane Mwangi <span class="unread-count">2</span></h4>
-              <p>I'm interested in the swap! Can we discuss details?</p>
-            </div>
-            <div class="conversation-meta">
-              <div class="time">5m</div>
-            </div>
-          </div>
-          <div class="conversation-item" data-name="Peter Kilonzo">
-            <div class="conversation-avatar" style="background:var(--success);">PK</div>
-            <div class="conversation-info">
-              <h4>Peter Kilonzo</h4>
-              <p>Yes, I accept the swap request. Let's talk.</p>
-            </div>
-            <div class="conversation-meta">
-              <div class="time">1h</div>
-            </div>
-          </div>
-          <div class="conversation-item" data-name="Amina Hassan">
-            <div class="conversation-avatar" style="background:var(--warning);">AH</div>
-            <div class="conversation-info">
-              <h4>Amina Hassan</h4>
-              <p>Thanks for your interest. Let me think about it.</p>
-            </div>
-            <div class="conversation-meta">
-              <div class="time">3h</div>
-            </div>
-          </div>
-          <div class="conversation-item" data-name="Sarah Mwita">
-            <div class="conversation-avatar" style="background:var(--info);">SM</div>
-            <div class="conversation-info">
-              <h4>Sarah Mwita</h4>
-              <p>Hello! I saw your profile and...</p>
-            </div>
-            <div class="conversation-meta">
-              <div class="time">1d</div>
-            </div>
-          </div>
-        </div>
+        <div class="conv-list" id="conv-list"></div>
       </div>
-
-      <!-- Chat Window -->
-      <div class="chat-window">
-        <div class="chat-header">
-          <div class="conversation-avatar" style="background:var(--primary);width:40px;height:40px;font-size:0.85rem;">JM</div>
-          <div class="chat-header-info">
-            <h4 id="chat-name">Jane Mwangi</h4>
-            <p><i class="fas fa-circle" style="font-size:0.5rem;margin-right:4px;"></i> Online</p>
+      <div class="chat-side" id="chat-side">
+        <div class="no-conv-selected" id="no-conv-msg">
+          <i class="fas fa-comment-dots"></i>
+          <p>Select a conversation to start chatting</p>
+          <a href="find-match.html" class="btn btn-primary btn-sm" style="margin-top:8px;"><i class="fas fa-search"></i> Find Teachers</a>
+        </div>
+        <div class="chat-top" id="chat-top" style="display:none;">
+          <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
+          <div class="chat-avatar" id="chat-avatar"></div>
+          <div class="chat-top-info">
+            <h4 id="chat-name">-</h4>
+            <div class="status" id="chat-status">-</div>
+          </div>
+          <div class="chat-menu">
+            <button class="chat-menu-btn" id="chat-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+            <div class="chat-menu-dropdown" id="chat-menu-dd">
+              <button id="menu-view-profile"><i class="fas fa-user"></i> View Profile</button>
+              <button id="menu-block" class="danger"><i class="fas fa-ban"></i> Block User</button>
+              <button id="menu-report" class="danger"><i class="fas fa-flag"></i> Report User</button>
+            </div>
           </div>
         </div>
-        <div class="chat-messages" id="chat-messages">
-          <div class="message-bubble received">
-            Hi there! I noticed you're looking to swap to Dar es Salaam. I'm based there!
-            <span class="msg-time">10:30</span>
-          </div>
-          <div class="message-bubble sent">
-            Hello! Yes, I'm very interested. I teach at Mwanza Secondary School.
-            <span class="msg-time">10:32</span>
-          </div>
-          <div class="message-bubble received">
-            That's great! I teach at Dar es Salaam International. What subjects do you teach?
-            <span class="msg-time">10:33</span>
-          </div>
-          <div class="message-bubble sent">
-            I teach Mathematics and Physics. I've been teaching for 8 years now.
-            <span class="msg-time">10:35</span>
-          </div>
-          <div class="typing-indicator" id="typing-indicator">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="chat-input-area">
-          <div class="chat-actions">
-            <button><i class="far fa-smile"></i></button>
-            <button><i class="fas fa-paperclip"></i></button>
-          </div>
-          <input type="text" id="chat-input" placeholder="Type a message...">
-          <div class="chat-actions">
-            <button class="send-btn" id="chat-send"><i class="fas fa-paper-plane"></i></button>
-          </div>
+        <div id="blocked-banner" style="display:none;"></div>
+        <div class="chat-body" id="chat-body" style="display:none;"></div>
+        <div class="chat-input-bar" id="chat-input-bar" style="display:none;">
+          <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+          <button class="send-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
       </div>
     </div>
   </main>
 
-
-  <!-- Mobile Bottom Navigation -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
     <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
     <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
     <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
-    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="messages.html" class="mobile-nav-item active"><i class="fas fa-comments"></i><span>Messages</span></a>
     <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
   </nav>
+
   <div class="lang-toggle" id="lang-toggle">
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
   <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+      var me = null;
+      try { me = await api.getProfile(); } catch(e) {}
+      var myId = me ? me.id : '';
+      var myName = me ? (me.fullName || 'You') : 'You';
+      var conversations = [];
+      var activeConv = null;
+      var pollTimer = null;
+      var lastMsgCount = 0;
+      var evtSource = null;
+
+      var convListEl = document.getElementById('conv-list');
+      var chatBody = document.getElementById('chat-body');
+      var chatTop = document.getElementById('chat-top');
+      var chatName = document.getElementById('chat-name');
+      var chatAvatar = document.getElementById('chat-avatar');
+      var chatStatus = document.getElementById('chat-status');
+      var chatInput = document.getElementById('chat-input');
+      var sendBtn = document.getElementById('send-btn');
+      var noConvMsg = document.getElementById('no-conv-msg');
+      var chatInputBar = document.getElementById('chat-input-bar');
+      var blockedBanner = document.getElementById('blocked-banner');
+      var totalUnsum = document.getElementById('total-unsum');
+      var convSidebar = document.getElementById('conv-sidebar');
+      var chatSide = document.getElementById('chat-side');
+      var searchInput = document.getElementById('conv-search-input');
+      var menuBtn = document.getElementById('chat-menu-btn');
+      var menuDd = document.getElementById('chat-menu-dd');
+      var backBtn = document.getElementById('back-btn');
+
+      function initials(name) {
+        return (name || '?').split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+      }
+
+      function avatarColor(name) {
+        var colors = ['#1a73e8','#e8710a','#0d9488','#7c3aed','#d93025','#15803d','#c026d3','#0284c7'];
+        var h = 0;
+        for (var i = 0; i < (name || '').length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+        return colors[Math.abs(h) % colors.length];
+      }
+
+      function timeLabel(iso) {
+        if (!iso) return '';
+        var d = new Date(iso.replace(' ', 'T'));
+        if (isNaN(d)) return '';
+        var now = Date.now();
+        var diff = now - d.getTime();
+        if (diff < 60000) return 'now';
+        if (diff < 3600000) return Math.floor(diff / 60000) + 'm';
+        var today = new Date(); today.setHours(0,0,0,0);
+        if (d >= today) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+        if (d >= yesterday) return 'Yesterday';
+        return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      }
+
+      function renderConvList() {
+        convListEl.innerHTML = '';
+        var q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        var total = 0;
+        conversations.forEach(function(c) {
+          total += Number(c.unreadCount) || 0;
+          if (q && (c.otherName || '').toLowerCase().indexOf(q) === -1 && (c.otherUsername || '').toLowerCase().indexOf(q) === -1) return;
+          var item = document.createElement('div');
+          item.className = 'conv-item' + (activeConv && activeConv.conversationId === c.conversationId ? ' active' : '');
+          var bg = avatarColor(c.otherName);
+          var badge = Number(c.unreadCount) > 0 ? '<div class="badge">' + c.unreadCount + '</div>' : '';
+          item.innerHTML =
+            '<div class="conv-avatar" style="background:' + bg + ';">' + initials(c.otherName) + '</div>' +
+            '<div class="conv-info"><h4>' + (c.otherName || 'Teacher') +
+              (c.otherUsername ? '<span class="uname">@' + c.otherUsername + '</span>' : '') +
+              badge + '</h4><p>' + (c.lastMessage || 'Start chatting...') + '</p></div>' +
+            '<div class="conv-meta"><div class="time">' + timeLabel(c.lastMessageAt) + '</div></div>';
+          item.addEventListener('click', function() { openConv(c); });
+          convListEl.appendChild(item);
+        });
+        totalUnsum.textContent = total > 0 ? total + ' unread' : '';
+      }
+
+      async function loadConversations() {
+        try {
+          var data = await api.getConversations();
+          conversations = Array.isArray(data) ? data : [];
+          renderConvList();
+        } catch(e) { conversations = []; renderConvList(); }
+      }
+
+      async function openConv(c) {
+        activeConv = c;
+        renderConvList();
+        if (convSidebar) convSidebar.classList.add('hidden-mobile');
+        if (chatSide) chatSide.classList.remove('hidden-mobile');
+        noConvMsg.style.display = 'none';
+        chatTop.style.display = 'flex';
+        chatBody.style.display = 'block';
+        chatInputBar.style.display = 'flex';
+        blockedBanner.style.display = 'none';
+        chatName.textContent = c.otherName || 'Teacher';
+        chatStatus.textContent = c.otherUsername ? '@' + c.otherUsername : 'Online';
+        var bg = avatarColor(c.otherName);
+        chatAvatar.style.background = bg;
+        chatAvatar.textContent = initials(c.otherName);
+        chatBody.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i></div>';
+        try {
+          var msgs = await api.getMessages(c.conversationId);
+          renderMessages(msgs);
+          startPolling();
+        } catch(e) {
+          chatBody.innerHTML = '<div style="text-align:center;padding:32px;color:var(--danger);">Could not load messages</div>';
+        }
+        if (convSidebar) convSidebar.classList.remove('hidden-mobile');
+      }
+
+      function renderMessages(msgs) {
+        chatBody.innerHTML = '';
+        if (!msgs || !msgs.length) {
+          chatBody.innerHTML = '<div class="empty-state"><i class="fas fa-hand-wave"></i><p>Say hello to ' + (activeConv ? activeConv.otherName : 'this teacher') + '!</p></div>';
+          lastMsgCount = 0;
+          return;
+        }
+        var lastDate = '';
+        msgs.forEach(function(m) {
+          var d = new Date((m.createdAt || '').replace(' ', 'T'));
+          var dateStr = isNaN(d) ? '' : d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+          if (dateStr && dateStr !== lastDate) {
+            lastDate = dateStr;
+            var sep = document.createElement('div');
+            sep.className = 'msg-date';
+            sep.textContent = dateStr;
+            chatBody.appendChild(sep);
+          }
+          var isSent = m.senderId === myId;
+          var row = document.createElement('div');
+          row.className = 'msg-row ' + (isSent ? 'sent' : 'received');
+          var time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          row.innerHTML = '<div class="msg-bubble">' + (m.content || '') + '<span class="msg-time">' + time + '</span></div>';
+          chatBody.appendChild(row);
+          if (!isSent && !m.isRead) {
+            api.markMessageRead(m.id).catch(function() {});
+          }
+        });
+        lastMsgCount = msgs.length;
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      function pollNewMessages() {
+        if (!activeConv) return;
+        api.getMessages(activeConv.conversationId).then(function(msgs) {
+          if (msgs && msgs.length > lastMsgCount) {
+            renderMessages(msgs);
+            api.markConversationRead(activeConv.conversationId).catch(function() {});
+            loadConversations();
+          }
+        }).catch(function() {});
+      }
+
+      function startPolling() {
+        stopPolling();
+        if (evtSource) { evtSource.close(); evtSource = null; }
+        try {
+          var token = api.token();
+          evtSource = new EventSource('/api/messages/stream?token=' + encodeURIComponent(token || ''));
+          evtSource.onmessage = function(ev) {
+            try {
+              var data = JSON.parse(ev.data);
+              if (data.type === 'new_message') {
+                var msg = data.message || data;
+                if (activeConv && (msg.senderId === activeConv.otherUserId || msg.receiverId === activeConv.otherUserId)) {
+                  addBubble(msg.content, 'received', msg.createdAt);
+                  api.markMessageRead(msg.id).catch(function() {});
+                }
+                loadConversations();
+              } else if (data.type === 'swap_request' || data.type === 'swap_accepted' || data.type === 'swap_declined') {
+                loadConversations();
+              }
+            } catch(e) {}
+          };
+          evtSource.onerror = function() { /* SSE reconnects automatically */ };
+        } catch(e) {
+          pollTimer = setInterval(pollNewMessages, 3000);
+        }
+      }
+
+      function stopPolling() {
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+        if (evtSource) { evtSource.close(); evtSource = null; }
+      }
+
+      async function sendMsg() {
+        var text = chatInput.value.trim();
+        if (!text || !activeConv) return;
+        chatInput.value = '';
+        sendBtn.disabled = true;
+        try {
+          await api.sendMessage(activeConv.otherUserId, text);
+          addBubble(text, 'sent', new Date().toISOString());
+          loadConversations();
+        } catch(e) {
+          chatInput.value = text;
+          showToast(e.message || 'Could not send', 'error');
+        }
+        sendBtn.disabled = false;
+      }
+
+      function addBubble(text, type, ts) {
+        var d = ts ? new Date(ts.replace(' ', 'T')) : new Date();
+        var time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var row = document.createElement('div');
+        row.className = 'msg-row ' + type;
+        row.innerHTML = '<div class="msg-bubble">' + text + '<span class="msg-time">' + time + '</span></div>';
+        chatBody.appendChild(row);
+        lastMsgCount++;
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      if (sendBtn) sendBtn.addEventListener('click', sendMsg);
+      if (chatInput) chatInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMsg(); });
+
+      if (menuBtn) menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menuDd.classList.toggle('show');
+        if (activeConv) {
+          var blockBtn = document.getElementById('menu-block');
+          blockBtn.innerHTML = '<i class="fas fa-ban"></i> ' + (activeConv._blocked ? 'Unblock User' : 'Block User');
+        }
+      });
+      document.addEventListener('click', function() { menuDd.classList.remove('show'); });
+
+      if (backBtn) backBtn.addEventListener('click', function() {
+        activeConv = null;
+        stopPolling();
+        chatTop.style.display = 'none';
+        chatBody.style.display = 'none';
+        chatInputBar.style.display = 'none';
+        blockedBanner.style.display = 'none';
+        noConvMsg.style.display = 'flex';
+        if (convSidebar) convSidebar.classList.remove('hidden-mobile');
+        if (chatSide) chatSide.classList.add('hidden-mobile');
+        renderConvList();
+      });
+
+      document.getElementById('menu-view-profile').addEventListener('click', function() {
+        if (activeConv) window.location.href = 'profile.html?view=' + activeConv.otherUserId;
+      });
+
+      document.getElementById('menu-block').addEventListener('click', async function() {
+        if (!activeConv) return;
+        try {
+          if (activeConv._blocked) {
+            await api.unblockUser(activeConv.otherUserId);
+            activeConv._blocked = false;
+            blockedBanner.style.display = 'none';
+            showToast('User unblocked', 'success');
+          } else {
+            await api.blockUser(activeConv.otherUserId);
+            activeConv._blocked = true;
+            blockedBanner.innerHTML = '<i class="fas fa-ban"></i> You have blocked this user. <button id="unblock-inline" style="background:none;border:none;color:var(--primary);cursor:pointer;text-decoration:underline;">Unblock</button>';
+            blockedBanner.style.display = 'block';
+            showToast('User blocked', 'success');
+            document.getElementById('unblock-inline').addEventListener('click', function() { document.getElementById('menu-block').click(); });
+          }
+          menuDd.classList.remove('show');
+        } catch(e) { showToast(e.message || 'Failed', 'error'); }
+      });
+
+      document.getElementById('menu-report').addEventListener('click', async function() {
+        if (!activeConv) return;
+        var reason = prompt('Why are you reporting this user?');
+        if (!reason) return;
+        try {
+          await api.reportUser({ reportedUserId: activeConv.otherUserId, reason: reason, conversationId: activeConv.conversationId });
+          showToast('Report submitted', 'success');
+          menuDd.classList.remove('show');
+        } catch(e) { showToast(e.message || 'Failed to report', 'error'); }
+      });
+
+      if (searchInput) searchInput.addEventListener('input', renderConvList);
+
+      await loadConversations();
+
+      var teacherParam = new URLSearchParams(window.location.search).get('teacher');
+      if (teacherParam) {
+        var existing = conversations.filter(function(c) { return c.otherUserId === teacherParam; })[0];
+        if (existing) {
+          openConv(existing);
+        } else {
+          try {
+            var teacherData = await api.startConversation(teacherParam);
+            if (teacherData && teacherData.conversationId) {
+              await loadConversations();
+              var newConv = conversations.filter(function(c) { return c.otherUserId === teacherParam; })[0];
+              if (newConv) openConv(newConv);
+            }
+          } catch(e) {}
+        }
+      }
+    });
+  </script>
 </body>
 </html>
-
-

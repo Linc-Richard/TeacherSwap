@@ -80,7 +80,7 @@
               <input type="checkbox" name="remember">
               <span data-i18n="Remember me">Remember me</span>
             </label>
-            <a href="#" class="forgot-link" data-i18n="Forgot password?">Forgot password?</a>
+            <a href="#" class="forgot-link" data-i18n="Forgot password?" onclick="showForgotDialog();return false;">Forgot password?</a>
           </div>
 
           <button type="submit" class="btn btn-primary btn-block" data-i18n="Login">Login</button>
@@ -102,6 +102,20 @@
           </div>
           <button type="button" class="btn btn-primary btn-block" id="twofa-verify-btn">Verify Code</button>
           <p class="form-footer"><a href="#" id="twofa-back">Back to login</a></p>
+        </div>
+
+        <div id="forgot-step" style="display:none;">
+          <h2 class="auth-title">Reset Password</h2>
+          <p class="auth-subtitle">Enter your email and we'll send you a reset link.</p>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" class="form-control" id="forgot-email" placeholder="Email address" required>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="forgot-submit-btn">Send Reset Link</button>
+          <p class="form-footer"><a href="#" id="forgot-back">Back to login</a></p>
         </div>
 
         <p class="form-footer">Don't have an account? <a href="register.html" data-i18n="Sign up">Sign up</a></p>
@@ -184,6 +198,39 @@
 
       googleAuth.init('471699141629-6iod43adbvqdpfu75g7hupceenu2ft6m.apps.googleusercontent.com', handleGoogleCredential);
       googleAuth.renderButton('google-signin-button');
+
+      // Forgot password flow
+      window.showForgotDialog = function() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('forgot-step').style.display = 'block';
+        document.getElementById('forgot-email').focus();
+      };
+      document.getElementById('forgot-back').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('forgot-step').style.display = 'none';
+        document.getElementById('login-form').style.display = '';
+      });
+      document.getElementById('forgot-submit-btn').addEventListener('click', async function() {
+        var email = document.getElementById('forgot-email').value.trim();
+        if (!email) { showToast(__('Enter your email address'), 'error'); return; }
+        var btn = this;
+        btn.disabled = true;
+        try {
+          await api.forgotPassword(email);
+          showToast(__('If the email exists, a reset link has been sent'), 'success');
+          setTimeout(function() {
+            document.getElementById('forgot-step').style.display = 'none';
+            document.getElementById('login-form').style.display = '';
+            btn.disabled = false;
+          }, 1500);
+        } catch (err) {
+          showToast(__(err.message) || __('Unable to send reset link'), 'error');
+          btn.disabled = false;
+        }
+      });
+      document.getElementById('forgot-email').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('forgot-submit-btn').click();
+      });
     });
   </script>
 </body>

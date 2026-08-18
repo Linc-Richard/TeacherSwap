@@ -365,8 +365,42 @@ async function initSchema() {
   try { db.run("ALTER TABLE users ADD COLUMN emailVerificationToken TEXT"); } catch(e) {}
   try { db.run("ALTER TABLE users ADD COLUMN subscriptionTier TEXT DEFAULT 'free'"); } catch(e) {}
   try { db.run("ALTER TABLE users ADD COLUMN subscriptionExpiresAt TEXT"); } catch(e) {}
+  try { db.run("ALTER TABLE users ADD COLUMN reason TEXT DEFAULT ''"); } catch(e) {}
   try { db.run("ALTER TABLE swap_requests ADD COLUMN reason TEXT DEFAULT ''"); } catch(e) {}
   try { db.run("ALTER TABLE swap_requests ADD COLUMN respondedAt TEXT"); } catch(e) {}
+  try { db.run("ALTER TABLE users ADD COLUMN username TEXT"); } catch(e) {}
+  try { db.run("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username) WHERE username IS NOT NULL AND username != ''"); } catch(e) {}
+
+  // ─── BLOCKED USERS ──────────────────────────────────────
+  db.run(`
+    CREATE TABLE IF NOT EXISTS blocked_users (
+      id TEXT PRIMARY KEY,
+      blockerId TEXT NOT NULL,
+      blockedId TEXT NOT NULL,
+      createdAt TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (blockerId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (blockedId) REFERENCES users(id) ON DELETE CASCADE,
+      UNIQUE(blockerId, blockedId)
+    )
+  `);
+  try { db.run("CREATE INDEX IF NOT EXISTS idx_blocked_blocker ON blocked_users(blockerId)"); } catch(e) {}
+  try { db.run("CREATE INDEX IF NOT EXISTS idx_blocked_blocked ON blocked_users(blockedId)"); } catch(e) {}
+
+  // ─── REPORTS ────────────────────────────────────────────
+  db.run(`
+    CREATE TABLE IF NOT EXISTS reports (
+      id TEXT PRIMARY KEY,
+      reporterId TEXT NOT NULL,
+      reportedUserId TEXT NOT NULL,
+      conversationId TEXT DEFAULT '',
+      reason TEXT DEFAULT '',
+      status TEXT DEFAULT 'pending',
+      createdAt TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (reporterId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (reportedUserId) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+  try { db.run("CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status)"); } catch(e) {}
 
   saveDb();
   console.log('Database schema initialized');

@@ -22,7 +22,7 @@ var googleAuth = {
       script.async = true;
       script.defer = true;
       script.onload = function() { self._render(elementId); };
-      script.onerror = function() { console.warn('Google Sign-In unavailable. Using dev mode.'); self._devFallback(elementId); };
+      script.onerror = function() { console.warn('Google Sign-In unavailable.'); self._unavailable(elementId); };
       document.head.appendChild(script);
     } else {
       self._render(elementId);
@@ -49,12 +49,18 @@ var googleAuth = {
         });
         google.accounts.id.prompt();
       } catch(e) {
-        console.warn('Google init failed, using dev mode:', e);
-        self._devFallback(elementId);
+        console.warn('Google init failed:', e);
+        self._unavailable(elementId);
       }
     } else {
-      self._devFallback(elementId);
+      self._unavailable(elementId);
     }
+  },
+
+  _unavailable: function(elementId) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--text-muted);text-align:center;">Google Sign-In is temporarily unavailable. Please register with your email instead.</p>';
   },
 
   _devFallback: function(elementId) {
