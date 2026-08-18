@@ -32,7 +32,7 @@
       <div class="nav-actions">
         <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon" id="theme-icon"></i></button>
         <div class="relative nav-notif-btn">
-          <button class="theme-toggle" id="notif-btn"><i class="fas fa-bell"></i><span class="notif-badge">3</span></button>
+          <button class="theme-toggle" id="notif-btn"><i class="fas fa-bell"></i><span class="notif-badge" style="display:none;"></span></button>
           <div class="notif-dropdown" id="notif-dropdown">
             <div class="notif-dropdown-header">
               <span>Notifications</span>
@@ -40,16 +40,7 @@
             </div>
             <div class="notif-dropdown-list">
               <div class="notif-dropdown-item">
-                <div class="notification-icon blue"><i class="fas fa-handshake"></i></div>
-                <div><p style="font-size:0.85rem;line-height:1.4;">New swap request from John M.</p><span style="font-size:0.75rem;color:var(--text-muted);">2 min ago</span></div>
-              </div>
-              <div class="notif-dropdown-item">
-                <div class="notification-icon green"><i class="fas fa-check-circle"></i></div>
-                <div><p style="font-size:0.85rem;line-height:1.4;">Swap request accepted!</p><span style="font-size:0.75rem;color:var(--text-muted);">1 hour ago</span></div>
-              </div>
-              <div class="notif-dropdown-item">
-                <div class="notification-icon red"><i class="fas fa-user-plus"></i></div>
-                <div><p style="font-size:0.85rem;line-height:1.4;">New teacher joined your region.</p><span style="font-size:0.75rem;color:var(--text-muted);">3 hours ago</span></div>
+                <div><p style="font-size:0.85rem;line-height:1.4;color:var(--text-muted);">Loading notifications...</p></div>
               </div>
             </div>
           </div>
@@ -83,6 +74,18 @@
       <p>Browse teachers looking to swap. Use filters to narrow your search.</p>
     </div>
 
+    <!-- Username / Name Search -->
+    <div class="card" style="padding:16px 20px;max-width:700px;margin-bottom:16px;">
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div style="flex:1;position:relative;">
+          <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i>
+          <input type="text" id="teacher-search" class="form-control" placeholder="Search by name or @username..." style="padding-left:40px;">
+        </div>
+        <button class="btn btn-primary" id="search-teacher-btn"><i class="fas fa-search"></i></button>
+      </div>
+      <div id="search-results" style="display:none;margin-top:12px;max-height:240px;overflow-y:auto;border-top:1px solid var(--border);padding-top:8px;"></div>
+    </div>
+
     <!-- Filters -->
     <div class="search-filters">
       <div class="filter-grid">
@@ -90,10 +93,6 @@
           <label>Region</label>
           <select id="filter-region">
             <option value="all">All Regions</option>
-            <option>Arusha</option><option>Dar es Salaam</option><option>Dodoma</option>
-            <option>Iringa</option><option>Kagera</option><option>Kigoma</option>
-            <option>Kilimanjaro</option><option>Mbeya</option><option>Morogoro</option>
-            <option>Mwanza</option><option>Tanga</option><option>Pwani</option>
           </select>
         </div>
         <div class="filter-group">
@@ -113,29 +112,27 @@
           <label>Teaching Level</label>
           <select id="filter-level">
             <option value="all">All Levels</option>
-            <option>Primary</option><option>Secondary</option><option>High School</option>
+            <option value="primary">Primary</option>
+            <option value="secondary">Secondary</option>
+            <option value="both">Both</option>
           </select>
         </div>
         <div class="filter-group">
           <label>Experience</label>
-          <select>
-            <option>Any Experience</option>
-            <option>0-3 years</option><option>4-7 years</option>
-            <option>8-12 years</option><option>12+ years</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>School Type</label>
-          <select>
-            <option>Any Type</option>
-            <option>Government</option><option>Private</option>
+          <select id="filter-experience">
+            <option value="all">Any Experience</option>
+            <option value="0-2">0-2 years</option>
+            <option value="3-5">3-5 years</option>
+            <option value="6-10">6-10 years</option>
+            <option value="10+">10+ years</option>
           </select>
         </div>
         <div class="filter-group">
           <label>Swap Type</label>
-          <select>
-            <option>Any</option>
-            <option>Permanent</option><option>Temporary</option>
+          <select id="filter-swaptype">
+            <option value="all">Any</option>
+            <option value="permanent">Permanent</option>
+            <option value="temporary">Temporary</option>
           </select>
         </div>
         <div class="filter-group" style="display:flex;align-items:flex-end;">
@@ -146,189 +143,37 @@
 
     <!-- Sort Bar -->
     <div class="sort-bar">
-      <div class="results-count">Showing <strong>6</strong> teachers</div>
+      <div class="results-count">Showing <strong>0</strong> teachers</div>
       <div>
         <label style="font-size:0.85rem;color:var(--text-muted);margin-right:8px;">Sort by:</label>
         <select id="sort-select" class="sort-select">
           <option value="match">Highest Match</option>
           <option value="newest">Newest</option>
-          <option value="nearest">Nearest</option>
         </select>
       </div>
     </div>
 
-    <!-- Teacher Cards -->
-    <div class="teacher-grid">
-
-      <!-- Card 1 -->
-      <div class="card teacher-card tilt-card" data-match="95" data-region="Dar es Salaam" data-subjects="Mathematics">
-        <div class="teacher-card-header">
-          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--primary),#1E40AF);">
-            JM
-            <div class="verified-badge"><i class="fas fa-check"></i></div>
-          </div>
-          <h3>Jane Mwangi</h3>
-          <div class="school-name">Mwanza Secondary School</div>
-          <div class="teacher-match high"><i class="fas fa-robot"></i> 95% Match</div>
-        </div>
-        <div class="teacher-card-body">
-          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Mwanza → Wants: Dar es Salaam</div>
-          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Mathematics, Physics</div>
-          <div class="info-row"><i class="fas fa-clock"></i> 8 years experience</div>
-          <div class="subjects">
-            <span class="subject-tag">Mathematics</span>
-            <span class="subject-tag">Physics</span>
-            <span class="subject-tag">Secondary</span>
-          </div>
-        </div>
-        <div class="teacher-card-footer">
-          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
-          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
-          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
-        </div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="card teacher-card tilt-card" data-match="88" data-region="Arusha" data-subjects="English">
-        <div class="teacher-card-header">
-          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--success),#059669);">
-            PK
-            <div class="verified-badge"><i class="fas fa-check"></i></div>
-          </div>
-          <h3>Peter Kilonzo</h3>
-          <div class="school-name">Arusha Primary School</div>
-          <div class="teacher-match high"><i class="fas fa-robot"></i> 88% Match</div>
-        </div>
-        <div class="teacher-card-body">
-          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Arusha → Wants: Mwanza</div>
-          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> English, Literature</div>
-          <div class="info-row"><i class="fas fa-clock"></i> 5 years experience</div>
-          <div class="subjects">
-            <span class="subject-tag">English</span>
-            <span class="subject-tag">Literature</span>
-            <span class="subject-tag">Primary</span>
-          </div>
-        </div>
-        <div class="teacher-card-footer">
-          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
-          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
-          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
-        </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="card teacher-card tilt-card" data-match="82" data-region="Dodoma" data-subjects="Science">
-        <div class="teacher-card-header">
-          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--warning),#D97706);">
-            AH
-            <div class="verified-badge"><i class="fas fa-check"></i></div>
-          </div>
-          <h3>Amina Hassan</h3>
-          <div class="school-name">Dodoma High School</div>
-          <div class="teacher-match high"><i class="fas fa-robot"></i> 82% Match</div>
-        </div>
-        <div class="teacher-card-body">
-          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Dodoma → Wants: Arusha</div>
-          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Biology, Chemistry</div>
-          <div class="info-row"><i class="fas fa-clock"></i> 12 years experience</div>
-          <div class="subjects">
-            <span class="subject-tag">Biology</span>
-            <span class="subject-tag">Chemistry</span>
-            <span class="subject-tag">High School</span>
-          </div>
-        </div>
-        <div class="teacher-card-footer">
-          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
-          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
-          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
-        </div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="card teacher-card tilt-card" data-match="76" data-region="Mbeya" data-subjects="History">
-        <div class="teacher-card-header">
-          <div class="teacher-photo" style="background:linear-gradient(135deg,var(--info),#4F46E5);">
-            SM
-            <div class="verified-badge"><i class="fas fa-check"></i></div>
-          </div>
-          <h3>Sarah Mwita</h3>
-          <div class="school-name">Mbeya Girls Secondary</div>
-          <div class="teacher-match medium"><i class="fas fa-robot"></i> 76% Match</div>
-        </div>
-        <div class="teacher-card-body">
-          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Mbeya → Wants: Dar es Salaam</div>
-          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> History, Geography</div>
-          <div class="info-row"><i class="fas fa-clock"></i> 6 years experience</div>
-          <div class="subjects">
-            <span class="subject-tag">History</span>
-            <span class="subject-tag">Geography</span>
-            <span class="subject-tag">Secondary</span>
-          </div>
-        </div>
-        <div class="teacher-card-footer">
-          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
-          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
-          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
-        </div>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="card teacher-card tilt-card" data-match="71" data-region="Tanga" data-subjects="Swahili">
-        <div class="teacher-card-header">
-          <div class="teacher-photo" style="background:linear-gradient(135deg,#EC4899,#BE185D);">
-            MJ
-            <div class="verified-badge"><i class="fas fa-check"></i></div>
-          </div>
-          <h3>Mary John</h3>
-          <div class="school-name">Tanga Primary School</div>
-          <div class="teacher-match medium"><i class="fas fa-robot"></i> 71% Match</div>
-        </div>
-        <div class="teacher-card-body">
-          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Tanga → Wants: Kilimanjaro</div>
-          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Swahili, English</div>
-          <div class="info-row"><i class="fas fa-clock"></i> 4 years experience</div>
-          <div class="subjects">
-            <span class="subject-tag">Swahili</span>
-            <span class="subject-tag">English</span>
-            <span class="subject-tag">Primary</span>
-          </div>
-        </div>
-        <div class="teacher-card-footer">
-          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
-          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
-          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
-        </div>
-      </div>
-
-      <!-- Card 6 -->
-      <div class="card teacher-card tilt-card" data-match="65" data-region="Kilimanjaro" data-subjects="Physics">
-        <div class="teacher-card-header">
-          <div class="teacher-photo" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">
-            DM
-            <div class="verified-badge"><i class="fas fa-check"></i></div>
-          </div>
-          <h3>David Moshi</h3>
-          <div class="school-name">Kilimanjaro High</div>
-          <div class="teacher-match medium"><i class="fas fa-robot"></i> 65% Match</div>
-        </div>
-        <div class="teacher-card-body">
-          <div class="info-row"><i class="fas fa-map-marker-alt"></i> Current: Kilimanjaro → Wants: Mbeya</div>
-          <div class="info-row"><i class="fas fa-chalkboard-teacher"></i> Physics, Mathematics</div>
-          <div class="info-row"><i class="fas fa-clock"></i> 10 years experience</div>
-          <div class="subjects">
-            <span class="subject-tag">Physics</span>
-            <span class="subject-tag">Mathematics</span>
-            <span class="subject-tag">High School</span>
-          </div>
-        </div>
-        <div class="teacher-card-footer">
-          <a href="profile.html" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>
-          <a href="messages.html" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> Message</a>
-          <button class="btn btn-primary btn-sm request-swap-btn"><i class="fas fa-exchange-alt"></i> Swap</button>
-        </div>
-      </div>
-
+    <!-- Loading -->
+    <div id="find-loading" class="card" style="padding:40px;text-align:center;color:var(--text-muted);">
+      <i class="fas fa-spinner fa-spin" style="font-size:1.6rem;margin-bottom:12px;"></i>
+      <p>Loading teachers...</p>
     </div>
+
+    <!-- Empty state -->
+    <div class="card" id="empty-state" style="display:none;padding:48px 24px;text-align:center;">
+      <i class="fas fa-search" style="font-size:2.6rem;color:var(--text-muted);opacity:0.5;margin-bottom:16px;"></i>
+      <h3 style="margin-bottom:8px;">No matching teachers found yet</h3>
+      <p style="color:var(--text-muted);max-width:420px;margin:0 auto 24px;">We couldn't find teachers matching your search. Try the actions below to find your swap partner.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+        <a href="onboarding.html" class="btn btn-primary btn-sm"><i class="fas fa-user-edit"></i> Complete your profile</a>
+        <button class="btn btn-ghost btn-sm" id="empty-change-filters"><i class="fas fa-sliders-h"></i> Change filters</button>
+        <button class="btn btn-ghost btn-sm" id="empty-create-swap"><i class="fas fa-exchange-alt"></i> Create a swap request</button>
+        <button class="btn btn-ghost btn-sm" id="empty-other-location"><i class="fas fa-map-marker-alt"></i> Try another location</button>
+      </div>
+    </div>
+
+    <!-- Teacher Cards -->
+    <div class="teacher-grid"></div>
   </main>
 
   <!-- Request Swap Modal -->
@@ -363,78 +208,260 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
       if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
 
       var currentTeacherId = null;
+      var currentTeacherName = '';
+      var allTeachers = [];
+      var searchTimer = null;
+
+      var loadingEl = document.getElementById('find-loading');
+      var emptyEl = document.getElementById('empty-state');
+
+      var searchInput = document.getElementById('teacher-search');
+      var searchBtn = document.getElementById('search-teacher-btn');
+      var searchResults = document.getElementById('search-results');
+
+      function renderSearchResult(t) {
+        var div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px 8px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;';
+        div.onmouseenter = function() { div.style.background = 'var(--bg-hover)'; };
+        div.onmouseleave = function() { div.style.background = ''; };
+        var initials = (t.fullName || '??').split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+        div.innerHTML =
+          '<div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.8rem;flex-shrink:0;">' + initials + '</div>' +
+          '<div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.88rem;">' + (t.fullName || '') +
+          (t.username ? ' <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">@' + t.username + '</span>' : '') + '</div>' +
+          '<div style="font-size:0.78rem;color:var(--text-muted);">' + (t.subjects || '') + (t.region ? ' · ' + t.region : '') + '</div></div>' +
+          '<a href="profile.html?id=' + t.id + '" style="font-size:0.78rem;color:var(--primary);text-decoration:none;white-space:nowrap;">View</a>';
+        div.addEventListener('click', function() {
+          if (t.id) window.location.href = 'profile.html?id=' + t.id;
+        });
+        return div;
+      }
+
+      async function doSearch() {
+        var q = searchInput ? searchInput.value.trim() : '';
+        if (!q || q.length < 2) { searchResults.style.display = 'none'; return; }
+        searchResults.innerHTML = '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:0.85rem;"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+        searchResults.style.display = 'block';
+        try {
+          var res = await api.searchTeachers(q);
+          var teachers = Array.isArray(res) ? res : (res && res.teachers ? res.teachers : []);
+          searchResults.innerHTML = '';
+          if (!teachers.length) {
+            searchResults.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:0.85rem;">No teachers found for "' + q + '"</div>';
+            return;
+          }
+          teachers.slice(0, 8).forEach(function(t) { searchResults.appendChild(renderSearchResult(t)); });
+        } catch(e) {
+          searchResults.innerHTML = '<div style="text-align:center;padding:12px;color:var(--danger);font-size:0.85rem;">Search failed</div>';
+        }
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(doSearch, 400);
+        });
+        searchInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') doSearch(); });
+      }
+      if (searchBtn) searchBtn.addEventListener('click', doSearch);
+      document.addEventListener('click', function(e) {
+        if (searchResults && !searchResults.contains(e.target) && e.target !== searchInput) searchResults.style.display = 'none';
+      });
+
+      function subjectTags(subjects) {
+        return (subjects || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean)
+          .slice(0, 4).map(function(s) { return '<span class="subject-tag">' + s + '</span>'; }).join('');
+      }
 
       function renderTeachers(teachers) {
         var grid = document.querySelector('.teacher-grid');
         if (!grid) return;
         grid.innerHTML = '';
+        document.querySelector('.results-count strong').textContent = teachers.length;
+
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (emptyEl) emptyEl.style.display = teachers.length ? 'none' : 'block';
+
         teachers.forEach(function(t) {
-          var initials = (t.fullName || '??').split(' ').map(function(w) { return w[0]; }).join('');
-          var school = t.schoolName || '';
-          var subjects = t.subjects || '';
-          var locationText = (t.region || '') + (t.preferredRegion ? ' → Wants: ' + t.preferredRegion : '');
+          var initials = (t.fullName || '??').split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+          var locationText = (t.region || 'Unknown region');
+          if (t.preferredRegion) locationText += ' ' + __('Wants:') + ' ' + t.preferredRegion;
+          var matchHtml = (typeof t.score === 'number')
+            ? '<div class="teacher-match ' + (t.score >= 60 ? 'high' : 'medium') + '"><i class="fas fa-robot"></i> ' + t.score + '% ' + __('Match') + '</div>'
+            : '';
           var card = document.createElement('div');
           card.className = 'card teacher-card tilt-card';
-          card.setAttribute('data-id', t.id);
           card.innerHTML =
             '<div class="teacher-card-header"><div class="teacher-photo" style="background:linear-gradient(135deg,var(--primary),#1E40AF);">' + initials +
-            '<div class="verified-badge"><i class="fas fa-check"></i></div></div><h3>' + t.fullName + '</h3><div class="school-name">' + school + '</div></div>' +
-            '<div class="teacher-card-body"><div class="info-row"><i class="fas fa-map-marker-alt"></i> ' + locationText + '</div>' +
-            '<div class="info-row"><i class="fas fa-chalkboard-teacher"></i> ' + subjects + '</div>' +
-            '<div class="info-row"><i class="fas fa-clock"></i> ' + (t.experience || '') + '</div>' +
-            '<div class="subjects">' + subjects.split(',').map(function(s) { return s.trim(); }).filter(Boolean).map(function(s) { return '<span class="subject-tag">' + s + '</span>'; }).join('') + '</div></div>' +
-            '<div class="teacher-card-footer"><a href="profile.html?id=' + t.id + '" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> View</a>' +
-            '<button class="btn btn-primary btn-sm request-swap-btn" data-id="' + t.id + '" data-name="' + t.fullName + '"><i class="fas fa-exchange-alt"></i> Swap</button></div>';
+            (t.isVerified ? '<div class="verified-badge"><i class="fas fa-check"></i></div>' : '') + '</div><h3>' + t.fullName + '</h3>' +
+            '<div class="school-name">' + (t.schoolName || '') + '</div>' + matchHtml + '</div>' +
+            '<div class="teacher-card-body">' +
+            '<div class="info-row"><i class="fas fa-map-marker-alt"></i> ' + locationText + '</div>' +
+            '<div class="info-row"><i class="fas fa-chalkboard-teacher"></i> ' + (t.subjects || '') + '</div>' +
+            '<div class="info-row"><i class="fas fa-clock"></i> ' + (t.experience ? t.experience + ' ' + __('experience') : '') + '</div>' +
+            '<div class="subjects">' + subjectTags(t.subjects) + '</div></div>' +
+            '<div class="teacher-card-footer">' +
+            '<a href="profile.html?id=' + t.id + '" class="btn btn-ghost btn-sm"><i class="fas fa-user"></i> ' + __('View') + '</a>' +
+            '<a href="messages.html?teacher=' + t.id + '" class="btn btn-ghost btn-sm"><i class="fas fa-comment"></i> ' + __('Message') + '</a>' +
+            '<button class="btn btn-primary btn-sm request-swap-btn" data-id="' + t.id + '" data-name="' + t.fullName + '"><i class="fas fa-exchange-alt"></i> ' + __('Swap') + '</button></div>';
           grid.appendChild(card);
         });
 
-        document.querySelector('.results-count strong').textContent = teachers.length;
-
-        // Wire swap buttons
         document.querySelectorAll('.request-swap-btn').forEach(function(btn) {
           btn.addEventListener('click', function() {
             currentTeacherId = this.getAttribute('data-id');
-            var name = this.getAttribute('data-name');
-            var msg = document.querySelector('#request-modal textarea');
-            if (msg) msg.placeholder = 'Hi ' + name + ', I noticed you want to swap...';
-            document.getElementById('request-modal').classList.add('show');
+            currentTeacherName = this.getAttribute('data-name');
+            var modal = document.getElementById('request-modal');
+            var msg = modal.querySelector('textarea');
+            msg.value = '';
+            msg.placeholder = __('Hi') + ' ' + currentTeacherName + ', ' + __('I noticed you want to swap...');
+            var nameEl = modal.querySelector('h3');
+            if (nameEl) nameEl.textContent = __('Request Swap') + ' - ' + currentTeacherName;
+            modal.classList.add('show');
           });
         });
       }
 
-      try {
-        var teachers = await api.getTeachers();
-        renderTeachers(teachers);
-      } catch(e) { showToast('Failed to load teachers', 'error'); }
+      function applyFilters() {
+        var region = document.getElementById('filter-region').value;
+        var subject = document.getElementById('filter-subject').value;
+        var level = document.getElementById('filter-level').value;
+        var district = document.getElementById('filter-district').value.trim().toLowerCase();
+        var swapType = document.getElementById('filter-swaptype').value;
+        var experience = document.getElementById('filter-experience').value;
 
-      // Search
-      document.getElementById('search-btn').addEventListener('click', async function() {
-        try {
-          var teachers = await api.getTeachers();
-          var region = document.getElementById('filter-region').value;
-          var subject = document.getElementById('filter-subject').value;
-          if (region !== 'all') teachers = teachers.filter(function(t) { return t.region === region; });
-          if (subject !== 'all') teachers = teachers.filter(function(t) { return (t.subjects || '').toLowerCase().includes(subject.toLowerCase()); });
-          renderTeachers(teachers);
-        } catch(e) { showToast('Search failed', 'error'); }
+        var result = allTeachers.filter(function(t) {
+          if (region !== 'all' && t.region !== region) return false;
+          if (district) {
+            var d = (t.district || '').toLowerCase();
+            var s = (t.schoolName || '').toLowerCase();
+            if (d.indexOf(district) === -1 && s.indexOf(district) === -1) return false;
+          }
+          if (subject !== 'all' && !(t.subjects || '').toLowerCase().split(',').map(function(x) { return x.trim(); }).includes(subject.toLowerCase())) return false;
+          if (level !== 'all' && t.teachingLevel !== level && !(t.teachingLevel === 'both' && (level === 'primary' || level === 'secondary'))) return false;
+          if (experience !== 'all' && t.experience && t.experience !== experience) return false;
+          if (swapType !== 'all' && t.swapType && t.swapType !== swapType && t.swapType !== 'either') return false;
+          return true;
+        });
+
+        var sortBy = document.getElementById('sort-select').value;
+        if (sortBy !== 'newest') {
+          result = result.slice().sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+        }
+        renderTeachers(result);
+      }
+
+      var searchBtn = document.getElementById('search-btn');
+      if (searchBtn) searchBtn.addEventListener('click', applyFilters);
+      var sortSel = document.getElementById('sort-select');
+      if (sortSel) sortSel.addEventListener('change', applyFilters);
+
+      var changeFilters = document.getElementById('empty-change-filters');
+      if (changeFilters) changeFilters.addEventListener('click', function() {
+        document.getElementById('filter-region').value = 'all';
+        document.getElementById('filter-subject').value = 'all';
+        document.getElementById('filter-level').value = 'all';
+        document.getElementById('filter-experience').value = 'all';
+        document.getElementById('filter-swaptype').value = 'all';
+        document.getElementById('filter-district').value = '';
+        applyFilters();
       });
 
-      // Confirm swap
-      document.getElementById('confirm-swap').addEventListener('click', async function() {
+      var otherLocation = document.getElementById('empty-other-location');
+      if (otherLocation) otherLocation.addEventListener('click', function() {
+        document.getElementById('filter-region').value = 'all';
+        document.getElementById('filter-district').value = '';
+        applyFilters();
+      });
+
+      var createSwap = document.getElementById('empty-create-swap');
+      if (createSwap) createSwap.addEventListener('click', function() {
+        if (!allTeachers.length) { showToast(__('No teachers available yet. Check back soon!'), 'info'); return; }
+        var top = allTeachers.slice().sort(function(a, b) { return (b.score || 0) - (a.score || 0); })[0];
+        currentTeacherId = top.id;
+        currentTeacherName = top.fullName;
+        var modal = document.getElementById('request-modal');
+        modal.querySelector('textarea').value = '';
+        modal.querySelector('h3').textContent = __('Request Swap') + ' - ' + top.fullName;
+        modal.classList.add('show');
+      });
+
+      var confirmSwap = document.getElementById('confirm-swap');
+      if (confirmSwap) confirmSwap.addEventListener('click', async function() {
         if (!currentTeacherId) return;
+        var modal = document.getElementById('request-modal');
+        var message = modal.querySelector('textarea').value.trim();
+        var btn = confirmSwap;
+        btn.disabled = true;
         try {
-          await api.sendSwapRequest(currentTeacherId, '');
-          showToast('Swap request sent!', 'success');
-          document.getElementById('request-modal').classList.remove('show');
-        } catch(e) { showToast(e.message, 'error'); }
+          await api.sendSwapRequest(currentTeacherId, message);
+          showToast(__('Swap request sent!'), 'success');
+          modal.classList.remove('show');
+        } catch(e) {
+          showToast(__(e.message) || __('Could not send swap request'), 'error');
+        } finally {
+          btn.disabled = false;
+        }
       });
+
+      var districtInput = document.getElementById('filter-district');
+      if (districtInput) {
+        try {
+          var districts = await api.getDistricts();
+          var dlist = document.createElement('datalist');
+          dlist.id = 'filter-district-list';
+          districts.forEach(function(d) {
+            var opt = document.createElement('option');
+            opt.value = d;
+            dlist.appendChild(opt);
+          });
+          document.body.appendChild(dlist);
+          districtInput.setAttribute('list', 'filter-district-list');
+        } catch(e) {}
+      }
+
+      try {
+        var regions = await api.getRegions();
+        var regionSel = document.getElementById('filter-region');
+        if (regionSel) {
+          regions.forEach(function(r) {
+            var opt = document.createElement('option');
+            opt.value = r;
+            opt.textContent = r;
+            regionSel.appendChild(opt);
+          });
+        }
+      } catch(e) {}
+
+      try {
+        var me = await api.getProfile();
+        var hasProfile = me && me.teachingLevel && me.subjects && me.region;
+        var recData = await api.getRecommendations();
+        allTeachers = recData.map(function(r) {
+          r.score = r.score || 50;
+          return r;
+        });
+        if (!allTeachers.length) {
+          allTeachers = await api.getTeachers();
+        }
+        if (!hasProfile) {
+          showToast(__('Complete your profile to get better matches'), 'info');
+        }
+        applyFilters();
+      } catch(e) {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (emptyEl) emptyEl.style.display = 'block';
+        showToast(__('Failed to load teachers'), 'error');
+      }
     });
   </script>
 </body>

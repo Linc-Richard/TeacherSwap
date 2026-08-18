@@ -73,20 +73,20 @@
       <div class="card settings-section active" id="settings-profile">
         <h3>Profile Settings</h3>
         <div class="settings-row">
-          <div class="settings-row-info"><h4>Full Name</h4><p>Jane Mwangi</p></div>
-          <button class="btn btn-ghost btn-sm">Edit</button>
+          <div class="settings-row-info"><h4>Full Name</h4><p id="set-fullname">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
         </div>
         <div class="settings-row">
-          <div class="settings-row-info"><h4>Email Address</h4><p>jane.mwangi@email.com</p></div>
-          <button class="btn btn-ghost btn-sm">Edit</button>
+          <div class="settings-row-info"><h4>Email Address</h4><p id="set-email">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
         </div>
         <div class="settings-row">
-          <div class="settings-row-info"><h4>Phone Number</h4><p>+255 712 345 678</p></div>
-          <button class="btn btn-ghost btn-sm">Edit</button>
+          <div class="settings-row-info"><h4>Phone Number</h4><p id="set-phone">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
         </div>
         <div class="settings-row">
-          <div class="settings-row-info"><h4>Bio</h4><p>Mathematics teacher passionate about education...</p></div>
-          <button class="btn btn-ghost btn-sm">Edit</button>
+          <div class="settings-row-info"><h4>Bio</h4><p id="set-bio">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
         </div>
       </div>
 
@@ -94,7 +94,7 @@
       <div class="card settings-section" id="settings-security">
         <h3>Security</h3>
         <div class="settings-row">
-          <div class="settings-row-info"><h4>Password</h4><p>Last changed 30 days ago</p></div>
+          <div class="settings-row-info"><h4>Password</h4><p>Use your email and password to sign in</p></div>
           <button class="btn btn-ghost btn-sm">Change</button>
         </div>
         <div class="settings-row">
@@ -102,7 +102,7 @@
           <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
         </div>
         <div class="settings-row">
-          <div class="settings-row-info"><h4>Active Sessions</h4><p>2 active sessions</p></div>
+          <div class="settings-row-info"><h4>Active Sessions</h4><p>You are currently signed in</p></div>
           <button class="btn btn-ghost btn-sm">Manage</button>
         </div>
       </div>
@@ -137,9 +137,9 @@
         </div>
         <div class="settings-row">
           <div class="settings-row-info"><h4>Language</h4><p>Choose your preferred language</p></div>
-          <select class="sort-select">
-            <option>English</option>
-            <option>Swahili</option>
+          <select class="sort-select" id="language-select">
+            <option value="en">English</option>
+            <option value="sw">Swahili</option>
           </select>
         </div>
         <div class="settings-row">
@@ -205,7 +205,33 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var langSel = document.getElementById('language-select');
+      if (langSel) {
+        langSel.value = (typeof TS !== 'undefined' && TS.getLang) ? TS.getLang() : 'en';
+        langSel.addEventListener('change', function() {
+          if (window.TS && TS.applyLanguage) TS.applyLanguage(this.value);
+        });
+      }
+
+      if (window.api && api.isLoggedIn()) {
+        api.getProfile().then(function(user) {
+          var fn = document.getElementById('set-fullname');
+          if (fn) fn.textContent = user.fullName || '-';
+          var em = document.getElementById('set-email');
+          if (em) em.textContent = user.email || '-';
+          var ph = document.getElementById('set-phone');
+          if (ph) ph.textContent = user.phone || '-';
+          var bio = document.getElementById('set-bio');
+          if (bio) bio.textContent = user.bio || 'No bio yet';
+        }).catch(function() {});
+      }
+    });
+  </script>
 </body>
 </html>
 

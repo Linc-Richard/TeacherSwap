@@ -1,5 +1,15 @@
 // TeacherSwap API Client
-const API_BASE = window.location.origin + '/api';
+function _resolveApiBase() {
+  var origin = window.location.origin;
+  var protocol = window.location.protocol;
+  // file:// or null origin: server not serving this page — fallback to localhost
+  if (!origin || origin === 'null' || protocol === 'file:') {
+    return 'http://localhost:3000/api';
+  }
+  return origin + '/api';
+}
+
+var API_BASE = _resolveApiBase();
 
 const api = {
   token: function() { return localStorage.getItem('ts-token'); },
@@ -14,10 +24,19 @@ const api = {
     if (body) opts.body = JSON.stringify(body);
     try {
       const res = await fetch(API_BASE + path, opts);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Request failed');
+      var text;
+      try { text = await res.text(); } catch(e) { text = ''; }
+      var data;
+      try { data = JSON.parse(text); } catch(e) { data = null; }
+      if (!res.ok) {
+        var msg = (data && data.error) ? data.error : 'Request failed';
+        throw new Error(msg);
+      }
       return data;
     } catch (err) {
+      if (err.name === 'TypeError' && /fetch|network/i.test(err.message)) {
+        throw new Error('Unable to connect to TeacherSwap. Please check your connection and try again.');
+      }
       throw err;
     }
   },
@@ -36,6 +55,20 @@ const api = {
   // Teachers
   getTeachers: async function() { var d = await this.get('/auth/teachers'); return d.teachers || []; },
   getTeacher: async function(id) { var d = await this.get('/auth/teachers/' + id); return d.teacher || d; },
+  searchTeachers: async function(q) { var d = await this.get('/teachers/search?q=' + encodeURIComponent(q)); return d.teachers || []; },
+  getTeacherByUsername: async function(username) { var d = await this.get('/teachers/by-username/' + encodeURIComponent(username)); return d.teacher || null; },
+  checkUsername: async function(username) { var d = await this.post('/auth/check-username', { username: username }); return d; },
+  updateUsername: function(username) { return this.put('/auth/username', { username: username }); },
+
+  // Block / Report
+  blockUser: function(userId) { return this.post('/users/' + encodeURIComponent(userId) + '/block'); },
+  unblockUser: function(userId) { return this.del('/users/' + encodeURIComponent(userId) + '/block'); },
+  getBlockedUsers: async function() { var d = await this.get('/users/blocked'); return d.blocked || []; },
+  reportUser: function(data) { return this.post('/reports', data); },
+
+  // Conversations (enhanced)
+  startConversation: function(userId) { return this.post('/messages/conversation', { userId: userId }); },
+  markConversationRead: function(conversationId) { return this.put('/messages/' + encodeURIComponent(conversationId) + '/read'); },
 
   // Schools
   getSchools: async function() { var d = await this.get('/schools'); return d.schools || []; },

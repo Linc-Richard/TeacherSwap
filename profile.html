@@ -64,16 +64,16 @@
       <div class="profile-info">
         <div class="upload-preview profile-photo" style="background:linear-gradient(135deg,var(--primary),#1E40AF);border-radius:50%;border:4px solid var(--card-bg);cursor:pointer;position:relative;">
           <div class="upload-placeholder" style="display:flex;flex-direction:column;align-items:center;">
-            <span style="font-size:3rem;font-weight:600;color:white;">JM</span>
+            <span style="font-size:3rem;font-weight:600;color:white;">?</span>
             <span style="font-size:0.65rem;color:rgba(255,255,255,0.7);margin-top:4px;"><i class="fas fa-camera"></i> Change</span>
           </div>
           <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
-          <div class="verified-badge"><i class="fas fa-check"></i></div>
+          <div class="verified-badge" id="verified-badge-flag" style="display:none;"><i class="fas fa-check"></i></div>
         </div>
         <div class="profile-details">
-          <h2>Jane Mwangi</h2>
-          <div class="profile-title">Mathematics & Physics Teacher</div>
-          <div class="profile-location"><i class="fas fa-map-marker-alt"></i> Mwanza Secondary School, Mwanza</div>
+          <h2>Loading profile...</h2>
+          <div class="profile-title">-</div>
+          <div class="profile-location"><i class="fas fa-map-marker-alt"></i> -</div>
         </div>
         <div class="profile-actions">
           <a href="settings.html" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Profile</a>
@@ -89,22 +89,21 @@
         <div class="card profile-section">
           <h3><i class="fas fa-user"></i> Personal Information</h3>
           <div class="info-list">
-            <div class="info-item"><div class="label">Full Name</div><div class="value">Jane Mwangi</div></div>
-            <div class="info-item"><div class="label">Email</div><div class="value">jane.mwangi@email.com</div></div>
-            <div class="info-item"><div class="label">Phone</div><div class="value">+255 712 345 678</div></div>
-            <div class="info-item"><div class="label">TSC Number</div><div class="value">TSC/2024/12345</div></div>
-            <div class="info-item"><div class="label">Gender</div><div class="value">Female</div></div>
-            <div class="info-item"><div class="label">Member Since</div><div class="value">January 2026</div></div>
+            <div class="info-item"><div class="label">Full Name</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Email</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Phone</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">TSC Number</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Member Since</div><div class="value">-</div></div>
           </div>
         </div>
 
         <div class="card profile-section">
           <h3><i class="fas fa-graduation-cap"></i> Teaching Information</h3>
           <div class="info-list">
-            <div class="info-item"><div class="label">Teaching Level</div><div class="value">Secondary School</div></div>
-            <div class="info-item"><div class="label">Subjects</div><div class="value">Mathematics, Physics</div></div>
-            <div class="info-item"><div class="label">Experience</div><div class="value">8 years</div></div>
-            <div class="info-item"><div class="label">School Type</div><div class="value">Government</div></div>
+            <div class="info-item"><div class="label">Teaching Level</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Subjects</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Experience</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">School Type</div><div class="value">-</div></div>
           </div>
         </div>
       </div>
@@ -114,29 +113,20 @@
         <div class="card profile-section">
           <h3><i class="fas fa-school"></i> School & Location</h3>
           <div class="info-list">
-            <div class="info-item"><div class="label">Current School</div><div class="value">Mwanza Secondary School</div></div>
-            <div class="info-item"><div class="label">Region</div><div class="value">Mwanza</div></div>
-            <div class="info-item"><div class="label">District</div><div class="value">Ilemela</div></div>
-            <div class="info-item"><div class="label">Preferred Region</div><div class="value">Dar es Salaam</div></div>
+            <div class="info-item"><div class="label">Current School</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Region</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">District</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Preferred Region</div><div class="value">-</div></div>
           </div>
         </div>
 
         <div class="card profile-section">
           <h3><i class="fas fa-arrows-rotate"></i> Swap Preferences</h3>
           <div class="info-list">
-            <div class="info-item"><div class="label">Swap Type</div><div class="value">Permanent</div></div>
-            <div class="info-item"><div class="label">Reason</div><div class="value">Family relocation</div></div>
-            <div class="info-item"><div class="label">Availability</div><div class="value">Immediately</div></div>
-            <div class="info-item"><div class="label">Status</div><div class="value"><span class="request-status accepted">Active</span></div></div>
-          </div>
-        </div>
-
-        <div class="card profile-section">
-          <h3><i class="fas fa-certificate"></i> Certifications</h3>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;">
-            <span class="subject-tag" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-check-circle"></i> B.Ed Mathematics</span>
-            <span class="subject-tag" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-check-circle"></i> TSC Certified</span>
-            <span class="subject-tag" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-check-circle"></i> CPC Leadership</span>
+            <div class="info-item"><div class="label">Swap Type</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Reason</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Availability</div><div class="value">-</div></div>
+            <div class="info-item"><div class="label">Status</div><div class="value"><span class="request-status pending">-</span></div></div>
           </div>
         </div>
       </div>
@@ -156,6 +146,7 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -180,13 +171,21 @@
         var photoEl = document.querySelector('.profile-photo .upload-placeholder span');
         if (photoEl) photoEl.textContent = initials;
 
+        // Verified badge (only when truly verified)
+        var vBadge = document.getElementById('verified-badge-flag');
+        if (vBadge) vBadge.style.display = user.isVerified ? 'flex' : 'none';
+
         // Name
         var nameEl = document.querySelector('.profile-details h2');
         if (nameEl) nameEl.textContent = user.fullName;
 
-        // Title
-        var titleEl = document.querySelector('.profile-title');
-        if (titleEl) titleEl.textContent = (user.subjects || '') + ' Teacher';
+        // Username
+        var unameEl = document.querySelector('.profile-details .profile-title');
+        if (unameEl) {
+          var unameText = user.username ? '@' + user.username : '';
+          var subText = (user.subjects || '') + ' ' + __('Teacher');
+          unameEl.innerHTML = (unameText ? '<span style="color:var(--primary);font-weight:500;">' + unameText + '</span> · ' : '') + subText;
+        }
 
         // Location
         var locEl = document.querySelector('.profile-location');
@@ -197,18 +196,19 @@
         if (infoItems.length >= 1) {
           var personal = infoItems[0];
           personal.innerHTML =
-            '<div class="info-item"><div class="label">Full Name</div><div class="value">' + (user.fullName || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">Email</div><div class="value">' + (user.email || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">Phone</div><div class="value">' + (user.phone || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">Member Since</div><div class="value">' + (user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-') + '</div></div>';
+            '<div class="info-item"><div class="label">' + __('Full Name') + '</div><div class="value">' + (user.fullName || '-') + '</div></div>' +
+            (user.username ? '<div class="info-item"><div class="label">' + __('Username') + '</div><div class="value" style="color:var(--primary);font-weight:500;">@' + user.username + '</div></div>' : '') +
+            '<div class="info-item"><div class="label">' + __('Email') + '</div><div class="value">' + (user.email || '-') + '</div></div>' +
+            '<div class="info-item"><div class="label">' + __('Phone') + '</div><div class="value">' + (user.phone || '-') + '</div></div>' +
+            '<div class="info-item"><div class="label">' + __('Member Since') + '</div><div class="value">' + (user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-') + '</div></div>';
         }
 
         if (infoItems.length >= 2) {
           var teaching = infoItems[1];
           teaching.innerHTML =
-            '<div class="info-item"><div class="label">Teaching Level</div><div class="value">' + (user.teachingLevel || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">Subjects</div><div class="value">' + (user.subjects || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">Experience</div><div class="value">' + (user.experience || '-') + '</div></div>';
+            '<div class="info-item"><div class="label">' + __('Teaching Level') + '</div><div class="value">' + (user.teachingLevel || '-') + '</div></div>' +
+            '<div class="info-item"><div class="label">' + __('Subjects') + '</div><div class="value">' + (user.subjects || '-') + '</div></div>' +
+            '<div class="info-item"><div class="label">' + __('Experience') + '</div><div class="value">' + (user.experience || '-') + '</div></div>';
         }
 
         // School info (right column)
@@ -216,23 +216,23 @@
         if (rightSections.length >= 1) {
           var schoolSec = rightSections[0];
           schoolSec.innerHTML =
-            '<h3><i class="fas fa-school"></i> School & Location</h3>' +
+            '<h3><i class="fas fa-school"></i> ' + __('School & Location') + '</h3>' +
             '<div class="info-list">' +
-            '<div class="info-item"><div class="label">Current School</div><div class="value">' + (user.schoolName || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">Region</div><div class="value">' + (user.region || '-') + '</div></div>' +
-            '<div class="info-item"><div class="label">District</div><div class="value">' + (user.district || '-') + '</div></div>' +
-            (user.preferredRegion ? '<div class="info-item"><div class="label">Preferred Region</div><div class="value">' + user.preferredRegion + '</div></div>' : '') +
+            '<div class="info-item"><div class="label">' + __('Current School') + '</div><div class="value">' + (user.schoolName || '-') + '</div></div>' +
+            '<div class="info-item"><div class="label">' + __('Region') + '</div><div class="value">' + (user.region || '-') + '</div></div>' +
+            '<div class="info-item"><div class="label">' + __('District') + '</div><div class="value">' + (user.district || '-') + '</div></div>' +
+            (user.preferredRegion ? '<div class="info-item"><div class="label">' + __('Preferred Region') + '</div><div class="value">' + user.preferredRegion + '</div></div>' : '') +
             '</div>';
         }
 
         if (rightSections.length >= 2) {
           var swapSec = rightSections[1];
           swapSec.innerHTML =
-            '<h3><i class="fas fa-arrows-rotate"></i> Swap Preferences</h3>' +
+            '<h3><i class="fas fa-arrows-rotate"></i> ' + __('Swap Preferences') + '</h3>' +
             '<div class="info-list">' +
-            '<div class="info-item"><div class="label">Swap Type</div><div class="value">' + (user.swapType || '-') + '</div></div>' +
-            (user.reason ? '<div class="info-item"><div class="label">Reason</div><div class="value">' + user.reason + '</div></div>' : '') +
-            '<div class="info-item"><div class="label">Status</div><div class="value"><span class="request-status accepted">' + (user.isVerified ? 'Verified' : 'Pending') + '</span></div></div>' +
+            '<div class="info-item"><div class="label">' + __('Swap Type') + '</div><div class="value">' + (user.swapType || '-') + '</div></div>' +
+            (user.reason ? '<div class="info-item"><div class="label">' + __('Reason') + '</div><div class="value">' + user.reason + '</div></div>' : '') +
+            '<div class="info-item"><div class="label">' + __('Status') + '</div><div class="value"><span class="request-status accepted">' + (user.isVerified ? __('Verified') : __('Pending')) + '</span></div></div>' +
             '</div>';
         }
 
@@ -251,17 +251,17 @@
                 }
               }
               if (revSection) {
-                var stars = reviews.averageRating ? '★'.repeat(Math.round(reviews.averageRating)) + '☆'.repeat(5 - Math.round(reviews.averageRating)) : 'No ratings yet';
+                var stars = reviews.averageRating ? '★'.repeat(Math.round(reviews.averageRating)) + '☆'.repeat(5 - Math.round(reviews.averageRating)) : __('No ratings yet');
                 revSection.innerHTML =
-                  '<h3><i class="fas fa-star"></i> Reviews (' + (reviews.totalReviews || 0) + ')</h3>' +
+                  '<h3><i class="fas fa-star"></i> ' + __('Reviews') + ' (' + (reviews.totalReviews || 0) + ')</h3>' +
                   '<div style="font-size:1.5rem;color:var(--warning);margin-bottom:8px;">' + stars + ' <span style="font-size:0.9rem;color:var(--text-muted);">' + (reviews.averageRating ? reviews.averageRating.toFixed(1) : '') + '</span></div>' +
-                  (reviews.reviews || []).slice(0, 3).map(function(r) { return '<div style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>' + (r.reviewerName || 'Anonymous') + '</strong> <span style="color:var(--warning);">' + '★'.repeat(r.rating) + '</span><p style="font-size:0.85rem;color:var(--text-muted);">' + (r.feedback || '') + '</p></div>'; }).join('') || '<p style="color:var(--text-muted);font-size:0.88rem;">No reviews yet</p>';
+                  (reviews.reviews || []).slice(0, 3).map(function(r) { return '<div style="padding:8px 0;border-bottom:1px solid var(--border);"><strong>' + (r.reviewerName || __('Anonymous')) + '</strong> <span style="color:var(--warning);">' + '★'.repeat(r.rating) + '</span><p style="font-size:0.85rem;color:var(--text-muted);">' + (r.feedback || '') + '</p></div>'; }).join('') || '<p style="color:var(--text-muted);font-size:0.88rem;">' + __('No reviews yet') + '</p>';
               }
             }
           } catch(e) {}
         }
       } catch(err) {
-        showToast('Failed to load profile', 'error');
+        showToast(__('Failed to load profile'), 'error');
       }
     });
   </script>

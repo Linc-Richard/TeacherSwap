@@ -80,7 +80,7 @@
               <input type="checkbox" name="remember">
               <span data-i18n="Remember me">Remember me</span>
             </label>
-            <a href="#" class="forgot-link" data-i18n="Forgot password?">Forgot password?</a>
+            <a href="#" class="forgot-link" data-i18n="Forgot password?" onclick="showForgotDialog();return false;">Forgot password?</a>
           </div>
 
           <button type="submit" class="btn btn-primary btn-block" data-i18n="Login">Login</button>
@@ -104,11 +104,26 @@
           <p class="form-footer"><a href="#" id="twofa-back">Back to login</a></p>
         </div>
 
+        <div id="forgot-step" style="display:none;">
+          <h2 class="auth-title">Reset Password</h2>
+          <p class="auth-subtitle">Enter your email and we'll send you a reset link.</p>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" class="form-control" id="forgot-email" placeholder="Email address" required>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="forgot-submit-btn">Send Reset Link</button>
+          <p class="form-footer"><a href="#" id="forgot-back">Back to login</a></p>
+        </div>
+
         <p class="form-footer">Don't have an account? <a href="register.html" data-i18n="Sign up">Sign up</a></p>
       </div>
     </div>
   </section>
 
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/google-auth.js"></script>
   <script src="js/app.js"></script>
@@ -132,27 +147,27 @@
           }
           api.saveUser(data.user);
           localStorage.setItem('ts-token', data.token);
-          showToast('Welcome back, ' + data.user.fullName + '!', 'success');
+          showToast(__('Welcome back,') + ' ' + data.user.fullName + '!', 'success');
           setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
         } catch (err) {
-          showToast(err.message, 'error');
+          showToast(__(err.message), 'error');
         }
       });
 
       // 2FA code verification
       document.getElementById('twofa-verify-btn').addEventListener('click', async function() {
         const code = document.getElementById('twofa-code').value.trim();
-        if (!code) { showToast('Enter your authentication code', 'error'); return; }
+        if (!code) { showToast(__('Enter your authentication code'), 'error'); return; }
         const btn = this;
         btn.disabled = true;
         try {
           const data = await api.request('POST', '/2fa/verify-login', { tempToken: pendingTempToken, code: code });
           api.saveUser(data.user);
           localStorage.setItem('ts-token', data.token);
-          showToast('Welcome back, ' + data.user.fullName + '!', 'success');
+          showToast(__('Welcome back,') + ' ' + data.user.fullName + '!', 'success');
           setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
         } catch (err) {
-          showToast(err.message || 'Invalid code', 'error');
+          showToast(__(err.message) || __('Invalid code'), 'error');
           btn.disabled = false;
         }
       });
@@ -174,15 +189,48 @@
           var data = await api.request('POST', '/auth/google', { credential: credential });
           api.saveUser(data.user);
           localStorage.setItem('ts-token', data.token);
-          showToast('Signed in with Google!', 'success');
+          showToast(__('Signed in with Google!'), 'success');
           setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
         } catch(err) {
-          showToast(err.message || 'Google sign-in failed', 'error');
+          showToast(__(err.message) || __('Google sign-in failed'), 'error');
         }
       }
 
       googleAuth.init('471699141629-6iod43adbvqdpfu75g7hupceenu2ft6m.apps.googleusercontent.com', handleGoogleCredential);
       googleAuth.renderButton('google-signin-button');
+
+      // Forgot password flow
+      window.showForgotDialog = function() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('forgot-step').style.display = 'block';
+        document.getElementById('forgot-email').focus();
+      };
+      document.getElementById('forgot-back').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('forgot-step').style.display = 'none';
+        document.getElementById('login-form').style.display = '';
+      });
+      document.getElementById('forgot-submit-btn').addEventListener('click', async function() {
+        var email = document.getElementById('forgot-email').value.trim();
+        if (!email) { showToast(__('Enter your email address'), 'error'); return; }
+        var btn = this;
+        btn.disabled = true;
+        try {
+          await api.forgotPassword(email);
+          showToast(__('If the email exists, a reset link has been sent'), 'success');
+          setTimeout(function() {
+            document.getElementById('forgot-step').style.display = 'none';
+            document.getElementById('login-form').style.display = '';
+            btn.disabled = false;
+          }, 1500);
+        } catch (err) {
+          showToast(__(err.message) || __('Unable to send reset link'), 'error');
+          btn.disabled = false;
+        }
+      });
+      document.getElementById('forgot-email').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('forgot-submit-btn').click();
+      });
     });
   </script>
 </body>

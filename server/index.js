@@ -40,6 +40,16 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, '..')));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: 'TeacherSwap API is running', timestamp: new Date().toISOString() });
+});
+
+// API Health
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: 'TeacherSwap API is running', timestamp: new Date().toISOString() });
+});
+
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/auth', require('./routes/google'));
@@ -55,6 +65,11 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.use('/api/2fa', require('./routes/twofa'));
 app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api', require('./routes/payments'));
+app.use('/api/teachers', require('./routes/teachers'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/teachers', require('./routes/teachers'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/reports', require('./routes/reports'));
 
 // API 404 handler (must come before the SPA fallback)
 app.use('/api', (req, res) => {

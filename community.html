@@ -91,7 +91,7 @@
             <button class="like-btn"><i class="far fa-heart"></i> <span class="like-count">24</span></button>
             <button><i class="far fa-comment"></i> 8</button>
             <button onclick="document.getElementById('share-modal').classList.add('show')"><i class="far fa-share-square"></i> Share</button>
-            <button onclick="showToast('Post saved!','success')"><i class="far fa-bookmark"></i> Save</button>
+            <button onclick="showToast(__('Post saved!'),'success')"><i class="far fa-bookmark"></i> Save</button>
           </div>
         </div>
 
@@ -111,7 +111,7 @@
             <button class="like-btn"><i class="far fa-heart"></i> <span class="like-count">18</span></button>
             <button><i class="far fa-comment"></i> 5</button>
             <button onclick="document.getElementById('share-modal').classList.add('show')"><i class="far fa-share-square"></i> Share</button>
-            <button onclick="showToast('Post saved!','success')"><i class="far fa-bookmark"></i> Save</button>
+            <button onclick="showToast(__('Post saved!'),'success')"><i class="far fa-bookmark"></i> Save</button>
           </div>
         </div>
 
@@ -154,9 +154,10 @@
             <button class="like-btn"><i class="far fa-heart"></i> <span class="like-count">36</span></button>
             <button><i class="far fa-comment"></i> 11</button>
             <button onclick="document.getElementById('share-modal').classList.add('show')"><i class="far fa-share-square"></i> Share</button>
-            <button onclick="showToast('Post saved!','success')"><i class="far fa-bookmark"></i> Save</button>
+            <button onclick="showToast(__('Post saved!'),'success')"><i class="far fa-bookmark"></i> Save</button>
           </div>
         </div>
+
 
       </div>
 
@@ -219,27 +220,27 @@
         <button class="modal-close" onclick="document.getElementById('share-modal').classList.remove('show')"><i class="fas fa-times"></i></button>
       </div>
       <div class="share-options">
-        <button class="share-option" onclick="showToast('Link copied to clipboard!','success')">
+        <button class="share-option" onclick="showToast(__('Link copied to clipboard!'),'success')">
           <i class="fas fa-link" style="color:var(--primary);"></i>
           <span>Copy Link</span>
         </button>
-        <button class="share-option" onclick="showToast('Shared to Facebook!','success')">
+        <button class="share-option" onclick="showToast(__('Shared to Facebook!'),'success')">
           <i class="fab fa-facebook" style="color:#1877F2;"></i>
           <span>Facebook</span>
         </button>
-        <button class="share-option" onclick="showToast('Shared to Twitter!','success')">
+        <button class="share-option" onclick="showToast(__('Shared to Twitter!'),'success')">
           <i class="fab fa-twitter" style="color:#1DA1F2;"></i>
           <span>Twitter</span>
         </button>
-        <button class="share-option" onclick="showToast('Shared to WhatsApp!','success')">
+        <button class="share-option" onclick="showToast(__('Shared to WhatsApp!'),'success')">
           <i class="fab fa-whatsapp" style="color:#25D366;"></i>
           <span>WhatsApp</span>
         </button>
-        <button class="share-option" onclick="showToast('Shared to Telegram!','success')">
+        <button class="share-option" onclick="showToast(__('Shared to Telegram!'),'success')">
           <i class="fab fa-telegram" style="color:#0088CC;"></i>
           <span>Telegram</span>
         </button>
-        <button class="share-option" onclick="showToast('Saved to bookmarks!','success')">
+        <button class="share-option" onclick="showToast(__('Saved to bookmarks!'),'success')">
           <i class="fas fa-bookmark" style="color:var(--warning);"></i>
           <span>Bookmark</span>
         </button>
@@ -260,6 +261,7 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

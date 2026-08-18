@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Profile - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <div class="sidebar-label">Main Menu</div>
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="find-match.html" class="sidebar-link"><i class="fas fa-search"></i> Find Match</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a>
+      <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
+      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
+      <div class="sidebar-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i> Profile</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="login.html" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Complete Your Profile</h1>
+      <p>Tell us about your teaching career and swap preferences. You can save and continue later.</p>
+    </div>
+
+    <div class="card" style="padding:28px;max-width:760px;margin:0 auto;">
+      <div class="progress-bar" id="onboarding-progress">
+        <div class="progress-step active"><div class="step-indicator">1</div><span class="step-label">Account</span></div>
+        <div class="progress-step"><div class="step-indicator">2</div><span class="step-label">Teaching</span></div>
+        <div class="progress-step"><div class="step-indicator">3</div><span class="step-label">School</span></div>
+        <div class="progress-step"><div class="step-indicator">4</div><span class="step-label">Preferences</span></div>
+        <div class="progress-step"><div class="step-indicator">5</div><span class="step-label">Done</span></div>
+      </div>
+
+      <form id="onboarding-form" novalidate>
+
+        <!-- Step 1: Account -->
+        <div class="step-content active" id="ob-step-1">
+          <h3 style="margin-bottom:16px;"><i class="fas fa-user"></i> Account</h3>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-user"></i>
+              <input type="text" class="form-control" name="fullName" placeholder="Full Name" required>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-at"></i>
+              <input type="text" class="form-control" name="username" id="ob-username" placeholder="Choose a username (@handle)" style="padding-left:44px;">
+            </div>
+            <span class="form-error" id="ob-username-error"></span>
+            <small id="ob-username-hint" style="color:var(--text-muted);font-size:0.78rem;margin-top:4px;display:block;">Letters, numbers, and underscores only. At least 3 characters.</small>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" class="form-control" name="email" placeholder="Email address" required readonly style="opacity:0.7;">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-phone"></i>
+              <input type="tel" class="form-control" name="phone" placeholder="Phone number" autocomplete="tel">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-venus-mars"></i>
+              <select class="form-control" name="gender" style="padding-left:44px;">
+                <option value="" disabled selected>Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-comment"></i>
+              <textarea class="form-control" name="bio" placeholder="Short bio (optional)" rows="3" style="padding-left:44px;padding-top:14px;"></textarea>
+            </div>
+            <span class="form-error"></span>
+          </div>
+        </div>
+
+        <!-- Step 2: Teaching -->
+        <div class="step-content" id="ob-step-2">
+          <h3 style="margin-bottom:16px;"><i class="fas fa-graduation-cap"></i> Teacher Information</h3>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-id-card"></i>
+              <input type="text" class="form-control" name="tscNumber" placeholder="TSC Number (optional)">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-book"></i>
+              <select class="form-control" name="teachingLevel" required style="padding-left:44px;">
+                <option value="" disabled selected>Teaching Level</option>
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-book-open"></i>
+              <input type="text" class="form-control" name="subjects" placeholder="Subjects (comma separated)" required>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-briefcase"></i>
+              <select class="form-control" name="experience" required style="padding-left:44px;">
+                <option value="" disabled selected>Years of Experience</option>
+                <option value="0-2">0-2 years</option>
+                <option value="3-5">3-5 years</option>
+                <option value="6-10">6-10 years</option>
+                <option value="10+">10+ years</option>
+              </select>
+            </div>
+            <span class="form-error"></span>
+          </div>
+        </div>
+
+        <!-- Step 3: School -->
+        <div class="step-content" id="ob-step-3">
+          <h3 style="margin-bottom:16px;"><i class="fas fa-school"></i> School Information</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">Search for your school below. If it is not listed, type the name manually and choose your region and district.</p>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-school"></i>
+              <input type="text" class="form-control" name="schoolName" id="school-search" placeholder="School Name (search or type)" list="school-list" required>
+            </div>
+            <datalist id="school-list"></datalist>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-map-marker-alt"></i>
+              <select class="form-control" name="region" id="ob-region" required style="padding-left:44px;">
+                <option value="" disabled selected>Select Region</option>
+              </select>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-map-pin"></i>
+              <input type="text" class="form-control" name="district" id="ob-district" placeholder="District" list="district-list" required>
+            </div>
+            <datalist id="district-list"></datalist>
+            <span class="form-error"></span>
+          </div>
+        </div>
+
+        <!-- Step 4: Preferences -->
+        <div class="step-content" id="ob-step-4">
+          <h3 style="margin-bottom:16px;"><i class="fas fa-arrows-rotate"></i> Swap Preferences</h3>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-map-marker-alt"></i>
+              <select class="form-control" name="preferredRegion" id="ob-pref-region" style="padding-left:44px;">
+                <option value="" disabled selected>Preferred Region (where you want to move)</option>
+              </select>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-map-pin"></i>
+              <input type="text" class="form-control" name="preferredDistrict" placeholder="Preferred District" list="district-list">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-exchange-alt"></i>
+              <select class="form-control" name="swapType" style="padding-left:44px;">
+                <option value="" disabled selected>Swap Type</option>
+                <option value="permanent">Permanent</option>
+                <option value="temporary">Temporary</option>
+                <option value="either">Either</option>
+              </select>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-comment"></i>
+              <textarea class="form-control" name="reason" placeholder="Reason for swap (optional)" rows="4" style="padding-left:44px;padding-top:14px;"></textarea>
+            </div>
+            <span class="form-error"></span>
+          </div>
+        </div>
+
+        <!-- Step 5: Complete -->
+        <div class="step-content" id="ob-step-5">
+          <div style="text-align:center;padding:24px 0;">
+            <div class="success-icon-glow" style="margin-bottom:16px;">
+              <i class="fas fa-check-circle" style="font-size:4rem;color:var(--success);filter:drop-shadow(0 0 20px rgba(16,185,129,0.5));"></i>
+            </div>
+            <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:8px;">You're all set!</h2>
+            <p style="color:var(--text-muted);margin-bottom:16px;">Your profile is ready. You can now search for matching teachers and send swap requests.</p>
+            <div id="completeness-box" class="card" style="background:var(--bg);padding:16px;max-width:380px;margin:0 auto 20px;"></div>
+            <a href="find-match.html" class="btn btn-primary"><i class="fas fa-search"></i> Find Matching Teachers</a>
+            <a href="dashboard.html" class="btn btn-ghost" style="margin-left:8px;"><i class="fas fa-th-large"></i> Go to Dashboard</a>
+          </div>
+        </div>
+
+        <div class="btn-row" style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-ghost" id="ob-prev" style="display:none;"><i class="fas fa-arrow-left"></i> Back</button>
+          <button type="button" class="btn btn-ghost" id="ob-save-later" style="margin-left:auto;"><i class="fas fa-save"></i> Save &amp; Continue Later</button>
+          <button type="button" class="btn btn-primary" id="ob-next"><i class="fas fa-arrow-right"></i> Save &amp; Continue</button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+      var TOTAL = 5;
+      var current = 1;
+      var user = null;
+      var schoolOptions = [];
+
+      var form = document.getElementById('onboarding-form');
+      var prevBtn = document.getElementById('ob-prev');
+      var nextBtn = document.getElementById('ob-next');
+      var saveLaterBtn = document.getElementById('ob-save-later');
+
+      function fieldError(input, message) {
+        var errorEl = input.closest('.form-group') ? input.closest('.form-group').querySelector('.form-error') : null;
+        if (message) {
+          input.classList.add('error');
+          if (errorEl) errorEl.textContent = message;
+          return false;
+        }
+        input.classList.remove('error');
+        if (errorEl) errorEl.textContent = '';
+        return true;
+      }
+
+      function validateStep(step) {
+        var el = document.getElementById('ob-step-' + step);
+        if (!el) return true;
+        var ok = true;
+        el.querySelectorAll('.form-control').forEach(function(input) {
+          var req = input.hasAttribute('required');
+          var v = input.value.trim();
+          if (req && !v) {
+            ok = fieldError(input, __('This field is required')) && ok;
+          } else if (input.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+            ok = fieldError(input, __('Please enter a valid email')) && ok;
+          } else {
+            fieldError(input, '');
+          }
+        });
+        return ok;
+      }
+
+      function collectData() {
+        var data = {};
+        form.querySelectorAll('.form-control').forEach(function(el) {
+          var name = el.getAttribute('name');
+          if (name && !el.readOnly) data[name] = el.value.trim();
+        });
+        return data;
+      }
+
+      function updateStep(step) {
+        current = step;
+        document.querySelectorAll('.step-content').forEach(function(el) { el.classList.remove('active'); });
+        var cur = document.getElementById('ob-step-' + step);
+        if (cur) cur.classList.add('active');
+        document.querySelectorAll('#onboarding-progress .progress-step').forEach(function(el, index) {
+          var n = index + 1;
+          el.classList.remove('active', 'completed');
+          if (n === step) el.classList.add('active');
+          else if (n < step) el.classList.add('completed');
+        });
+        if (prevBtn) prevBtn.style.display = step === 1 ? 'none' : 'inline-flex';
+        if (step === TOTAL) {
+          if (nextBtn) nextBtn.style.display = 'none';
+          if (saveLaterBtn) saveLaterBtn.style.display = 'none';
+          if (prevBtn) prevBtn.style.display = 'inline-flex';
+        } else {
+          if (nextBtn) { nextBtn.style.display = 'inline-flex'; nextBtn.innerHTML = '<i class="fas fa-arrow-right"></i> ' + __('Save &amp; Continue'); }
+          if (saveLaterBtn) saveLaterBtn.style.display = 'inline-flex';
+        }
+        if (step === TOTAL) renderCompleteness();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      async function saveAndGo(step, redirectAfter) {
+        if (step < TOTAL && !validateStep(step)) {
+          showToast(__('Please fill the required fields on this step'), 'error');
+          return;
+        }
+        var data = collectData();
+        if (data.username && data.username !== (user && user.username)) {
+          try {
+            var unameRes = await api.updateUsername(data.username);
+            if (unameRes && unameRes.username) { data.username = unameRes.username; }
+          } catch(uerr) {
+            showToast(uerr.message || __('Failed to set username'), 'error');
+            return;
+          }
+        }
+        delete data.username;
+        try {
+          var updated = await api.updateProfile(data);
+          if (updated && updated.user) api.saveUser(updated.user);
+          else {
+            var me = await api.getProfile();
+            api.saveUser(me);
+          }
+          showToast(__('Progress saved'), 'success');
+          if (redirectAfter) { setTimeout(function() { window.location.href = redirectAfter; }, 800); }
+          else updateStep(step + 1);
+        } catch (err) {
+          showToast(__(err.message) || __('Could not save your progress'), 'error');
+        }
+      }
+
+      nextBtn.addEventListener('click', function() { saveAndGo(current, null); });
+      prevBtn.addEventListener('click', function() { updateStep(current - 1); });
+      saveLaterBtn.addEventListener('click', function() { saveAndGo(current, 'dashboard.html'); });
+
+      async function loadReferences() {
+        try {
+          var regions = await api.getRegions();
+          var regionOpts = regions.map(function(r) { return '<option value="' + r + '">' + r + '</option>'; }).join('');
+          var regSel = document.getElementById('ob-region');
+          if (regSel) regSel.innerHTML = '<option value="" disabled selected>Select Region</option>' + regionOpts;
+          var prefReg = document.getElementById('ob-pref-region');
+          if (prefReg) prefReg.innerHTML = '<option value="" disabled selected>Preferred Region (where you want to move)</option>' + regionOpts;
+        } catch(e) {}
+        try {
+          var districts = await api.getDistricts();
+          var dlist = document.getElementById('district-list');
+          if (dlist) dlist.innerHTML = districts.map(function(d) { return '<option value="' + d + '">' + d + '</option>'; }).join('');
+        } catch(e) {}
+        try {
+          var schools = await api.getSchools();
+          schoolOptions = schools || [];
+          var slist = document.getElementById('school-list');
+          if (slist) slist.innerHTML = schoolOptions.map(function(s) { return '<option value="' + s.name + '">' + s.name + ', ' + s.region + '</option>'; }).join('');
+        } catch(e) {}
+      }
+
+      var schoolSearch = document.getElementById('school-search');
+      if (schoolSearch) {
+        schoolSearch.addEventListener('change', function() {
+          var match = schoolOptions.filter(function(s) { return s.name.toLowerCase() === schoolSearch.value.trim().toLowerCase(); })[0];
+          if (match) {
+            var regSel = document.getElementById('ob-region');
+            var dist = document.getElementById('ob-district');
+            if (regSel) regSel.value = match.region;
+            if (dist) dist.value = match.district || '';
+          }
+        });
+      }
+
+      async function init() {
+        try {
+          user = await api.getProfile();
+        } catch(e) { user = {}; }
+        form.querySelectorAll('.form-control').forEach(function(el) {
+          var name = el.getAttribute('name');
+          if (name && user[name] !== undefined && user[name] !== null) el.value = user[name];
+        });
+        var schoolSearchEl = document.getElementById('school-search');
+        if (schoolSearchEl && user.schoolName) schoolSearchEl.value = user.schoolName;
+        await loadReferences();
+        initUsernameCheck();
+        var complete = computeCompleteness();
+        if (complete.percent >= 100) updateStep(TOTAL);
+        else updateStep(1);
+      }
+
+      var usernameTimer = null;
+      var lastCheckedUsername = '';
+      function initUsernameCheck() {
+        var unameInput = document.getElementById('ob-username');
+        var hint = document.getElementById('ob-username-hint');
+        var errEl = document.getElementById('ob-username-error');
+        if (!unameInput) return;
+        var current = (user && user.username) ? user.username : '';
+        if (current) { lastCheckedUsername = current; unameInput.value = current; }
+        unameInput.addEventListener('input', function() {
+          clearTimeout(usernameTimer);
+          var val = unameInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+          unameInput.value = val;
+          if (val.length < 3) { hint.textContent = 'Letters, numbers, and underscores only. At least 3 characters.'; hint.style.color = 'var(--text-muted)'; errEl.textContent = ''; return; }
+          if (val === current) { hint.textContent = '✓ Your current username'; hint.style.color = 'var(--success)'; errEl.textContent = ''; return; }
+          hint.textContent = 'Checking availability...'; hint.style.color = 'var(--text-muted)'; errEl.textContent = '';
+          usernameTimer = setTimeout(async function() {
+            try {
+              var res = await api.checkUsername(val);
+              if (res.available) { hint.textContent = '✓ ' + val + ' is available'; hint.style.color = 'var(--success)'; errEl.textContent = ''; }
+              else { hint.textContent = ''; errEl.textContent = 'This username is already taken'; errEl.style.color = 'var(--danger)'; }
+            } catch(e) { hint.textContent = 'Could not check username'; hint.style.color = 'var(--warning)'; }
+          }, 500);
+        });
+        unameInput.dispatchEvent(new Event('input'));
+      }
+
+      function computeCompleteness() {
+        var fields = ['fullName', 'email', 'username', 'teachingLevel', 'subjects', 'schoolName', 'region', 'district'];
+        var done = 0;
+        fields.forEach(function(f) {
+          var v = user && user[f] ? String(user[f]).trim() : '';
+          if (v) done++;
+        });
+        var pct = Math.round((done / fields.length) * 100);
+        var missing = fields.filter(function(f) {
+          var v = user && user[f] ? String(user[f]).trim() : '';
+          return !v;
+        });
+        return { percent: pct, missing: missing };
+      }
+
+      function renderCompleteness() {
+        var box = document.getElementById('completeness-box');
+        if (!box) return;
+        var c = computeCompleteness();
+        var labelMap = {
+          fullName: __('Full Name'), email: __('Email'), username: __('Username'), teachingLevel: __('Teaching Level'),
+          subjects: __('Subjects'), schoolName: __('Current School'), region: __('Region'), district: __('District')
+        };
+        var missingHtml = c.missing.length
+          ? '<p style="font-size:0.85rem;color:var(--warning);margin-bottom:8px;">' + __('Missing:') + ' ' + c.missing.map(function(f) { return labelMap[f] || f; }).join(', ') + '</p>'
+          : '';
+        box.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><span style="font-weight:600;">' + __('Profile completeness') + '</span><span>' + c.percent + '%</span></div>' +
+          '<div style="height:8px;background:var(--gray-200);border-radius:99px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;width:' + c.percent + '%;background:var(--success);border-radius:99px;"></div></div>' + missingHtml;
+        if (c.percent < 100) {
+          box.innerHTML += '<a href="#" id="back-to-profile" style="font-size:0.85rem;">' + __('Finish remaining details') + '</a>';
+          var link = document.getElementById('back-to-profile');
+          if (link) link.addEventListener('click', function(e) { e.preventDefault(); updateStep(1); });
+        }
+      }
+
+      init().then(function() { renderCompleteness(); });
+    });
+  </script>
+</body>
+</html>

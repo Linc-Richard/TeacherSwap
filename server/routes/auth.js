@@ -9,19 +9,33 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
   try {
     const db = await getDb();
-    const { email, password, fullName, phone, tscNumber, gender, teachingLevel, subjects, experience, schoolName, region, district } = req.body;
+    const { email, password, fullName, phone, tscNumber, gender, teachingLevel, subjects, experience, schoolName, region, district, preferredRegion, preferredDistrict, swapType, reason, username } = req.body;
     if (!email || !password || !fullName) return res.status(400).json({ error: 'Email, password, and full name required' });
+
+    if (username) {
+      const uname = String(username).trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+      if (uname.length < 3) return res.status(400).json({ error: 'Username must be at least 3 characters (letters, numbers, underscore)' });
+      const existingU = db.exec(`SELECT id FROM users WHERE username = '${uname}'`);
+      if (existingU.length && existingU[0].values.length) return res.status(409).json({ error: 'This username is already taken' });
+    }
 
     const existing = db.exec(`SELECT id FROM users WHERE email = '${email.replace(/'/g, "''")}'`);
     if (existing.length && existing[0].values.length) return res.status(409).json({ error: 'Email already registered' });
 
     const hashed = await bcrypt.hash(password, 10);
     const id = uuid();
-    db.run(
-      `INSERT INTO users (id, email, password, fullName, phone, tscNumber, gender, teachingLevel, subjects, experience, schoolName, region, district, role)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'teacher')`,
-      [id, email, hashed, fullName, phone || '', tscNumber || '', gender || '', teachingLevel || '', subjects || '', experience || '', schoolName || '', region || '', district || '']
-    );
+    const uname = username ? String(username).trim().toLowerCase().replace(/[^a-z0-9_]/g, '') : null;
+    try {
+      db.run(
+        `INSERT INTO users (id, email, password, fullName, phone, tscNumber, gender, teachingLevel, subjects, experience, schoolName, region, district, preferredRegion, preferredDistrict, swapType, reason, username, role)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'teacher')`,
+        [id, email, hashed, fullName, phone || '', tscNumber ? String(tscNumber).trim() : null, gender || '', teachingLevel || '', subjects || '', experience || '', schoolName || '', region || '', district || '', preferredRegion || '', preferredDistrict || '', swapType || '', reason || '', uname]
+      );
+    } catch (e) {
+      if (String(e.message).includes('tscNumber')) return res.status(409).json({ error: 'This TSC number is already registered' });
+      if (String(e.message).includes('username')) return res.status(409).json({ error: 'This username is already taken' });
+      throw e;
+    }
     saveDb();
     logAudit(id, 'REGISTER', 'User registered');
     const token = generateToken({ id, email, role: 'teacher' });
@@ -67,7 +81,8 @@ router.post('/login', async (req, res) => {
         region: user.region, district: user.district, schoolName: user.schoolName,
         subjects: user.subjects, teachingLevel: user.teachingLevel, experience: user.experience,
         tscNumber: user.tscNumber, isVerified: !!user.isVerified, gender: user.gender,
-        preferredRegion: user.preferredRegion, preferredDistrict: user.preferredDistrict, swapType: user.swapType
+        preferredRegion: user.preferredRegion, preferredDistrict: user.preferredDistrict, swapType: user.swapType,
+        username: user.username, bio: user.bio
       }
     });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -89,7 +104,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    const fields = ['fullName', 'phone', 'tscNumber', 'gender', 'teachingLevel', 'subjects', 'experience', 'schoolName', 'region', 'district', 'preferredRegion', 'preferredDistrict', 'swapType', 'reason', 'avatar', 'bio'];
+    const fields = ['fullName', 'phone', 'tscNumber', 'gender', 'teachingLevel', 'subjects', 'experience', 'schoolName', 'region', 'district', 'preferredRegion', 'preferredDistrict', 'swapType', 'reason', 'avatar', 'bio', 'username'];
     const updates = [];
     const values = [];
     fields.forEach(f => {
@@ -105,10 +120,43 @@ router.put('/profile', authMiddleware, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// Check if a username is available
+router.post('/check-username', async (req, res) => {
+  try {
+    const db = await getDb();
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ error: 'Username required' });
+    const uname = String(username).trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (uname.length < 3) return res.json({ available: false, error: 'Username must be at least 3 characters' });
+    if (uname.length > 30) return res.json({ available: false, error: 'Username must be 30 characters or fewer' });
+    const existing = db.exec(`SELECT id FROM users WHERE username = '${uname}'`);
+    const taken = existing.length && existing[0].values.length;
+    res.json({ available: !taken, username: uname });
+  } catch (err) { res.status(500).json({ error: 'Check failed' }); }
+});
+
+// Update username
+router.put('/username', authMiddleware, async (req, res) => {
+  try {
+    const db = await getDb();
+    const { username } = req.body;
+    if (!username) return res.status(400).json({ error: 'Username required' });
+    const uname = String(username).trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (uname.length < 3) return res.status(400).json({ error: 'Username must be at least 3 characters' });
+    if (uname.length > 30) return res.status(400).json({ error: 'Username must be 30 characters or fewer' });
+    const existing = db.exec(`SELECT id FROM users WHERE username = '${uname}' AND id != '${req.user.id}'`);
+    if (existing.length && existing[0].values.length) return res.status(409).json({ error: 'Username already taken' });
+    db.run(`UPDATE users SET username = '${uname}', updatedAt = datetime('now') WHERE id = '${req.user.id}'`);
+    saveDb();
+    logAudit(req.user.id, 'USERNAME_CHANGE', `Username changed to ${uname}`);
+    res.json({ success: true, username: uname });
+  } catch (err) { res.status(500).json({ error: 'Failed to update username' }); }
+});
+
 router.get('/teachers', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    const rows = db.exec(`SELECT id, fullName, email, phone, tscNumber, gender, teachingLevel, subjects, experience, schoolName, region, district, preferredRegion, preferredDistrict, swapType, isVerified, avatar FROM users WHERE role = 'teacher' AND id != '${req.user.id.replace(/'/g, "''")}'`);
+    const rows = db.exec(`SELECT id, fullName, username, email, phone, tscNumber, gender, teachingLevel, subjects, experience, schoolName, region, district, preferredRegion, preferredDistrict, swapType, isVerified, avatar, bio FROM users WHERE role = 'teacher' AND id != '${req.user.id.replace(/'/g, "''")}'`);
     if (!rows.length) return res.json({ teachers: [] });
     const cols = rows[0].columns;
     const teachers = rows[0].values.map(v => { const o = {}; cols.forEach((c, i) => o[c] = v[i]); return o; });

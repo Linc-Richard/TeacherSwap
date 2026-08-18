@@ -202,6 +202,7 @@
     <button class="lang-toggle-btn active" data-lang="en">EN</button>
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
+  <script src="js/i18n.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -227,16 +228,16 @@
       // Render plan cards
       function renderPlans() {
         var container = document.getElementById('plan-selector');
-        if (!plans.length) { container.innerHTML = '<p style="color:var(--text-muted);">No plans available</p>'; return; }
+        if (!plans.length) { container.innerHTML = '<p style="color:var(--text-muted);">' + __('No plans available') + '</p>'; return; }
         container.innerHTML = plans.map(function(p) {
           var features = [];
           try { features = JSON.parse(p.features || '[]'); } catch(e) { features = []; }
           var isPopular = p.popular ? 'popular' : '';
-          var popularBadge = p.popular ? '<div class="popular-badge">Most Popular</div>' : '';
+          var popularBadge = p.popular ? '<div class="popular-badge">' + __('Most Popular') + '</div>' : '';
           return '<div class="plan-card ' + isPopular + '" data-plan-id="' + p.id + '" data-price="' + p.price + '" data-days="' + p.durationDays + '" data-name="' + p.name + '" onclick="selectPlan(this)">' +
             popularBadge +
             '<h3>' + p.name + '</h3>' +
-            '<div class="plan-price">TSh ' + Number(p.price).toLocaleString() + ' <span>/' + p.durationDays + ' days</span></div>' +
+            '<div class="plan-price">TSh ' + Number(p.price).toLocaleString() + ' <span>/' + p.durationDays + ' ' + __('days') + '</span></div>' +
             '<ul>' + features.map(function(f) { return '<li><i class="fas fa-check-circle"></i> ' + f + '</li>'; }).join('') + '</ul>' +
             '</div>';
         }).join('');
@@ -246,7 +247,7 @@
       function renderPaymentMethods() {
         var container = document.getElementById('payment-methods-container');
         if (!paymentMethods.length) {
-          container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No payment methods configured. Contact admin.</p>';
+          container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">' + __('No payment methods configured. Contact admin.') + '</p>';
           return;
         }
         var icons = { 'M-Pesa': '#00A82D', 'Airtel Money': '#E30000', 'Tigo Pesa': '#0047AB', 'HaloPesa': '#6C2BD9' };
@@ -284,12 +285,12 @@
             var sub = data.subscription;
             var expires = new Date(sub.expiresAt).toLocaleDateString();
             banner.style.display = 'flex';
-            banner.innerHTML = '<div><h3><i class="fas fa-crown"></i> ' + sub.planName + ' Plan Active</h3><p>Expires on ' + expires + '</p></div>' +
+            banner.innerHTML = '<div><h3><i class="fas fa-crown"></i> ' + sub.planName + ' ' + __('Plan Active') + '</h3><p>' + __('Expires on') + ' ' + expires + '</p></div>' +
               '<div><span class="badge-tier ' + sub.tier + '">' + sub.tier + '</span></div>';
           } else if (data.tier === 'free') {
             banner.style.display = 'flex';
-            banner.innerHTML = '<div><h3>Free Plan</h3><p>Upgrade to unlock premium features like unlimited swaps and priority matching.</p></div>' +
-              '<div><span class="badge-tier free">Free</span></div>';
+            banner.innerHTML = '<div><h3>' + __('Free Plan') + '</h3><p>' + __('Upgrade to unlock premium features like unlimited swaps and priority matching.') + '</p></div>' +
+              '<div><span class="badge-tier free">' + __('Free') + '</span></div>';
           }
         } catch(e) {}
       }
@@ -300,7 +301,7 @@
           var data = await api.getPaymentHistory();
           var tbody = document.getElementById('payment-history-body');
           if (!data.payments || !data.payments.length) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">No payments yet</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">' + __('No payments yet') + '</td></tr>';
             return;
           }
           tbody.innerHTML = data.payments.map(function(p) {
@@ -332,7 +333,7 @@
       document.getElementById('receipt-input').addEventListener('change', function(e) {
         var file = e.target.files[0];
         if (!file) return;
-        if (file.size > 5 * 1024 * 1024) { showToast('File too large. Max 5MB.', 'error'); return; }
+        if (file.size > 5 * 1024 * 1024) { showToast(__('File too large. Max 5MB.'), 'error'); return; }
         var reader = new FileReader();
         reader.onload = function(ev) {
           receiptDataUrl = ev.target.result;
@@ -355,13 +356,13 @@
         var notes = document.getElementById('pay-notes').value.trim();
 
         if (!planId || !transactionId || !phoneNumber || !amount || !method) {
-          showToast('Please fill in all required fields', 'error');
+          showToast(__('Please fill in all required fields'), 'error');
           return;
         }
 
         var btn = document.getElementById('pay-now-btn');
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + __('Submitting...');
 
         try {
           var data = await api.submitPayment({
@@ -373,7 +374,7 @@
             notes: notes,
             receiptData: receiptDataUrl || undefined
           });
-          showToast('Payment submitted! Awaiting verification.', 'success');
+          showToast(__('Payment submitted! Awaiting verification.'), 'success');
           document.getElementById('payment-submit-form').reset();
           document.getElementById('selected-plan-id').value = '';
           receiptDataUrl = null;
@@ -382,17 +383,17 @@
           selectedPaymentMethod = null;
           loadPaymentHistory();
         } catch(err) {
-          showToast(err.message, 'error');
+          showToast(__(err.message), 'error');
         } finally {
           btn.disabled = false;
-          btn.innerHTML = '<i class="fas fa-lock"></i> Submit Payment';
+          btn.innerHTML = '<i class="fas fa-lock"></i> ' + __('Submit Payment');
         }
       });
 
       // Populate payment method dropdown
       function populateMethodDropdown() {
         var select = document.getElementById('pay-method');
-        select.innerHTML = '<option value="">Select method</option>';
+        select.innerHTML = '<option value="">' + __('Select method') + '</option>';
         ['M-Pesa', 'Airtel Money', 'Tigo Pesa', 'HaloPesa'].forEach(function(m) {
           select.innerHTML += '<option value="' + m + '">' + m + '</option>';
         });
@@ -407,7 +408,7 @@
       // Mark all notifications read
       document.getElementById('mark-all-read').addEventListener('click', async function(e) {
         e.preventDefault();
-        try { await api.markAllNotificationsRead(); document.getElementById('notif-count').textContent = '0'; showToast('All marked read', 'success'); } catch(err) { showToast(err.message, 'error'); }
+        try { await api.markAllNotificationsRead(); document.getElementById('notif-count').textContent = '0'; showToast(__('All marked read'), 'success'); } catch(err) { showToast(__(err.message), 'error'); }
       });
 
       await loadData();
