@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="api-base-url" content="">
+  <title>Dashboard - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/app-redesign.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <!-- Purple Navbar -->
+  <nav class="navbar-redesign" id="navbar">
+    <div class="navbar-inner">
+      <div class="nav-left">
+        <button class="nav-icon-btn" id="sidebar-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="nav-brand">
+          <span class="brand-badge"><i class="fas fa-arrows-rotate"></i></span>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-right">
+        <button class="nav-icon-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <button class="nav-icon-btn" id="notif-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="dot" id="notif-dot" style="display:none;"></span></button>
+        <a href="profile.html" class="nav-avatar-link" id="nav-avatar" aria-label="My profile"></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay-redesign" id="sidebar-overlay"></div>
+
+  <!-- Purple Sidebar -->
+  <aside class="sidebar-redesign" id="sidebar">
+    <div class="sb-label">Main Menu</div>
+    <a href="dashboard.html" class="sb-link active"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="find-match.html" class="sb-link"><i class="fas fa-search"></i> Find Match</a>
+    <a href="messages.html" class="sb-link"><i class="fas fa-comments"></i> Messages</a>
+    <a href="community.html" class="sb-link"><i class="fas fa-users"></i> Community</a>
+    <a href="payment.html" class="sb-link"><i class="fas fa-credit-card"></i> Payment</a>
+
+    <div class="sb-label">Account</div>
+    <a href="profile.html" class="sb-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="settings.html" class="sb-link"><i class="fas fa-cog"></i> Settings</a>
+    <a href="login.html" class="sb-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content-redesign">
+    <div class="page-head-redesign">
+      <h1>Dashboard</h1>
+      <p>Your TeacherSwap workspace at a glance.</p>
+    </div>
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner" id="welcome-banner">
+      <div class="wb-avatar" id="wb-avatar"></div>
+      <div class="wb-text">
+        <h2 id="welcome-heading">Welcome back!</h2>
+        <p id="welcome-sub">Ready to connect, teach, and learn?</p>
+        <span class="wb-role" id="wb-role"><i class="fas fa-graduation-cap"></i> <span id="wb-role-text">Teacher</span></span>
+      </div>
+      <div class="wb-actions">
+        <a href="find-match.html" class="wb-btn primary"><i class="fas fa-search"></i> Find a Match</a>
+        <a href="profile.html" class="wb-btn ghost"><i class="fas fa-user-edit"></i> Edit Profile</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stats" id="stats-cards">
+      <div class="dash-stat"><div class="st-icon purple"><i class="fas fa-exchange-alt"></i></div><div><div class="st-num" id="stat-total">0</div><div class="st-label">Total Swaps</div></div></div>
+      <div class="dash-stat"><div class="st-icon green"><i class="fas fa-check-circle"></i></div><div><div class="st-num" id="stat-completed">0</div><div class="st-label">Completed</div></div></div>
+      <div class="dash-stat"><div class="st-icon amber"><i class="fas fa-clock"></i></div><div><div class="st-num" id="stat-pending">0</div><div class="st-label">Pending</div></div></div>
+      <div class="dash-stat"><div class="st-icon blue"><i class="fas fa-heart"></i></div><div><div class="st-num" id="stat-score">0%</div><div class="st-label">Best Match</div></div></div>
+    </div>
+
+    <!-- Action Cards -->
+    <div class="dash-cards">
+      <a href="profile.html" class="dash-card">
+        <div class="dc-icon purple"><i class="fas fa-user-circle"></i></div>
+        <div class="dc-body"><h4>My Profile</h4><p>View and edit your details</p></div>
+        <i class="fas fa-chevron-right dc-arrow"></i>
+      </a>
+      <a href="find-match.html" class="dash-card">
+        <div class="dc-icon blue"><i class="fas fa-handshake"></i></div>
+        <div class="dc-body"><h4>Teacher Matches</h4><p>Find compatible teachers</p></div>
+        <i class="fas fa-chevron-right dc-arrow"></i>
+      </a>
+      <a href="messages.html" class="dash-card">
+        <div class="dc-icon green"><i class="fas fa-comments"></i></div>
+        <div class="dc-body"><h4>Messages</h4><p id="card-messages">Start conversations</p></div>
+        <i class="fas fa-chevron-right dc-arrow"></i>
+      </a>
+      <a href="payment.html" class="dash-card">
+        <div class="dc-icon amber"><i class="fas fa-crown"></i></div>
+        <div class="dc-body"><h4>Upgrade</h4><p>Explore premium plans</p></div>
+        <i class="fas fa-chevron-right dc-arrow"></i>
+      </a>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="profile-grid-redesign">
+      <!-- Left column -->
+      <div>
+        <!-- Swap Requests -->
+        <div class="dash-section">
+          <div class="ds-head">
+            <h3><i class="fas fa-exchange-alt"></i> Recent Swap Requests</h3>
+            <a href="find-match.html" class="ds-link">View All</a>
+          </div>
+          <div class="ds-body" id="swap-requests-list">
+            <div class="ds-empty"><i class="fas fa-exchange-alt"></i>No swap requests yet. Find teachers to start swapping!</div>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="dash-section">
+          <div class="ds-head">
+            <h3><i class="fas fa-bell"></i> Recent Notifications</h3>
+            <a href="profile.html" class="ds-link">View All</a>
+          </div>
+          <div class="ds-body" id="dashboard-notifications">
+            <div class="ds-empty"><i class="fas fa-bell"></i>No notifications yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div>
+        <!-- AI Recommended Matches -->
+        <div class="dash-section" id="recs-section" style="display:none;">
+          <div class="ds-head">
+            <h3><i class="fas fa-robot"></i> Recommended Matches</h3>
+            <a href="find-match.html" class="ds-link">View All</a>
+          </div>
+          <div class="ds-body" id="recs-list"></div>
+        </div>
+
+        <!-- Recent Messages -->
+        <div class="dash-section">
+          <div class="ds-head">
+            <h3><i class="fas fa-comments"></i> Recent Messages</h3>
+            <a href="messages.html" class="ds-link">View All</a>
+          </div>
+          <div class="ds-body" id="dashboard-messages">
+            <div class="ds-empty"><i class="fas fa-comments"></i>No messages yet</div>
+          </div>
+        </div>
+
+        <!-- Profile completeness -->
+        <div class="dash-section" id="completeness-section" style="display:none;">
+          <div class="ds-head">
+            <h3><i class="fas fa-user-check"></i> Complete your profile</h3>
+            <a href="profile.html" class="ds-link">Complete Now</a>
+          </div>
+          <div class="ds-body">
+            <p id="completeness-text" style="margin:0;font-size:0.85rem;color:var(--text-muted);"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item active"><i class="fas fa-th-large"></i><span>Dash</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/avatar.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+      var user = api.getUser();
+
+      function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s || '')); return d.innerHTML; }
+
+      // Refresh user from server (gives latest avatar)
+      try {
+        var freshUser = await api.getProfile();
+        if (freshUser && freshUser.id) { api.saveUser(freshUser); user = freshUser; }
+      } catch(e) {}
+
+      // Set navbar avatar + welcome banner avatar
+      var navAvatar = document.getElementById('nav-avatar');
+      if (navAvatar) navAvatar.innerHTML = avatarHelper.render({ user: user, size: 40, 'class': 'nav-avatar-img' });
+      var wbAvatar = document.getElementById('wb-avatar');
+      if (wbAvatar) wbAvatar.innerHTML = avatarHelper.render({ user: user, size: 74, border: 'rgba(255,255,255,0.85)', 'class': 'wb-avatar-img' });
+
+      // Welcome banner text
+      var heading = document.getElementById('welcome-heading');
+      if (heading) heading.textContent = __('Welcome back,') + ' ' + esc(user.fullName || 'Teacher') + ' ' + '\u{1F44B}';
+      var role = document.getElementById('wb-role-text');
+      if (role) role.textContent = user.subjects ? (user.teachingLevel || 'Teacher') : 'Teacher';
+
+      var swaps = [];
+      try { swaps = await api.getSwapRequests(); } catch(e) {}
+
+      var total = swaps.length;
+      var completed = swaps.filter(function(s) { return s.status === 'completed' || s.status === 'accepted'; }).length;
+      var pending = swaps.filter(function(s) { return s.status === 'pending'; }).length;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-completed').textContent = completed;
+      document.getElementById('stat-pending').textContent = pending;
+
+      // Swap requests list
+      var swapList = document.getElementById('swap-requests-list');
+      if (swapList && swaps.length) {
+        swapList.innerHTML = swaps.slice(0, 5).map(function(s) {
+          var other = s.toUserId === (user.id || '') ? s.fromName : s.toName;
+          var otherId = s.toUserId === (user.id || '') ? s.fromUserId : s.toUserId;
+          var statusClass = s.status === 'completed' || s.status === 'accepted' ? 'accepted' : (s.status === 'declined' || s.status === 'cancelled' ? 'declined' : 'pending');
+          return '<a href="profile.html?id=' + encodeURIComponent(otherId) + '" class="ds-row">' +
+            '<div class="ds-avatar">' + avatarHelper.render({ user: { fullName: other }, size: 42 }) + '</div>' +
+            '<div class="ds-main"><h4>' + esc(other || __('Unknown')) + '</h4><p>' + esc(s.message ? s.message.substring(0, 40) : __('Swap request')) + '</p></div>' +
+            '<span class="ds-status ' + statusClass + '">' + esc(s.status) + '</span></a>';
+        }).join('');
+      }
+
+      // Notifications
+      try {
+        var notifs = await api.getNotifications();
+        var unreadN = 0;
+        var notifCard = document.getElementById('dashboard-notifications');
+        if (notifCard) {
+          if (!notifs.length) {
+            notifCard.innerHTML = '<div class="ds-empty"><i class="fas fa-bell"></i>No notifications yet</div>';
+          } else {
+            var iconMap = { swap_request: 'blue fa-handshake', swap_accepted: 'green fa-check-circle', message: 'green fa-comments', meeting: 'purple fa-calendar-check', review: 'amber fa-star', new_match: 'blue fa-robot' };
+            notifCard.innerHTML = notifs.slice(0, 4).map(function(n) {
+              if (!n.isRead) unreadN++;
+              var ic = (iconMap[n.type] || 'blue fa-bell').split(' ');
+              return '<div class="ds-row">' +
+                '<div class="dc-icon ' + ic[0] + '" style="width:40px;height:40px;font-size:0.95rem;border-radius:11px;"><i class="fas ' + ic[1] + '"></i></div>' +
+                '<div class="ds-main"><h4>' + esc(n.body || n.title || '') + '</h4><p>' + new Date((n.createdAt || '').replace(' ', 'T')).toLocaleString() + '</p></div></div>';
+            }).join('');
+          }
+        }
+        if (unreadN > 0) { var dot = document.getElementById('notif-dot'); if (dot) dot.style.display = 'block'; }
+      } catch(e) {}
+
+      // Messages + unread
+      var unreadMsgs = 0;
+      try {
+        var convos = await api.getConversations();
+        var msgCard = document.getElementById('dashboard-messages');
+        if (msgCard) {
+          if (!convos.length) {
+            msgCard.innerHTML = '<div class="ds-empty"><i class="fas fa-comments"></i>No messages yet</div>';
+          } else {
+            msgCard.innerHTML = convos.slice(0, 4).map(function(c) {
+              unreadMsgs += Number(c.unreadCount) || 0;
+              return '<a href="messages.html?teacher=' + encodeURIComponent(c.otherUserId) + '" class="ds-row">' +
+                '<div class="ds-avatar">' + avatarHelper.render({ user: { fullName: c.otherName }, size: 42 }) + '</div>' +
+                '<div class="ds-main"><h4>' + esc(c.otherName) + (Number(c.unreadCount) > 0 ? ' <span class="ds-status pending">' + c.unreadCount + '</span>' : '') + '</h4><p>' + esc(c.lastMessage || '') + '</p></div>' +
+                '<span style="font-size:0.72rem;color:var(--text-muted);">' + new Date((c.lastMessageAt || '').replace(' ', 'T')).toLocaleDateString() + '</span></a>';
+            }).join('');
+          }
+        }
+        var cardMsg = document.getElementById('card-messages');
+        if (cardMsg && unreadMsgs > 0) cardMsg.textContent = unreadMsgs + ' unread';
+      } catch(e) {}
+
+      // AI recommendations
+      try {
+        var recs = await api.getRecommendations();
+        var recSec = document.getElementById('recs-section');
+        var recList = document.getElementById('recs-list');
+        if (recSec && recList && recs.length) {
+          recSec.style.display = 'block';
+          var topScore = 0;
+          recList.innerHTML = recs.slice(0, 3).map(function(r) {
+            topScore = Math.max(topScore, Number(r.score) || 0);
+            var cls = r.score >= 60 ? 'accepted' : (r.score >= 40 ? 'pending' : 'declined');
+            return '<a href="profile.html?id=' + encodeURIComponent(r.id) + '" class="ds-row">' +
+              '<div class="ds-avatar">' + avatarHelper.render({ user: { fullName: r.fullName, avatar: r.avatar }, size: 42 }) + '</div>' +
+              '<div class="ds-main"><h4>' + esc(r.fullName || r.email) + '</h4><p>' + esc(r.subjects || '') + ' Â· ' + esc(r.schoolName || '') + '</p></div>' +
+              '<span class="ds-status ' + cls + '">' + Number(r.score) + '%</span></a>';
+          }).join('');
+          document.getElementById('stat-score').textContent = topScore + '%';
+        }
+      } catch(e) {}
+
+      // Profile completeness
+      try {
+        var me = user;
+        var required = ['teachingLevel', 'subjects', 'schoolName', 'region'];
+        var missing = required.filter(function(f) { return !String(me[f] || '').trim(); });
+        if (missing.length) {
+          var compSec = document.getElementById('completeness-section');
+          if (compSec) {
+            compSec.style.display = 'block';
+            document.getElementById('completeness-text').textContent = 'Add: ' + missing.join(', ');
+          }
+        }
+      } catch(e) {}
+
+      // Sidebar mobile toggle
+      var st = document.getElementById('sidebar-toggle');
+      var sb = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+      if (st && sb) {
+        st.addEventListener('click', function() { sb.classList.add('show'); if (overlay) overlay.classList.add('show'); });
+        if (overlay) overlay.addEventListener('click', function() { sb.classList.remove('show'); overlay.classList.remove('show'); });
+      }
+    });
+  </script>
+</body>
+</html>

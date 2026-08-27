@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="api-base-url" content="">
+  <title>Profile - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/app-redesign.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <!-- Purple Navbar -->
+  <nav class="navbar-redesign" id="navbar">
+    <div class="navbar-inner">
+      <div class="nav-left">
+        <button class="nav-icon-btn" id="sidebar-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="nav-brand">
+          <span class="brand-badge"><i class="fas fa-arrows-rotate"></i></span>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-right">
+        <button class="nav-icon-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="profile.html" class="nav-avatar-link" id="nav-avatar" aria-label="My profile"></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-overlay-redesign" id="sidebar-overlay"></div>
+
+  <aside class="sidebar-redesign" id="sidebar">
+    <div class="sb-label">Main Menu</div>
+    <a href="dashboard.html" class="sb-link"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="find-match.html" class="sb-link"><i class="fas fa-search"></i> Find Match</a>
+    <a href="messages.html" class="sb-link"><i class="fas fa-comments"></i> Messages</a>
+    <a href="community.html" class="sb-link"><i class="fas fa-users"></i> Community</a>
+    <a href="payment.html" class="sb-link"><i class="fas fa-credit-card"></i> Payment</a>
+    <div class="sb-label">Account</div>
+    <a href="profile.html" class="sb-link active"><i class="fas fa-user"></i> Profile</a>
+    <a href="settings.html" class="sb-link"><i class="fas fa-cog"></i> Settings</a>
+    <a href="login.html" class="sb-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </aside>
+
+  <main class="main-content-redesign">
+    <div class="page-head-redesign">
+      <h1>My Profile</h1>
+      <p>Manage your teacher profile and swap preferences.</p>
+    </div>
+
+    <!-- Purple Profile Header -->
+    <div class="profile-hero">
+      <div class="ph-avatar" id="ph-avatar">
+        <div class="ph-initials" id="ph-initials">?</div>
+        <span class="ph-camera"><i class="fas fa-camera"></i></span>
+        <input type="file" accept="image/*" id="profile-photo-input" aria-label="Upload profile picture">
+      </div>
+      <h2 class="ph-name" id="ph-name">Loading profile...</h2>
+      <div class="ph-username" id="ph-username"></div>
+      <div class="ph-meta" id="ph-meta">
+        <span id="ph-location"><i class="fas fa-map-marker-alt"></i> -</span>
+        <span id="ph-school"><i class="fas fa-school"></i> -</span>
+        <span id="ph-status"><i class="fas fa-badge-check"></i> -</span>
+      </div>
+      <button class="ph-edit" id="ph-edit-btn" aria-label="Edit profile"><i class="fas fa-edit"></i> Edit Profile</button>
+    </div>
+
+    <!-- About / Bio -->
+    <div class="profile-card" style="margin-bottom:20px;">
+      <h3><i class="fas fa-quote-left"></i> About Me</h3>
+      <p id="ph-bio" style="margin:0;font-size:0.92rem;color:var(--text-color);line-height:1.6;">No bio added yet.</p>
+    </div>
+
+    <!-- Profile Info Grid -->
+    <div class="profile-grid-redesign">
+      <div>
+        <div class="profile-card">
+          <h3><i class="fas fa-user"></i> Personal Information</h3>
+          <div class="info-row"><div class="k">Full Name</div><div class="v" id="pi-name">-</div></div>
+          <div class="info-row"><div class="k">Username</div><div class="v" id="pi-username">-</div></div>
+          <div class="info-row"><div class="k">Email</div><div class="v" id="pi-email">-</div></div>
+          <div class="info-row"><div class="k">Phone</div><div class="v" id="pi-phone">-</div></div>
+          <div class="info-row"><div class="k">Member Since</div><div class="v" id="pi-since">-</div></div>
+        </div>
+
+        <div class="profile-card">
+          <h3><i class="fas fa-graduation-cap"></i> Teaching Information</h3>
+          <div class="info-row"><div class="k">Teaching Level</div><div class="v" id="ti-level">-</div></div>
+          <div class="info-row"><div class="k">Subjects Taught</div><div class="v" id="ti-subjects">-</div></div>
+          <div class="info-row"><div class="k">Experience</div><div class="v" id="ti-experience">-</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="profile-card">
+          <h3><i class="fas fa-school"></i> School & Location</h3>
+          <div class="info-row"><div class="k">Current School</div><div class="v" id="sl-school">-</div></div>
+          <div class="info-row"><div class="k">Region</div><div class="v" id="sl-region">-</div></div>
+          <div class="info-row"><div class="k">District</div><div class="v" id="sl-district">-</div></div>
+          <div class="info-row"><div class="k">Preferred Region</div><div class="v" id="sl-pregion">-</div></div>
+        </div>
+
+        <div class="profile-card">
+          <h3><i class="fas fa-arrows-rotate"></i> Swap Preferences</h3>
+          <div class="info-row"><div class="k">Swap Type</div><div class="v" id="sp-type">-</div></div>
+          <div class="info-row"><div class="k">Reason</div><div class="v" id="sp-reason">-</div></div>
+          <div class="info-row"><div class="k">Status</div><div class="v" id="sp-status"><span class="ds-status pending">-</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews (other users) -->
+    <div class="profile-card" id="reviews-section" style="margin-top:20px;">
+      <h3><i class="fas fa-star"></i> Reviews</h3>
+      <div id="reviews-list"><p style="color:var(--text-muted);font-size:0.88rem;">No reviews yet.</p></div>
+    </div>
+  </main>
+
+  <!-- Edit Profile Modal -->
+  <div class="ts-modal-overlay" id="edit-modal">
+    <div class="ts-modal">
+      <div class="tm-head">
+        <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+        <button class="tm-close" data-close="edit-modal" aria-label="Close"><i class="fas fa-times"></i></button>
+      </div>
+      <form class="edit-profile-form tm-body" id="edit-profile-form">
+        <div class="form-group">
+          <label for="edit-fullName">Full Name</label>
+          <input type="text" class="form-control" id="edit-fullName" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="edit-bio">Bio</label>
+          <textarea class="form-control" id="edit-bio" rows="3" placeholder="Tell others about yourself"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-subjects">Subjects I teach</label>
+          <input type="text" class="form-control" id="edit-subjects" placeholder="e.g. Mathematics, Physics">
+        </div>
+        <div class="form-group">
+          <label for="edit-schoolName">Current School</label>
+          <input type="text" class="form-control" id="edit-schoolName">
+        </div>
+        <div class="form-group">
+          <label for="edit-region">Region</label>
+          <input type="text" class="form-control" id="edit-region">
+        </div>
+        <div class="form-group">
+          <label for="edit-district">District</label>
+          <input type="text" class="form-control" id="edit-district">
+        </div>
+        <div class="form-group">
+          <label for="edit-teachingLevel">Teaching Level</label>
+          <select class="form-control" id="edit-teachingLevel">
+            <option value="">Select level</option>
+            <option value="Pre-Primary">Pre-Primary</option>
+            <option value="Primary">Primary</option>
+            <option value="Junior Secondary">Junior Secondary</option>
+            <option value="Senior Secondary">Senior Secondary</option>
+            <option value="Tertiary">Tertiary</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-experience">Experience</label>
+          <input type="text" class="form-control" id="edit-experience" placeholder="e.g. 5 years">
+        </div>
+        <div class="form-group">
+          <label for="edit-phone">Phone</label>
+          <input type="tel" class="form-control" id="edit-phone" autocomplete="tel">
+        </div>
+      </form>
+      <div class="tm-footer">
+        <button type="button" class="btn-light" data-close="edit-modal">Cancel</button>
+        <button type="button" class="btn-brand" id="edit-save-btn"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dash</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item active"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/avatar.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+      function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s || '')); return d.innerHTML; }
+
+      var params = new URLSearchParams(window.location.search);
+      var profileId = params.get('id');
+      var isOwn = !profileId;
+      var user = null;
+
+      var sidebarToggle = document.getElementById('sidebar-toggle');
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+      if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() { sidebar.classList.add('show'); if (overlay) overlay.classList.add('show'); });
+        if (overlay) overlay.addEventListener('click', function() { sidebar.classList.remove('show'); overlay.classList.remove('show'); });
+      }
+
+      // Modal close handlers
+      document.querySelectorAll('[data-close]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.getElementById(btn.getAttribute('data-close')).classList.remove('show');
+        });
+      });
+
+      function renderHeaderAvatar() {
+        var ph = document.getElementById('ph-avatar');
+        if (!ph) return;
+        var avatar = user && user.avatar;
+        var initials = user ? (user.fullName || '?').split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase() : '?';
+        var inner = '';
+        if (avatar) {
+          inner = '<img src="' + esc(avatarHelper.resolveUrl(user.avatar)) + '" alt="' + esc(user.fullName) + '" onerror="this.style.display=\'none\';document.getElementById(\'ph-initials\').style.display=\'flex\';">' +
+            '<div class="ph-initials" id="ph-initials" style="display:none;">' + esc(initials) + '</div>';
+        } else {
+          inner = '<div class="ph-initials" id="ph-initials">' + esc(initials) + '</div>';
+        }
+        ph.innerHTML = inner +
+          '<span class="ph-camera"><i class="fas fa-camera"></i></span>' +
+          '<input type="file" accept="image/*" id="profile-photo-input" aria-label="Upload profile picture">';
+        wirePhotoUpload();
+      }
+
+      // Load user
+      try {
+        if (isOwn) {
+          user = await api.getProfile();
+          api.saveUser(user);
+        } else {
+          user = await api.getTeacher(profileId);
+        }
+      } catch(err) { showToast(__('Failed to load profile'), 'error'); return; }
+
+      // Navbar avatar
+      var navAvatar = document.getElementById('nav-avatar');
+      if (navAvatar) navAvatar.innerHTML = avatarHelper.render({ user: user, size: 40, 'class': 'nav-avatar-img' });
+
+      // Purple header
+      document.getElementById('ph-name').textContent = user.fullName;
+      document.getElementById('ph-username').textContent = user.username ? '@' + user.username : (user.subjects || '');
+      document.getElementById('ph-location').innerHTML = '<i class="fas fa-map-marker-alt"></i> ' + esc((user.region || 'Not set'));
+      document.getElementById('ph-school').innerHTML = '<i class="fas fa-school"></i> ' + esc(user.schoolName || 'No school');
+      var statusEl = document.getElementById('ph-status');
+      statusEl.innerHTML = '<i class="fas fa-badge-check"></i> ' + (user.isVerified ? 'Verified Teacher' : 'Teacher');
+      document.getElementById('ph-bio').textContent = user.bio || 'No bio added yet.';
+      renderHeaderAvatar();
+
+      // Info sections
+      document.getElementById('pi-name').textContent = user.fullName || '-';
+      document.getElementById('pi-username').textContent = user.username ? '@' + user.username : '-';
+      document.getElementById('pi-email').textContent = user.email || '-';
+      document.getElementById('pi-phone').textContent = user.phone || '-';
+      document.getElementById('pi-since').textContent = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-';
+      document.getElementById('ti-level').textContent = user.teachingLevel || '-';
+      document.getElementById('ti-subjects').textContent = user.subjects || '-';
+      document.getElementById('ti-experience').textContent = user.experience || '-';
+      document.getElementById('sl-school').textContent = user.schoolName || '-';
+      document.getElementById('sl-region').textContent = user.region || '-';
+      document.getElementById('sl-district').textContent = user.district || '-';
+      document.getElementById('sl-pregion').textContent = user.preferredRegion || '-';
+      document.getElementById('sp-type').textContent = user.swapType || '-';
+      document.getElementById('sp-reason').textContent = user.reason || '-';
+      var spStatus = document.getElementById('sp-status');
+      spStatus.innerHTML = '<span class="ds-status ' + (user.isVerified ? 'accepted' : 'pending') + '">' + (user.isVerified ? 'Verified' : 'Pending') + '</span>';
+
+      // Edit button - only for own profile
+      var editBtn = document.getElementById('ph-edit-btn');
+      var editModal = document.getElementById('edit-modal');
+      if (isOwn && editBtn && editModal) {
+        editBtn.addEventListener('click', function() {
+          document.getElementById('edit-fullName').value = user.fullName || '';
+          document.getElementById('edit-bio').value = user.bio || '';
+          document.getElementById('edit-subjects').value = user.subjects || '';
+          document.getElementById('edit-schoolName').value = user.schoolName || '';
+          document.getElementById('edit-region').value = user.region || '';
+          document.getElementById('edit-district').value = user.district || '';
+          document.getElementById('edit-teachingLevel').value = user.teachingLevel || '';
+          document.getElementById('edit-experience').value = user.experience || '';
+          document.getElementById('edit-phone').value = user.phone || '';
+          editModal.classList.add('show');
+        });
+      } else if (editBtn) {
+        editBtn.style.display = 'none';
+      }
+
+      // Save edit
+      var editForm = document.getElementById('edit-profile-form');
+      if (editForm) {
+        editForm.addEventListener('submit', function(e) { e.preventDefault(); });
+      }
+      var saveBtn = document.getElementById('edit-save-btn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', async function() {
+          var data = {
+            fullName: document.getElementById('edit-fullName').value.trim(),
+            bio: document.getElementById('edit-bio').value.trim(),
+            subjects: document.getElementById('edit-subjects').value.trim(),
+            schoolName: document.getElementById('edit-schoolName').value.trim(),
+            region: document.getElementById('edit-region').value.trim(),
+            district: document.getElementById('edit-district').value.trim(),
+            teachingLevel: document.getElementById('edit-teachingLevel').value,
+            experience: document.getElementById('edit-experience').value.trim(),
+            phone: document.getElementById('edit-phone').value.trim()
+          };
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+          try {
+            await api.updateProfile(data);
+            showToast(__('Profile updated'), 'success');
+            editModal.classList.remove('show');
+            // Reload fresh profile
+            user = await api.getProfile();
+            api.saveUser(user);
+            location.reload();
+          } catch(err) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-check"></i> Save Changes';
+            showToast(err.message || __('Failed to save'), 'error');
+          }
+        });
+      }
+
+      // Profile photo upload wiring
+      function wirePhotoUpload() {
+        var input = document.getElementById('profile-photo-input');
+        if (!input) return;
+        input.addEventListener('change', function() {
+          var file = this.files[0];
+          if (!file) return;
+          if (!file.type.match(/^image\/(jpeg|jpg|png|webp)$/)) { showToast(__('Only JPEG, PNG, WebP allowed'), 'error'); return; }
+          if (file.size > 5 * 1024 * 1024) { showToast(__('Image must be under 5MB'), 'error'); return; }
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            // Show preview immediately
+            var ph = document.getElementById('ph-avatar');
+            if (ph) {
+              ph.innerHTML = '<img src="' + e.target.result + '" alt="Preview" style="width:100%;height:100%;object-fit:cover;">' +
+                '<span class="ph-camera"><i class="fas fa-camera"></i></span>';
+            }
+            api.uploadPhoto(e.target.result).then(function(data) {
+              if (data.user) { api.saveUser(data.user); user = data.user; }
+              var nav = document.getElementById('nav-avatar');
+              if (nav) nav.innerHTML = avatarHelper.render({ user: user, size: 40, 'class': 'nav-avatar-img' });
+              renderHeaderAvatar();
+              showToast(__('Profile photo updated'), 'success');
+            }).catch(function(err) {
+              showToast(err.message || __('Upload failed'), 'error');
+              renderHeaderAvatar();
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Not own profile: hide edit input, load reviews
+      if (!isOwn) { document.getElementById('profile-photo-input').style.display = 'none'; document.getElementById('ph-avatar').style.cursor = 'default'; }
+
+      // Reviews for other users
+      try {
+        if (!isOwn) {
+          var reviews = await api.getUserReviews(profileId);
+          var rvEl = document.getElementById('reviews-list');
+          if (reviews && reviews.reviews && reviews.reviews.length) {
+            var stars = reviews.averageRating ? 'â˜…'.repeat(Math.round(reviews.averageRating)) : '';
+            rvEl.innerHTML = '<div style="font-size:1.3rem;color:var(--warning);margin-bottom:8px;">' + stars + ' <span style="font-size:0.85rem;color:var(--text-muted);">' + (reviews.averageRating ? reviews.averageRating.toFixed(1) : '') + '</span></div>' +
+              reviews.reviews.slice(0, 3).map(function(r) {
+                return '<div style="padding:8px 0;border-bottom:1px solid var(--border-color);"><strong>' + esc(r.reviewerName || 'Anonymous') + '</strong> <span style="color:var(--warning);">' + 'â˜…'.repeat(r.rating || 0) + '</span><p style="font-size:0.85rem;color:var(--text-muted);">' + esc(r.feedback || '') + '</p></div>';
+              }).join('');
+          } else {
+            document.getElementById('reviews-section').style.display = 'none';
+          }
+        } else {
+          document.getElementById('reviews-section').style.display = 'none';
+        }
+      } catch(e) { document.getElementById('reviews-section').style.display = 'none'; }
+    });
+  </script>
+</body>
+</html>

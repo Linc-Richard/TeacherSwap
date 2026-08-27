@@ -1,13 +1,22 @@
 {
-  "name": "teacherswap",
-  "version": "1.0.0",
-  "description": "TeacherSwap - Find Your Perfect Teaching Swap in Tanzania",
-  "main": "server/index.js",
+  "name": "teacherswap-frontend",
+  "version": "2.0.0",
+  "description": "TeacherSwap frontend — responsive static web app to find your perfect teaching swap in Tanzania.",
+  "private": true,
   "scripts": {
-    "start": "node server/index.js",
-    "build": "cd server && npm install"
+    "start": "npx --yes serve@14 frontend -l 3000",
+    "serve": "npx --yes serve@14 frontend -l 3000",
+    "check": "node scripts/check-frontend.js"
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "keywords": [
+    "teacher-swap",
+    "education",
+    "tanzania",
+    "frontend",
+    "static-site"
+  ],
+  "license": "UNLICENSED"
 }

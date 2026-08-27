@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="api-base-url" content="">
+  <title>Settings - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/app-redesign.css">
+  <style>
+    .settings-tabs{display:flex;gap:4px;padding:8px;background:var(--card-bg);border-radius:12px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .settings-tab{padding:10px 16px;border-radius:8px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:500;color:var(--text-muted);white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all 0.2s;}
+    .settings-tab:hover{background:var(--hover-bg);color:var(--text-color);}
+    .settings-tab.active{background:var(--primary);color:white;}
+    .settings-panel{display:none;animation:fadeIn 0.3s ease;}
+    .settings-panel.active{display:block;}
+    .settings-card{background:var(--card-bg);border-radius:12px;padding:24px;margin-bottom:16px;border:1px solid var(--border-color);}
+    .settings-card h3{margin:0 0 16px;font-size:1.1rem;font-weight:600;}
+    .settings-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border-color);}
+    .settings-row:last-child{border-bottom:none;}
+    .settings-row-info{flex:1;margin-right:16px;}
+    .settings-row-info h4{margin:0 0 2px;font-size:0.9rem;font-weight:500;}
+    .settings-row-info p{margin:0;font-size:0.8rem;color:var(--text-muted);}
+    .settings-input{padding:8px 12px;border-radius:8px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-color);font-family:inherit;font-size:0.85rem;min-width:200px;}
+    .settings-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+    .toggle-switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--border-color);border-radius:24px;transition:0.3s;}
+    .toggle-slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s;}
+    .toggle-switch input:checked + .toggle-slider{background:var(--primary);}
+    .toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px);}
+    .save-bar{position:sticky;bottom:0;padding:16px 0;display:flex;gap:8px;justify-content:flex-end;background:linear-gradient(transparent,var(--bg-color));}
+    .wallpaper-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px;}
+    .wallpaper-option{border-radius:12px;border:3px solid transparent;cursor:pointer;overflow:hidden;aspect-ratio:16/9;position:relative;transition:all 0.2s;}
+    .wallpaper-option:hover{transform:scale(1.05);}
+    .wallpaper-option.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,0.3);}
+    .wallpaper-option .wp-name{position:absolute;bottom:0;left:0;right:0;padding:4px 6px;background:rgba(0,0,0,0.6);color:white;font-size:0.65rem;text-align:center;}
+    .wp-default{background:linear-gradient(135deg,#f0f4ff,#e8f0fe);}
+    .wp-dark{background:linear-gradient(135deg,#1a1a2e,#16213e);}
+    .wp-nature{background:linear-gradient(135deg,#a8edea,#fed6e3);}
+    .wp-abstract{background:linear-gradient(135deg,#667eea,#764ba2);}
+    .wp-classroom{background:linear-gradient(135deg,#f5e6d3,#d4a574);}
+    .wp-geometric{background:linear-gradient(135deg,#00c6fb,#005bea);}
+    .wp-sunset{background:linear-gradient(135deg,#fa709a,#fee140);}
+    .wp-ocean{background:linear-gradient(135deg,#2af598,#009efd);}
+    .theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;margin-top:12px;}
+    .theme-option{border-radius:12px;border:3px solid transparent;cursor:pointer;padding:16px 8px;text-align:center;transition:all 0.2s;background:var(--card-bg);border:1px solid var(--border-color);}
+    .theme-option:hover{transform:scale(1.05);}
+    .theme-option.active{border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,0.3);}
+    .theme-option .theme-swatch{width:32px;height:32px;border-radius:50%;margin:0 auto 6px;border:2px solid var(--border-color);}
+    .theme-option .theme-name{font-size:0.75rem;font-weight:500;}
+    .btn-save{padding:10px 24px;border-radius:8px;border:none;background:var(--primary);color:white;font-family:inherit;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .btn-save:hover{opacity:0.9;transform:translateY(-1px);}
+    .btn-save:disabled{opacity:0.5;cursor:not-allowed;}
+    .btn-cancel{padding:10px 24px;border-radius:8px;border:1px solid var(--border-color);background:none;color:var(--text-color);font-family:inherit;font-weight:500;cursor:pointer;}
+    .password-group{display:flex;gap:8px;align-items:center;max-width:400px;}
+    .password-group input{flex:1;}
+    .password-group .btn{white-space:nowrap;}
+  </style>
+</head>
+<body>
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+  <div id="scroll-progress"></div>
+
+  <nav class="navbar-redesign" id="navbar">
+    <div class="navbar-inner">
+      <div class="nav-left">
+        <button class="nav-icon-btn" id="sidebar-toggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="nav-brand">
+          <span class="brand-badge"><i class="fas fa-arrows-rotate"></i></span>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-right">
+        <button class="nav-icon-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="profile.html" class="nav-avatar-link" id="nav-avatar" aria-label="My profile"></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-overlay-redesign" id="sidebar-overlay"></div>
+  <aside class="sidebar-redesign" id="sidebar">
+    <div class="sb-label">Main Menu</div>
+    <a href="dashboard.html" class="sb-link"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="find-match.html" class="sb-link"><i class="fas fa-search"></i> Find Match</a>
+    <a href="messages.html" class="sb-link"><i class="fas fa-comments"></i> Messages</a>
+    <a href="community.html" class="sb-link"><i class="fas fa-users"></i> Community</a>
+    <a href="payment.html" class="sb-link"><i class="fas fa-credit-card"></i> Payment</a>
+    <div class="sb-label">Account</div>
+    <a href="profile.html" class="sb-link"><i class="fas fa-user"></i> Profile</a>
+    <a href="settings.html" class="sb-link active"><i class="fas fa-cog"></i> Settings</a>
+    <a href="login.html" class="sb-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </aside>
+
+  <main class="main-content-redesign">
+    <div class="page-head-redesign">
+      <h1>Settings</h1>
+      <p>Manage your account, preferences, and appearance.</p>
+    </div>
+
+    <!-- Settings Tabs -->
+    <div class="settings-tabs" id="settings-tabs">
+      <button class="settings-tab active" data-tab="tab-account"><i class="fas fa-user"></i> Account</button>
+      <button class="settings-tab" data-tab="tab-profile"><i class="fas fa-id-card"></i> Profile</button>
+      <button class="settings-tab" data-tab="tab-appearance"><i class="fas fa-palette"></i> Appearance</button>
+      <button class="settings-tab" data-tab="tab-chat"><i class="fas fa-comments"></i> Chat</button>
+      <button class="settings-tab" data-tab="tab-notifications"><i class="fas fa-bell"></i> Notifications</button>
+      <button class="settings-tab" data-tab="tab-privacy"><i class="fas fa-lock"></i> Privacy</button>
+      <button class="settings-tab" data-tab="tab-security"><i class="fas fa-shield-alt"></i> Security</button>
+    </div>
+
+    <!-- ACCOUNT TAB -->
+    <div class="settings-panel active" id="tab-account">
+      <div class="settings-card">
+        <h3><i class="fas fa-user"></i> Account Information</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Full Name</h4><p>Your display name</p></div>
+          <input type="text" class="settings-input" id="set-fullname" placeholder="Full name">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Email Address</h4><p>Your login email</p></div>
+          <input type="email" class="settings-input" id="set-email" placeholder="Email" disabled style="opacity:0.6;">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Phone Number</h4><p>Contact number</p></div>
+          <input type="tel" class="settings-input" id="set-phone" placeholder="Phone number">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Username</h4><p>Your @username handle</p></div>
+          <input type="text" class="settings-input" id="set-username" placeholder="Username">
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn-cancel" onclick="loadAccountData()">Cancel</button>
+        <button class="btn-save" id="save-account"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div class="settings-panel" id="tab-profile">
+      <div class="settings-card">
+        <h3><i class="fas fa-id-card"></i> Teaching Profile</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Bio</h4><p>Tell others about yourself</p></div>
+          <textarea class="settings-input" id="set-bio" rows="2" placeholder="Short bio..." style="resize:vertical;min-height:60px;"></textarea>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Subjects</h4><p>What you teach</p></div>
+          <input type="text" class="settings-input" id="set-subjects" placeholder="e.g. Mathematics, Physics">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Teaching Level</h4><p>Primary, Secondary, etc.</p></div>
+          <select class="settings-input" id="set-level">
+            <option value="">Select level</option>
+            <option value="Primary">Primary</option>
+            <option value="Secondary">Secondary</option>
+            <option value="College">College</option>
+            <option value="University">University</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Experience</h4><p>Years of teaching</p></div>
+          <input type="text" class="settings-input" id="set-experience" placeholder="e.g. 5 years">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Region</h4><p>Your current region</p></div>
+          <select class="settings-input" id="set-region"><option value="">Select region</option></select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>District</h4><p>Your current district</p></div>
+          <select class="settings-input" id="set-district"><option value="">Select district</option></select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>School Name</h4><p>Current school</p></div>
+          <input type="text" class="settings-input" id="set-school" placeholder="School name">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Preferred Region</h4><p>Where you want to swap to</p></div>
+          <select class="settings-input" id="set-pref-region"><option value="">Select region</option></select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Swap Type</h4><p>Permanent or temporary</p></div>
+          <select class="settings-input" id="set-swap-type">
+            <option value="">Select type</option>
+            <option value="Permanent">Permanent</option>
+            <option value="Temporary">Temporary</option>
+            <option value="Either">Either</option>
+          </select>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn-cancel" onclick="loadProfileData()">Cancel</button>
+        <button class="btn-save" id="save-profile"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <!-- APPEARANCE TAB -->
+    <div class="settings-panel" id="tab-appearance">
+      <div class="settings-card">
+        <h3><i class="fas fa-moon"></i> Theme</h3>
+        <div class="theme-grid" id="theme-options">
+          <div class="theme-option" data-theme="light">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);"></div>
+            <div class="theme-name">Light</div>
+          </div>
+          <div class="theme-option" data-theme="dark">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#1e293b,#0f172a);"></div>
+            <div class="theme-name">Dark</div>
+          </div>
+          <div class="theme-option" data-theme="system">
+            <div class="theme-swatch" style="background:linear-gradient(135deg,#f8fafc 50%,#1e293b 50%);"></div>
+            <div class="theme-name">System</div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3><i class="fas fa-language"></i> Language</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Display Language</h4><p>Choose your preferred language</p></div>
+          <select class="settings-input" id="set-language">
+            <option value="en">English</option>
+            <option value="sw">Swahili</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT TAB -->
+    <div class="settings-panel" id="tab-chat">
+      <div class="settings-card">
+        <h3><i class="fas fa-image"></i> Chat Wallpaper</h3>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;">Choose a background for your chat conversations.</p>
+        <div class="wallpaper-grid" id="wallpaper-grid">
+          <div class="wallpaper-option active" data-wallpaper="default">
+            <div class="wp-default" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Default</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="dark">
+            <div class="wp-dark" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Dark</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="nature">
+            <div class="wp-nature" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Nature</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="abstract">
+            <div class="wp-abstract" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Abstract</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="classroom">
+            <div class="wp-classroom" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Classroom</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="geometric">
+            <div class="wp-geometric" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Geometric</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="sunset">
+            <div class="wp-sunset" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Sunset</div>
+          </div>
+          <div class="wallpaper-option" data-wallpaper="ocean">
+            <div class="wp-ocean" style="width:100%;height:100%;"></div>
+            <div class="wp-name">Ocean</div>
+          </div>
+        </div>
+        <div class="settings-row" style="margin-top:16px;">
+          <div class="settings-row-info"><h4>Chat Font Size</h4><p>Adjust message text size</h4></div>
+          <select class="settings-input" id="set-chat-font">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn-cancel" onclick="loadChatSettings()">Cancel</button>
+        <button class="btn-save" id="save-chat"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS TAB -->
+    <div class="settings-panel" id="tab-notifications">
+      <div class="settings-card">
+        <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Swap Requests</h4><p>Get notified when someone requests a swap</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-notify-swaps" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Messages</h4><p>Notifications for new messages</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-notify-messages" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Meetings</h4><p>Meeting invitations and reminders</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-notify-meetings" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Recommendations</h4><p>AI match suggestions</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-notify-recs" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Email Digest</h4><p>Weekly summary via email</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-email-digest"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn-cancel" onclick="loadNotificationSettings()">Cancel</button>
+        <button class="btn-save" id="save-notifications"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <!-- PRIVACY TAB -->
+    <div class="settings-panel" id="tab-privacy">
+      <div class="settings-card">
+        <h3><i class="fas fa-lock"></i> Privacy Settings</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Show Phone Number</h4><p>Display phone on your profile</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-privacy-phone"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Show Email</h4><p>Display email on your profile</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="set-privacy-email"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn-cancel" onclick="loadPrivacySettings()">Cancel</button>
+        <button class="btn-save" id="save-privacy"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <!-- SECURITY TAB -->
+    <div class="settings-panel" id="tab-security">
+      <div class="settings-card">
+        <h3><i class="fas fa-key"></i> Change Password</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Current Password</h4></div>
+          <input type="password" class="settings-input" id="set-current-pw" placeholder="Current password" style="max-width:300px;">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>New Password</h4></div>
+          <input type="password" class="settings-input" id="set-new-pw" placeholder="New password (min 6)" style="max-width:300px;">
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Confirm New Password</h4></div>
+          <input type="password" class="settings-input" id="set-confirm-pw" placeholder="Confirm new password" style="max-width:300px;">
+        </div>
+        <div style="padding-top:8px;">
+          <button class="btn-save" id="save-password"><i class="fas fa-key"></i> Update Password</button>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3 style="color:var(--danger);"><i class="fas fa-trash"></i> Danger Zone</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Delete Account</h4><p>Permanently delete your account and all data</p></div>
+          <button id="delete-account-btn" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+    <a href="settings.html" class="mobile-nav-item active"><i class="fas fa-cog"></i><span>Settings</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/avatar.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Purple nav avatar + sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      var st = document.getElementById('sidebar-toggle');
+      var sb = document.getElementById('sidebar');
+      var ov = document.getElementById('sidebar-overlay');
+      if (st && sb) {
+        st.addEventListener('click', function() { sb.classList.add('show'); if (ov) ov.classList.add('show'); });
+        if (ov) ov.addEventListener('click', function() { sb.classList.remove('show'); ov.classList.remove('show'); });
+        sb.querySelectorAll('.sb-link').forEach(function(l){ l.addEventListener('click', function(){ sb.classList.remove('show'); if (ov) ov.classList.remove('show'); }); });
+      }
+      try {
+        var u = api.getUser();
+        (async function() { if (!u.id) { try { u = await api.getProfile(); } catch(e){} } var nav = document.getElementById('nav-avatar'); if (nav) nav.innerHTML = avatarHelper.render({ user: u, size: 40, 'class': 'nav-avatar-img' }); })();
+      } catch(e) {}
+    });
+    var allRegions = [];
+    var currentProfile = {};
+    var currentSettings = {};
+    var hasChanges = false;
+
+    function markChanged() { hasChanges = true; }
+
+    // â”€â”€ Tab Switching â”€â”€
+    document.querySelectorAll('.settings-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var target = this.getAttribute('data-tab');
+        document.querySelectorAll('.settings-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.settings-panel').forEach(function(p) { p.classList.remove('active'); });
+        this.classList.add('active');
+        var panel = document.getElementById(target);
+        if (panel) { panel.classList.add('active'); panel.style.animation = 'none'; setTimeout(function() { panel.style.animation = 'fadeIn 0.3s ease'; }, 10); }
+      });
+    });
+
+    // â”€â”€ Load Regions â”€â”€
+    async function loadRegions() {
+      try {
+        allRegions = await api.getRegions();
+        var selects = ['#set-region', '#set-pref-region'];
+        selects.forEach(function(sel) {
+          var el = document.querySelector(sel);
+          if (el) {
+            el.innerHTML = '<option value="">Select region</option>' + allRegions.map(function(r) { return '<option value="' + r + '">' + r + '</option>'; }).join('');
+          }
+        });
+      } catch(e) {}
+    }
+
+    // â”€â”€ Load Account Data â”€â”€
+    async function loadAccountData() {
+      try {
+        currentProfile = await api.getProfile();
+        api.saveUser(currentProfile);
+        document.getElementById('set-fullname').value = currentProfile.fullName || '';
+        document.getElementById('set-email').value = currentProfile.email || '';
+        document.getElementById('set-phone').value = currentProfile.phone || '';
+        document.getElementById('set-username').value = currentProfile.username || '';
+      } catch(e) { showToast(__('Failed to load profile'), 'error'); }
+    }
+
+    // â”€â”€ Load Profile Data â”€â”€
+    async function loadProfileData() {
+      try {
+        if (!currentProfile.fullName) currentProfile = await api.getProfile();
+        document.getElementById('set-bio').value = currentProfile.bio || '';
+        document.getElementById('set-subjects').value = currentProfile.subjects || '';
+        document.getElementById('set-level').value = currentProfile.teachingLevel || '';
+        document.getElementById('set-experience').value = currentProfile.experience || '';
+        document.getElementById('set-region').value = currentProfile.region || '';
+        document.getElementById('set-district').value = currentProfile.district || '';
+        document.getElementById('set-school').value = currentProfile.schoolName || '';
+        document.getElementById('set-pref-region').value = currentProfile.preferredRegion || '';
+        document.getElementById('set-swap-type').value = currentProfile.swapType || '';
+      } catch(e) {}
+    }
+
+    // â”€â”€ Load Chat Settings (localStorage) â”€â”€
+    function loadChatSettings() {
+      var wp = localStorage.getItem('ts-chat-wallpaper') || 'default';
+      document.querySelectorAll('.wallpaper-option').forEach(function(o) {
+        o.classList.toggle('active', o.getAttribute('data-wallpaper') === wp);
+      });
+      var fs = localStorage.getItem('ts-chat-font') || 'medium';
+      var fontSel = document.getElementById('set-chat-font');
+      if (fontSel) fontSel.value = fs;
+    }
+
+    // â”€â”€ Load Notification Settings â”€â”€
+    async function loadNotificationSettings() {
+      try {
+        currentSettings = await api.getSettings();
+        document.getElementById('set-notify-swaps').checked = currentSettings.notifySwapRequests !== 0;
+        document.getElementById('set-notify-messages').checked = currentSettings.notifyMessages !== 0;
+        document.getElementById('set-notify-meetings').checked = currentSettings.notifyMeetings !== 0;
+        document.getElementById('set-notify-recs').checked = currentSettings.notifyRecommendations !== 0;
+        document.getElementById('set-email-digest').checked = currentSettings.emailDigest === 1;
+      } catch(e) {}
+    }
+
+    // â”€â”€ Load Privacy Settings â”€â”€
+    async function loadPrivacySettings() {
+      try {
+        if (!currentSettings.notifySwapRequests) await loadNotificationSettings();
+        document.getElementById('set-privacy-phone').checked = currentSettings.privacyShowPhone === 1;
+        document.getElementById('set-privacy-email').checked = currentSettings.privacyShowEmail === 1;
+      } catch(e) {}
+    }
+
+    // â”€â”€ Wallpaper Selection â”€â”€
+    document.querySelectorAll('.wallpaper-option').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.wallpaper-option').forEach(function(o) { o.classList.remove('active'); });
+        this.classList.add('active');
+        markChanged();
+      });
+    });
+
+    // â”€â”€ Theme Selection â”€â”€
+    var savedTheme = localStorage.getItem('ts-theme') || 'light';
+    document.querySelectorAll('.theme-option').forEach(function(opt) {
+      var t = opt.getAttribute('data-theme');
+      if (t === savedTheme || (t === 'system' && !localStorage.getItem('ts-theme'))) opt.classList.add('active');
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.theme-option').forEach(function(o) { o.classList.remove('active'); });
+        this.classList.add('active');
+        var theme = this.getAttribute('data-theme');
+        if (theme === 'system') {
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.body.classList.toggle('dark-mode', prefersDark);
+          localStorage.setItem('ts-theme', prefersDark ? 'dark' : 'light');
+        } else {
+          document.body.classList.toggle('dark-mode', theme === 'dark');
+          localStorage.setItem('ts-theme', theme);
+        }
+        var icon = document.getElementById('theme-icon');
+        if (icon) icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+      });
+    });
+
+    // â”€â”€ Save Account â”€â”€
+    document.getElementById('save-account').addEventListener('click', async function() {
+      var btn = this; btn.disabled = true;
+      try {
+        var data = {
+          fullName: document.getElementById('set-fullname').value.trim(),
+          phone: document.getElementById('set-phone').value.trim(),
+        };
+        await api.updateProfile(data);
+        var newUsername = document.getElementById('set-username').value.trim();
+        if (newUsername && newUsername !== (currentProfile.username || '')) {
+          await api.updateUsername(newUsername);
+        }
+        showToast(__('Changes saved successfully.'), 'success');
+        await loadAccountData();
+      } catch(e) { showToast(e.message || __('Unable to save changes. Please try again.'), 'error'); }
+      btn.disabled = false;
+    });
+
+    // â”€â”€ Save Profile â”€â”€
+    document.getElementById('save-profile').addEventListener('click', async function() {
+      var btn = this; btn.disabled = true;
+      try {
+        var data = {
+          bio: document.getElementById('set-bio').value.trim(),
+          subjects: document.getElementById('set-subjects').value.trim(),
+          teachingLevel: document.getElementById('set-level').value,
+          experience: document.getElementById('set-experience').value.trim(),
+          region: document.getElementById('set-region').value,
+          district: document.getElementById('set-district').value,
+          schoolName: document.getElementById('set-school').value.trim(),
+          preferredRegion: document.getElementById('set-pref-region').value,
+          swapType: document.getElementById('set-swap-type').value,
+        };
+        await api.updateProfile(data);
+        showToast(__('Changes saved successfully.'), 'success');
+      } catch(e) { showToast(e.message || __('Unable to save changes. Please try again.'), 'error'); }
+      btn.disabled = false;
+    });
+
+    // â”€â”€ Save Chat Settings â”€â”€
+    document.getElementById('save-chat').addEventListener('click', function() {
+      var activeWp = document.querySelector('.wallpaper-option.active');
+      var wallpaper = activeWp ? activeWp.getAttribute('data-wallpaper') : 'default';
+      localStorage.setItem('ts-chat-wallpaper', wallpaper);
+      var font = document.getElementById('set-chat-font').value;
+      localStorage.setItem('ts-chat-font', font);
+      showToast(__('Chat settings saved.'), 'success');
+    });
+
+    // â”€â”€ Save Notifications â”€â”€
+    document.getElementById('save-notifications').addEventListener('click', async function() {
+      var btn = this; btn.disabled = true;
+      try {
+        await api.updateSettings({
+          notifySwapRequests: document.getElementById('set-notify-swaps').checked,
+          notifyMessages: document.getElementById('set-notify-messages').checked,
+          notifyMeetings: document.getElementById('set-notify-meetings').checked,
+          notifyRecommendations: document.getElementById('set-notify-recs').checked,
+          emailDigest: document.getElementById('set-email-digest').checked,
+        });
+        showToast(__('Changes saved successfully.'), 'success');
+      } catch(e) { showToast(e.message || __('Unable to save changes. Please try again.'), 'error'); }
+      btn.disabled = false;
+    });
+
+    // â”€â”€ Save Privacy â”€â”€
+    document.getElementById('save-privacy').addEventListener('click', async function() {
+      var btn = this; btn.disabled = true;
+      try {
+        await api.updateSettings({
+          privacyShowPhone: document.getElementById('set-privacy-phone').checked,
+          privacyShowEmail: document.getElementById('set-privacy-email').checked,
+        });
+        showToast(__('Changes saved successfully.'), 'success');
+      } catch(e) { showToast(e.message || __('Unable to save changes. Please try again.'), 'error'); }
+      btn.disabled = false;
+    });
+
+    // â”€â”€ Change Password â”€â”€
+    document.getElementById('save-password').addEventListener('click', async function() {
+      var current = document.getElementById('set-current-pw').value;
+      var newPw = document.getElementById('set-new-pw').value;
+      var confirm = document.getElementById('set-confirm-pw').value;
+      if (!current || !newPw) { showToast(__('Please fill in all password fields'), 'error'); return; }
+      if (newPw.length < 6) { showToast(__('New password must be at least 6 characters'), 'error'); return; }
+      if (newPw !== confirm) { showToast(__('Passwords do not match'), 'error'); return; }
+      var btn = this; btn.disabled = true;
+      try {
+        await api.changePassword(current, newPw);
+        showToast(__('Password changed successfully.'), 'success');
+        document.getElementById('set-current-pw').value = '';
+        document.getElementById('set-new-pw').value = '';
+        document.getElementById('set-confirm-pw').value = '';
+      } catch(e) { showToast(e.message || __('Unable to change password'), 'error'); }
+      btn.disabled = false;
+    });
+
+    // â”€â”€ Delete Account â”€â”€
+    document.getElementById('delete-account-btn').addEventListener('click', function() {
+      if (confirm(__('Are you sure you want to delete your account? This action cannot be undone.'))) {
+        showToast(__('Account deletion requested'), 'warning');
+      }
+    });
+
+    // â”€â”€ Region change loads districts â”€â”€
+    document.getElementById('set-region').addEventListener('change', async function() {
+      var region = this.value;
+      var districtSel = document.getElementById('set-district');
+      districtSel.innerHTML = '<option value="">Loading...</option>';
+      try {
+        var districts = await api.getDistrictsForRegion(region);
+        districtSel.innerHTML = '<option value="">Select district</option>' + districts.map(function(d) { return '<option value="' + d.trim() + '">' + d.trim() + '</option>'; }).join('');
+      } catch(e) { districtSel.innerHTML = '<option value="">Select district</option>'; }
+    });
+
+    // â”€â”€ Init â”€â”€
+    if (!api.isLoggedIn()) { window.location.href = 'login.html'; }
+    else {
+      loadRegions().then(function() {
+        loadAccountData().then(function() {
+          loadProfileData();
+        });
+        loadChatSettings();
+        loadNotificationSettings();
+      });
+    }
+  </script>
+</body>
+</html>

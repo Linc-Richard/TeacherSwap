@@ -1,11 +1,47 @@
+# ===== Dependencies =====
 node_modules/
+**/node_modules/
+
+# ===== Environment / secrets (NEVER commit) =====
 .env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
 server/.env
-*.log
-.DS_Store
-Thumbs.db
+
+# ===== Backend / server (excluded from this frontend-only repo) =====
+server/
+server-backup/
+
+# ===== Root backend deploy config (excluded) =====
+Procfile
+fly.toml
+server.err.log
+server.log
+
+# ===== Database files =====
+*.db
+*.db-wal
+*.db-shm
 server/db/*.db
 server/db/*.db-wal
 server/db/*.db-shm
+
+# ===== Uploads / user-generated =====
 uploads/
+
+# ===== Local audit / workspace notes =====
+TEACHERSWAP FINAL SYSTEM AUDIT.md
+TEACHERSWAP REAL USER AUDIT.md
+TEACHERSWAP_AUDIT_REPORT.md
+
+# ===== OS / editor junk =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# ===== Tooling =====
 .opencode/
