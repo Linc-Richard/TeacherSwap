@@ -1,0 +1,17 @@
+{
+  "name": "teacherswap",
+  "version": "1.0.0",
+  "description": "TeacherSwap - Find Your Perfect Teaching Swap in Tanzania",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "build": "cd server && npm install",
+    "lint": "eslint js/*.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.9.1"
+  }
+}

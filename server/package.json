@@ -1,0 +1,24 @@
+{
+  "name": "teacherswap-api",
+  "version": "1.0.0",
+  "description": "TeacherSwap backend API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "google-auth-library": "^10.9.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "qrcode": "^1.5.3",
+    "speakeasy": "^2.0.0",
+    "sql.js": "^1.9.0",
+    "uuid": "^9.0.0"
+  }
+}

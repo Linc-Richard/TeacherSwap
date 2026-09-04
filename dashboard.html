@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Loading...</div>
+  </div>
+  <div id="toast-container"></div>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+        <div class="relative nav-notif-btn">
+          <button class="theme-toggle" id="notif-btn" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notif-badge" style="display:none;"></span>
+          </button>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-dropdown-header">
+              <span>Notifications</span>
+              <a href="#" style="font-size:0.8rem;color:var(--primary);">Mark all read</a>
+            </div>
+            <div class="notif-dropdown-list">
+              <div class="notif-dropdown-item">
+                <div><p style="font-size:0.85rem;line-height:1.4;color:var(--text-muted);">Loading notifications...</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar Overlay -->
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <div class="sidebar-label">Main Menu</div>
+      <a href="dashboard.html" class="sidebar-link active"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="find-match.html" class="sidebar-link"><i class="fas fa-search"></i> Find Match</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a>
+      <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
+      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
+
+      <div class="sidebar-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i> Profile</a>
+      <a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="login.html" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Welcome Banner -->
+    <div class="dashboard-welcome" id="welcome-banner">
+      <div style="position:relative;z-index:1;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div id="profile-avatar-holder" class="ts-av ts-av-lg" style="border:3px solid rgba(255,255,255,0.6);box-shadow:0 4px 14px rgba(0,0,0,0.15);">T</div>
+        <div style="flex:1;min-width:200px;">
+          <h2 id="welcome-heading" style="margin-bottom:4px;">Welcome back, Teacher!</h2>
+          <p id="welcome-sub" style="opacity:0.9;font-size:0.95rem;">Here's your overview.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <span id="verify-badge" class="dt-badge dt-badge-success" style="display:none;"><i class="fas fa-shield-alt"></i> Verified</span>
+            <span id="swap-status-badge" class="dt-badge dt-badge-info" style="display:none;"><i class="fas fa-exchange-alt"></i> Open to swaps</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <a href="profile.html" class="btn btn-sm" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.4);"><i class="fas fa-user-edit"></i> Edit Profile</a>
+          <a href="find-match.html" class="btn btn-sm" style="background:#fff;color:var(--primary);font-weight:600;"><i class="fas fa-search"></i> Find a Teacher</a>
+        </div>
+      </div>
+      <div class="welcome-waves">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;width:100%;height:40px;opacity:0.15;">
+          <path d="M0,32L48,37.3C96,43,192,53,288,58.7C384,64,480,64,576,58.7C672,53,768,43,864,42.7C960,43,1056,53,1152,58.7C1248,64,1344,64,1392,64L1440,64L1392,64C1344,64,1248,64,1152,64C1056,64,960,64,864,64C768,64,672,64,576,64C480,64,384,64,288,64C192,64,96,64,48,64L0,64Z" fill="white"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Profile Completion -->
+    <div class="card" style="margin-bottom:20px;padding:16px 18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="min-width:160px;">
+          <strong style="font-size:0.92rem;">Profile Completion</strong>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin:2px 0 0;" id="profile-completion-text">0% complete</p>
+        </div>
+        <div style="flex:1;min-width:150px;">
+          <div class="dt-progress"><div class="dt-progress-fill" id="profile-completion-fill" style="width:0%;"></div></div>
+        </div>
+        <a href="onboarding.html" class="btn btn-primary btn-sm" id="complete-profile-btn"><i class="fas fa-arrow-right"></i> Complete Profile</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-cards">
+      <div class="card stat-card">
+        <div class="stat-card-icon blue"><i class="fas fa-exchange-alt"></i></div>
+        <div class="stat-card-info">
+          <h3 id="stat-total">0</h3>
+          <p>Total Swaps</p>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-card-icon green"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-card-info">
+          <h3 id="stat-completed">0</h3>
+          <p>Completed</p>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-card-icon yellow"><i class="fas fa-clock"></i></div>
+        <div class="stat-card-info">
+          <h3 id="stat-pending">0</h3>
+          <p>Pending</p>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-card-icon purple"><i class="fas fa-heart"></i></div>
+        <div class="stat-card-info">
+          <h3 id="stat-score">0%</h3>
+          <p>Match Score</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommended Matches (prioritized) -->
+    <div class="card dashboard-card" id="recommended-card" style="margin-top:20px;">
+      <div class="dashboard-card-header">
+        <h3><i class="fas fa-handshake text-primary mr-2"></i> Recommended for You</h3>
+        <a href="matches.html">View My Matches <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div id="recommended-loading" class="dt-recommended-grid">
+        <div class="dt-skeleton"></div><div class="dt-skeleton"></div><div class="dt-skeleton"></div>
+      </div>
+      <div id="recommended-error" class="empty-inline" style="display:none;"><i class="fas fa-exclamation-triangle"></i> We couldn't load your recommendations. <button class="btn btn-sm btn-primary" onclick="window.location.reload()">Retry</button></div>
+      <div id="recommended-list" class="dt-recommended-grid" style="display:none;">
+        <div class="empty-inline" id="recommended-empty"><i class="fas fa-users"></i> Complete your profile to get personal match recommendations.</div>
+      </div>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <div>
+        <!-- Swap Requests -->
+        <div class="card dashboard-card">
+          <div class="dashboard-card-header">
+            <h3><i class="fas fa-exchange-alt text-primary mr-2"></i> Recent Swap Requests</h3>
+            <a href="swap-requests.html">View All</a>
+          </div>
+          <div id="swap-requests-list">
+            <div id="swap-requests-empty" class="empty-inline"><i class="fas fa-exchange-alt"></i> No swap requests yet. Find teachers to start swapping!</div>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="card dashboard-card">
+          <div class="dashboard-card-header">
+            <h3><i class="fas fa-bell text-primary mr-2"></i> Recent Notifications</h3>
+            <a href="notifications.html">View All</a>
+          </div>
+          <div id="dashboard-notifications">
+            <div class="notification-item"><div class="notification-content"><p style="color:var(--text-muted);font-size:0.88rem;">No notifications yet</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Quick Actions -->
+        <div class="card dashboard-card">
+          <div class="dashboard-card-header">
+            <h3><i class="fas fa-bolt text-primary mr-2"></i> Quick Actions</h3>
+          </div>
+          <div class="quick-actions">
+            <a href="find-match.html" class="quick-action-btn"><i class="fas fa-search"></i> Find a Teacher</a>
+            <a href="matches.html" class="quick-action-btn"><i class="fas fa-heart"></i> My Matches</a>
+            <a href="swap-requests.html" class="quick-action-btn"><i class="fas fa-exchange-alt"></i> Swap Requests</a>
+            <a href="messages.html" class="quick-action-btn"><i class="fas fa-comment-dots"></i> Messages</a>
+            <a href="onboarding.html" class="quick-action-btn"><i class="fas fa-user-edit"></i> Complete Profile</a>
+          </div>
+        </div>
+
+        <!-- Recent Messages -->
+        <div class="card dashboard-card">
+          <div class="dashboard-card-header">
+            <h3><i class="fas fa-comments text-primary mr-2"></i> Recent Messages</h3>
+            <a href="messages.html">View All</a>
+          </div>
+          <div id="dashboard-messages">
+            <div style="padding:16px;color:var(--text-muted);font-size:0.88rem;">No messages yet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+      var user = api.getUser();
+
+      var nameEl = document.querySelector('.dashboard-welcome h2');
+      if (nameEl) nameEl.textContent = __('Welcome back,') + ' ' + (user.fullName || 'Teacher') + '!';
+      var subEl = document.getElementById('welcome-sub');
+
+      // Avatar + verification + swap status + profile completion
+      try {
+        var me = await api.getProfile();
+        var avHolder = document.getElementById('profile-avatar-holder');
+        if (avHolder) avHolder.innerHTML = window.avatarMarkup(me, 'ts-av-lg');
+
+        var verifyBadge = document.getElementById('verify-badge');
+        if (verifyBadge && (me.isVerified || me.isTwoFactorEnabled)) {
+          verifyBadge.style.display = 'inline-flex';
+        }
+
+        var swapBadge = document.getElementById('swap-status-badge');
+        if (swapBadge && String(me.swapType || '').trim()) {
+          swapBadge.style.display = 'inline-flex';
+          swapBadge.innerHTML = '<i class="fas fa-exchange-alt"></i> ' + window.escapeHtml(String(me.swapType).toUpperCase());
+        }
+
+        // Profile completion %
+        var profileFields = ['teachingLevel', 'subjects', 'schoolName', 'region', 'swapType', 'gender', 'experience', 'bio'];
+        var filled = profileFields.filter(function(f) { return String(me[f] || '').trim(); }).length;
+        var pct = Math.round((filled / profileFields.length) * 100);
+        var fillBar = document.getElementById('profile-completion-fill');
+        var pctText = document.getElementById('profile-completion-text');
+        if (fillBar) fillBar.style.width = pct + '%';
+        if (pctText) pctText.textContent = pct + '% complete';
+        var cpBtn = document.getElementById('complete-profile-btn');
+        if (cpBtn) {
+          if (pct >= 100) {
+            cpBtn.innerHTML = '<i class="fas fa-check-circle"></i> Profile Complete';
+            cpBtn.classList.remove('btn-primary');
+            cpBtn.classList.add('btn-success');
+            cpBtn.href = 'profile.html';
+          } else {
+            cpBtn.innerHTML = '<i class="fas fa-arrow-right"></i> Complete Profile (' + pct + '%)';
+          }
+        }
+      } catch(e) {}
+
+      var swaps = [];
+      try {
+        swaps = await api.getSwapRequests();
+      } catch(e) {}
+
+      // Stats
+      var total = swaps.length;
+      var completed = swaps.filter(function(s) { return s.status === 'completed'; }).length;
+      var pending = swaps.filter(function(s) { return s.status === 'pending'; }).length;
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-completed').textContent = completed;
+      document.getElementById('stat-pending').textContent = pending;
+
+      // Recent swap requests
+      var swapList = document.getElementById('swap-requests-list');
+      var swapEmpty = document.getElementById('swap-requests-empty');
+      if (swapList) {
+        var items = swaps.slice(0, 5).map(function(s) {
+          var other = s.toUserId === (user.id || '') ? s.fromName : s.toName;
+          var otherId = s.toUserId === (user.id || '') ? s.fromUserId : s.toUserId;
+          var statusClass = s.status === 'completed' || s.status === 'accepted' ? 'accepted' : (s.status === 'declined' || s.status === 'cancelled' ? 'declined' : 'pending');
+          return '<a href="profile.html?id=' + encodeURIComponent(otherId) + '" style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;">' +
+            '<div class="request-info"><div class="request-avatar">' + window.avatarMarkup({fullName: other, avatar: ''}, 'ts-av-xs') + '</div><div class="request-details"><h4>' + window.escapeHtml(other || __('Unknown')) + '</h4><p>' + (s.message ? window.escapeHtml(s.message.substring(0, 40)) : (s.status === 'pending' ? __('Pending swap request') : window.escapeHtml(s.status))) + '</p></div></div>' +
+            '<span class="request-status ' + window.escapeHtml(statusClass) + '">' + window.escapeHtml(s.status) + '</span></a>';
+        }).join('');
+        if (swapEmpty) swapEmpty.style.display = items ? 'none' : 'block';
+        if (items) swapList.innerHTML += items;
+      }
+
+      // Notifications card
+      try {
+        var notifs = await api.getNotifications();
+        var notifCard = document.getElementById('dashboard-notifications');
+        if (notifCard) {
+          if (!notifs.length) {
+            notifCard.innerHTML = '<div class="notification-item"><div class="notification-content"><p style="color:var(--text-muted);font-size:0.88rem;">No notifications yet</p></div></div>';
+          } else {
+            notifCard.innerHTML = notifs.slice(0, 4).map(function(n) {
+              var iconMap = { swap_request: 'blue fa-handshake', swap_accepted: 'green fa-check-circle', message: 'green fa-comments', meeting: 'purple fa-calendar-check', review: 'yellow fa-star', new_match: 'blue fa-robot' };
+              var ic = iconMap[n.type] || 'blue fa-bell';
+              var parts = ic.split(' ');
+              return '<div class="notification-item"><div class="notification-icon ' + parts[0] + '"><i class="fas ' + parts[1] + '"></i></div>' +
+                '<div class="notification-content"><p>' + window.escapeHtml(n.body || n.title || '') + '</p><div class="time">' + new Date((n.createdAt || '').replace(' ', 'T')).toLocaleString() + '</div></div></div>';
+            }).join('');
+          }
+        }
+      } catch(e) {}
+
+      // Recent messages
+      try {
+        var convos = await api.getConversations();
+        var msgCard = document.getElementById('dashboard-messages');
+        if (msgCard) {
+          if (!convos.length) {
+            msgCard.innerHTML = '<div style="padding:16px;color:var(--text-muted);font-size:0.88rem;">No messages yet</div>';
+          } else {
+            msgCard.innerHTML = convos.slice(0, 3).map(function(c) {
+              var unread = Number(c.unreadCount) > 0 ? '<span class="unread-badge"></span>' : '';
+              return '<a href="messages.html?teacher=' + encodeURIComponent(c.otherUserId) + '" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;">' +
+                '<div class="message-preview-avatar">' + window.avatarMarkup({fullName: c.otherName, avatar: c.otherAvatar || ''}, 'ts-av-xs') + '</div>' +
+                '<div class="message-preview-content"><h4>' + window.escapeHtml(c.otherName || '') + ' ' + unread + '</h4><p>' + window.escapeHtml(c.lastMessage || '') + '</p></div>' +
+                '<span class="time" style="margin-left:auto;">' + new Date((c.lastMessageAt || '').replace(' ', 'T')).toLocaleDateString() + '</span></a>';
+            }).join('');
+          }
+        }
+      } catch(e) {}
+
+      var unreadNotifs = notifs.filter(function(n) { return !n.isRead; }).length;
+        var unreadMsgs = convos.reduce(function(acc, c) { return acc + (Number(c.unreadCount) || 0); }, 0);
+        if (subEl) subEl.textContent = unreadNotifs + ' ' + __('unread notification(s)') + ' · ' + unreadMsgs + ' ' + __('unread message(s)');
+
+      try {
+        // Recommendations via the server scoring endpoint
+        var loadingEl = document.getElementById('recommended-loading');
+        var errorEl = document.getElementById('recommended-error');
+        var recs = [];
+        var recError = false;
+        try {
+          recs = await api.getRecommendations();
+        } catch (e) {
+          recError = true;
+        }
+
+        var recList = document.getElementById('recommended-list');
+        var recEmpty = document.getElementById('recommended-empty');
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (recList) recList.style.display = 'block';
+
+        if (recError) {
+          if (errorEl) errorEl.style.display = 'flex';
+          document.getElementById('stat-score').textContent = '0%';
+        } else if (recList) {
+          if (recs.length) {
+            if (recEmpty) recEmpty.style.display = 'none';
+            recList.innerHTML = recs.slice(0, 3).map(function(r) {
+              var matchClass = r.score >= 60 ? 'high' : (r.score >= 40 ? 'medium' : 'low');
+              var badge = r.badge ? '<span class="dt-match-badge">' + window.escapeHtml(String(r.badge)) + '</span>' : '';
+              var meta = [];
+              if (r.subjects) meta.push(r.subjects);
+              if (r.schoolName) meta.push(r.schoolName);
+              if (r.region) meta.push(r.region);
+              if (r.teachingLevel) meta.push(r.teachingLevel);
+              return '<div class="dt-match-card">' +
+                '<div class="dt-match-top">' +
+                  '<div class="ts-av ts-av-md">' + window.avatarMarkup(r, 'ts-av-md') + '</div>' +
+                  '<div class="dt-match-score ' + matchClass + '">' + Number(r.score) + '%</div>' +
+                '</div>' +
+                '<h4>' + window.escapeHtml(r.fullName || r.email || '') + '</h4>' + badge +
+                '<p class="dt-match-meta">' + window.escapeHtml(meta.join(' &middot; ')) + '</p>' +
+                '<div class="dt-match-actions">' +
+                  '<a href="messages.html?teacher=' + encodeURIComponent(r.id) + '" class="dt-btn dt-btn-ghost"><i class="fas fa-comment-dots"></i> Message</a>' +
+                  '<a href="find-match.html?id=' + encodeURIComponent(r.id) + '" class="dt-btn dt-btn-solid"><i class="fas fa-handshake"></i> Swap</a>' +
+                '</div>' +
+              '</div>';
+            }).join('');
+          } else {
+            if (recEmpty) recEmpty.style.display = 'block';
+          }
+        }
+
+        if (recs.length) {
+          var topScore = Math.max.apply(null, recs.map(function(r) { return r.score || 0; }));
+          document.getElementById('stat-score').textContent = topScore + '%';
+        } else {
+          document.getElementById('stat-score').textContent = '0%';
+        }
+      } catch(e) {
+        document.getElementById('stat-score').textContent = '0%';
+      }
+    });
+  </script>
+</body>
+</html>
+
+

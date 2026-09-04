@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+  <div id="scroll-progress"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <div class="relative nav-notif-btn">
+          <button class="theme-toggle" id="notif-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="notif-badge" style="display:none;"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-dropdown-header"><span>Notifications</span></div>
+            <div class="notif-dropdown-list"><div class="notif-dropdown-item"><div><p style="font-size:0.85rem;color:var(--text-muted);">Loading notifications...</p></div></div></div>
+          </div>
+        </div>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <!-- Sidebar (populated by nav.js) -->
+  <aside class="sidebar" id="sidebar"><div class="sidebar-menu"></div></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Admin Dashboard</h1>
+      <p>Platform overview, teacher & swap analytics, and recent activity.</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="admin-loading"><div class="card dt-card-message"><i class="fas fa-spinner fa-spin"></i> Loading analytics...</div></div>
+
+    <!-- Restricted / error -->
+    <div id="admin-error" class="card dt-card-message" style="display:none;">
+      <i class="fas fa-lock" style="font-size:2rem;color:var(--warning);margin-bottom:10px;"></i>
+      <p id="admin-error-text">You don't have permission to view the admin dashboard.</p>
+      <a href="dashboard.html" class="btn btn-primary btn-sm" style="margin-top:10px;">Back to Dashboard</a>
+    </div>
+
+    <div id="admin-wrap" style="display:none;">
+      <!-- Overview stats -->
+      <div class="stats-cards" id="admin-stats"></div>
+
+      <!-- Charts + recent side by side -->
+      <div class="dashboard-grid" style="margin-top:20px;">
+        <div>
+          <div class="card dashboard-card">
+            <div class="dashboard-card-header"><h3><i class="fas fa-map-marker-alt text-primary mr-2"></i> Teachers by Region</h3></div>
+            <div id="chart-regions"></div>
+          </div>
+          <div class="card dashboard-card" style="margin-top:16px;">
+            <div class="dashboard-card-header"><h3><i class="fas fa-chalkboard-teacher text-primary mr-2"></i> Teachers by Subject</h3></div>
+            <div id="chart-subjects"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card dashboard-card">
+            <div class="dashboard-card-header"><h3><i class="fas fa-user-plus text-primary mr-2"></i> Recent Registrations</h3></div>
+            <div id="chart-registrations"></div>
+          </div>
+          <div class="card dashboard-card" style="margin-top:16px;">
+            <div class="dashboard-card-header"><h3><i class="fas fa-ban text-primary mr-2"></i> Reported Users</h3></div>
+            <div id="admin-reports"><p class="dt-request-meta">Loading...</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="card dashboard-card" style="margin-top:20px;">
+        <div class="dashboard-card-header"><h3><i class="fas fa-activity text-primary mr-2"></i> Recent Activity</h3></div>
+        <div id="admin-recent"></div>
+      </div>
+
+      <!-- Promote to admin -->
+      <div class="card dashboard-card" style="margin-top:20px;">
+        <div class="dashboard-card-header"><h3><i class="fas fa-user-shield text-primary mr-2"></i> Promote to Admin</h3></div>
+        <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;align-items:end;">
+          <div class="form-group" style="flex:1;min-width:220px;margin-bottom:0;">
+            <label>Teacher email</label>
+            <input type="email" id="promote-email" class="form-control" placeholder="teacher@example.com">
+          </div>
+          <button class="btn btn-primary" id="promote-btn" style="margin-bottom:2px;"><i class="fas fa-user-shield"></i> Promote</button>
+        </div>
+        <p id="promote-msg" class="dt-request-meta" style="margin:12px 0 0;"></p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation (populated by nav.js) -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"></nav>
+
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+      var loadingEl = document.getElementById('admin-loading');
+      var errorEl = document.getElementById('admin-error');
+      var wrapEl = document.getElementById('admin-wrap');
+
+      function horizontalBars(list, labelKey, valueKey, icon) {
+        if (!list || !list.length) return '<p class="empty-inline"><i class="fas ' + (icon || 'fa-chart-bar') + '"></i> No data yet</p>';
+        var max = Math.max.apply(null, list.map(function(r) { return Number(r[valueKey]) || 0; })) || 1;
+        return list.map(function(r) {
+          var val = Number(r[valueKey]) || 0;
+          var pct = Math.round((val / max) * 100);
+          return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px;">' +
+                '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + window.escapeHtml(r[labelKey] || '') + '</span>' +
+                '<span style="color:var(--text-muted);">' + val + '</span>' +
+              '</div>' +
+              '<div class="dt-progress"><div class="dt-progress-fill" style="width:' + pct + '%;"></div></div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      var overview, charts, recent;
+      var failed = false;
+      try {
+        overview = await api.getAnalyticsOverview();
+        charts = await api.getAnalyticsCharts();
+        recent = await api.getAnalyticsRecent();
+      } catch (e) {
+        failed = true;
+      }
+
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (failed) {
+        if (errorEl) errorEl.style.display = 'block';
+        return;
+      }
+      if (wrapEl) wrapEl.style.display = 'block';
+
+      overview = overview || {};
+      document.getElementById('admin-stats').innerHTML =
+        '<div class="card stat-card"><div class="stat-card-icon blue"><i class="fas fa-chalkboard-teacher"></i></div><div class="stat-card-info"><h3>' + (overview.totalTeachers||0) + '</h3><p>Teachers</p></div></div>' +
+        '<div class="card stat-card"><div class="stat-card-icon green"><i class="fas fa-shield-alt"></i></div><div class="stat-card-info"><h3>' + (overview.verifiedTeachers||0) + '</h3><p>Verified</p></div></div>' +
+        '<div class="card stat-card"><div class="stat-card-icon purple"><i class="fas fa-exchange-alt"></i></div><div class="stat-card-info"><h3>' + (overview.totalSwaps||0) + '</h3><p>Total Swaps</p></div></div>' +
+        '<div class="card stat-card"><div class="stat-card-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-card-info"><h3>' + (overview.completedSwaps||0) + '</h3><p>Completed</p></div></div>' +
+        '<div class="card stat-card"><div class="stat-card-icon yellow"><i class="fas fa-user-check"></i></div><div class="stat-card-info"><h3>' + (overview.activeUsers||0) + '</h3><p>Active Users</p></div></div>' +
+        '<div class="card stat-card"><div class="stat-card-icon blue"><i class="fas fa-star"></i></div><div class="stat-card-info"><h3>' + (overview.totalReviews||0) + '</h3><p>Reviews</p></div></div>';
+
+      document.getElementById('chart-regions').innerHTML = horizontalBars(charts && charts.regionDist, 'region', 'count', 'fa-map-marker-alt');
+      document.getElementById('chart-subjects').innerHTML = horizontalBars(charts && charts.subjectDist, 'subjects', 'count', 'fa-chalkboard-teacher');
+
+      // Recent registrations (date/count bars) - could be many dates
+      var regs = charts && charts.recentRegistrations;
+      if (regs && regs.length) {
+        document.getElementById('chart-registrations').innerHTML = horizontalBars(regs, 'date', 'count', 'fa-user-plus');
+      } else {
+        document.getElementById('chart-registrations').innerHTML = '<p class="empty-inline"><i class="fas fa-user-plus"></i> No recent registrations</p>';
+      }
+
+      // Reports (best-effort; reports endpoint may or may not be available via api)
+      try {
+        var reports = await api.get('/reports');
+        var arr = (reports && reports.reports) || [];
+        document.getElementById('admin-reports').innerHTML = arr.length
+          ? arr.map(function(r) { return '<div class="dt-request-meta" style="padding:6px 0;border-bottom:1px solid var(--border);">' + window.escapeHtml(r.reporterName + ' reported ' + r.reportedName) + ' &middot; <span class="time">' + new Date((r.createdAt||'').replace(' ','T')).toLocaleDateString() + '</span></div>'; }).join('')
+          : '<p class="empty-inline"><i class="fas fa-check-circle"></i> No open reports</p>';
+      } catch (e) {
+        document.getElementById('admin-reports').innerHTML = '<p class="dt-request-meta">No reports available</p>';
+      }
+
+      // Recent activity
+      var html = '<h4 style="margin:6px 0 8px;font-size:0.85rem;color:var(--text-muted);">New Teachers</h4>';
+      var ru = (recent && recent.recentUsers) || [];
+      html += ru.length
+        ? ru.slice(0, 5).map(function(u) { return '<div class="dt-request-main" style="align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);"><div class="ts-av ts-av-xs">' + window.avatarMarkup(u, 'ts-av-xs') + '</div><div style="flex:1;"><strong style="font-size:0.85rem;">' + window.escapeHtml(u.fullName || u.email || '') + '</strong><p class="dt-request-meta" style="margin:0;">' + new Date((u.createdAt||'').replace(' ','T')).toLocaleDateString() + '</p></div></div>'; }).join('')
+        : '<p class="empty-inline"><i class="fas fa-user-friends"></i> No new teachers</p>';
+
+      html += '<h4 style="margin:16px 0 8px;font-size:0.85rem;color:var(--text-muted);">Recent Swaps</h4>';
+      var rs = (recent && recent.recentSwaps) || [];
+      html += rs.length
+        ? rs.slice(0, 5).map(function(s) { return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:0.85rem;"><i class="fas fa-exchange-alt" style="color:var(--primary);margin-right:6px;"></i>' + window.escapeHtml((s.fromName||'?') + ' ↔ ' + (s.toName||'?')) + ' <span class="request-status ' + ({accepted:'accepted',completed:'accepted',pending:'pending'}[s.status]||'pending') + '" style="font-size:0.7rem;">' + window.escapeHtml(s.status||'') + '</span></div>'; }).join('')
+        : '<p class="empty-inline"><i class="fas fa-exchange-alt"></i> No recent swaps</p>';
+
+      html += '<h4 style="margin:16px 0 8px;font-size:0.85rem;color:var(--text-muted);">Recent Reviews</h4>';
+      var rr = (recent && recent.recentReviews) || [];
+      html += rr.length
+        ? rr.slice(0, 5).map(function(rv) { return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:0.85rem;"><i class="fas fa-star" style="color:var(--warning);margin-right:6px;"></i>' + window.escapeHtml((rv.fromName||'?') + ' → ' + (rv.toName||'?')) + ' (' + Number(rv.rating||0) + '★)</div>'; }).join('')
+        : '<p class="empty-inline"><i class="fas fa-star"></i> No recent reviews</p>';
+
+      document.getElementById('admin-recent').innerHTML = html;
+
+      // Promote a teacher to admin role
+      document.getElementById('promote-btn').addEventListener('click', async function() {
+        var email = document.getElementById('promote-email').value.trim();
+        var msg = document.getElementById('promote-msg');
+        if (!email) { msg.textContent = 'Please enter an email address.'; msg.style.color = 'var(--warning)'; return; }
+        msg.textContent = 'Promoting...';
+        try {
+          var res = await api.promoteUser(email);
+          msg.textContent = 'Promoted ' + (res.user && res.user.fullName ? res.user.fullName : email) + ' to admin.';
+          msg.style.color = 'var(--success)';
+          document.getElementById('promote-email').value = '';
+        } catch (err) {
+          msg.textContent = (err && err.message) || 'Could not promote user.';
+          msg.style.color = 'var(--danger, #E11D48)';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

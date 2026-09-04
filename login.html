@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeacherSwap - Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-spinner"></div>
+      <div class="loader-text">TeacherSwap</div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+
+  <button class="auth-theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+
+  <section class="auth-page">
+    <div class="auth-bg">
+      <div class="gradient-circle gc-1"></div>
+      <div class="gradient-circle gc-2"></div>
+    </div>
+    <div class="auth-container">
+      <div class="card auth-card card-glass">
+        <div class="auth-logo">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </div>
+        <h2 class="auth-title" data-i18n="Welcome Back">Welcome Back</h2>
+        <p class="auth-subtitle" data-i18n="Sign in to continue your journey">Sign in to continue your journey</p>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" class="form-control" name="email" placeholder="Email address" required>
+            </div>
+            <span class="form-error"></span>
+          </div>
+
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-lock"></i>
+              <input type="password" class="form-control" name="password" placeholder="Password" required>
+              <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <span class="form-error"></span>
+          </div>
+
+          <div class="form-row">
+            <label class="form-checkbox">
+              <input type="checkbox" name="remember">
+              <span data-i18n="Remember me">Remember me</span>
+            </label>
+            <a href="#" class="forgot-link" data-i18n="Forgot password?" onclick="showForgotDialog();return false;">Forgot password?</a>
+          </div>
+
+          <button type="submit" id="login-submit" class="btn btn-primary btn-block" data-i18n="Login">Login</button>
+
+          <div class="divider"><span data-i18n="or continue with">or continue with</span></div>
+
+          <div id="google-signin-button"></div>
+        </form>
+
+        <div id="twofa-step" style="display:none;">
+          <h2 class="auth-title">Two-Factor Authentication</h2>
+          <p class="auth-subtitle">Enter the 6-digit code from your authenticator app or a backup code.</p>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-shield-alt"></i>
+              <input type="text" class="form-control" id="twofa-code" placeholder="6-digit code" maxlength="10" inputmode="numeric" autocomplete="one-time-code">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="twofa-verify-btn">Verify Code</button>
+          <p class="form-footer"><a href="#" id="twofa-back">Back to login</a></p>
+        </div>
+
+        <div id="forgot-step" style="display:none;">
+          <h2 class="auth-title">Reset Password</h2>
+          <p class="auth-subtitle">Enter your email and we'll send you a reset link.</p>
+          <div class="form-group">
+            <div class="input-icon-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input type="email" class="form-control" id="forgot-email" placeholder="Email address" required>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" id="forgot-submit-btn">Send Reset Link</button>
+          <p class="form-footer"><a href="#" id="forgot-back">Back to login</a></p>
+        </div>
+
+        <p class="form-footer">Don't have an account? <a href="register.html" data-i18n="Sign up">Sign up</a></p>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/google-auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Email/Password login
+      const form = document.getElementById('login-form');
+      const loginBtn = document.getElementById('login-submit');
+      let pendingTempToken = null;
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (form._submitting) return;   // prevent duplicate submissions
+        form._submitting = true;
+        const email = form.querySelector('[name="email"]').value;
+        const password = form.querySelector('[name="password"]').value;
+        if (loginBtn) { loginBtn.disabled = true; loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...'; }
+        try {
+          const data = await api.login(email, password);
+          if (data.requires2FA) {
+            pendingTempToken = data.tempToken;
+            form.style.display = 'none';
+            document.getElementById('twofa-step').style.display = 'block';
+            document.getElementById('twofa-code').focus();
+            form._submitting = false;
+            return;
+          }
+          api.saveUser(data.user);
+          localStorage.setItem('ts-token', data.token);
+          showToast(__('Welcome back,') + ' ' + data.user.fullName + '!', 'success');
+          setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+        } catch (err) {
+          if (loginBtn) { loginBtn.disabled = false; loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ' + __('Sign In'); }
+          form._submitting = false;
+          showToast(__(err.message), 'error');
+        }
+      });
+
+      // 2FA code verification
+      document.getElementById('twofa-verify-btn').addEventListener('click', async function() {
+        const code = document.getElementById('twofa-code').value.trim();
+        if (!code) { showToast(__('Enter your authentication code'), 'error'); return; }
+        const btn = this;
+        btn.disabled = true;
+        try {
+          const data = await api.request('POST', '/2fa/verify-login', { tempToken: pendingTempToken, code: code });
+          api.saveUser(data.user);
+          localStorage.setItem('ts-token', data.token);
+          showToast(__('Welcome back,') + ' ' + data.user.fullName + '!', 'success');
+          setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+        } catch (err) {
+          showToast(__(err.message) || __('Invalid code'), 'error');
+          btn.disabled = false;
+        }
+      });
+
+      document.getElementById('twofa-code').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('twofa-verify-btn').click();
+      });
+
+      document.getElementById('twofa-back').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('twofa-step').style.display = 'none';
+        form.style.display = '';
+        pendingTempToken = null;
+      });
+
+      // Google Sign-In (redirect flow — no popup, no window.opener)
+      googleAuth.init('google-signin-button');
+
+      // Handle redirect callback from Google OAuth
+      var googleResult = googleAuth.handleCallback();
+      if (googleResult && googleResult.error) {
+        showToast(googleResult.error, 'error');
+      } else if (googleResult && googleResult.token) {
+        api.saveUser(googleResult.user);
+        localStorage.setItem('ts-token', googleResult.token);
+        showToast(__('Signed in with Google!'), 'success');
+        setTimeout(function() { window.location.href = 'dashboard.html'; }, 800);
+      }
+
+      // Forgot password flow
+      window.showForgotDialog = function() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('forgot-step').style.display = 'block';
+        document.getElementById('forgot-email').focus();
+      };
+      document.getElementById('forgot-back').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('forgot-step').style.display = 'none';
+        document.getElementById('login-form').style.display = '';
+      });
+      document.getElementById('forgot-submit-btn').addEventListener('click', async function() {
+        var email = document.getElementById('forgot-email').value.trim();
+        if (!email) { showToast(__('Enter your email address'), 'error'); return; }
+        var btn = this;
+        btn.disabled = true;
+        try {
+          await api.forgotPassword(email);
+          showToast(__('If the email exists, a reset link has been sent'), 'success');
+          setTimeout(function() {
+            document.getElementById('forgot-step').style.display = 'none';
+            document.getElementById('login-form').style.display = '';
+            btn.disabled = false;
+          }, 1500);
+        } catch (err) {
+          showToast(__(err.message) || __('Unable to send reset link'), 'error');
+          btn.disabled = false;
+        }
+      });
+      document.getElementById('forgot-email').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('forgot-submit-btn').click();
+      });
+    });
+  </script>
+</body>
+</html>
+

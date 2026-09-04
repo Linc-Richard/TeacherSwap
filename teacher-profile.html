@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Profile - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .tp-verified { display:inline-flex; align-items:center; gap:4px; background:var(--success-bg, rgba(16,185,129,0.12)); color:var(--success, #10B981); border-radius:999px; padding:3px 10px; font-size:0.75rem; font-weight:600; }
+    .tp-actions { display:flex; flex-wrap:wrap; gap:10px; }
+    .tp-compat { border:1px solid var(--border); border-radius:12px; padding:16px; }
+    .tp-compat-score { font-size:2rem; font-weight:800; }
+    .tp-reason { display:flex; align-items:flex-start; gap:8px; font-size:0.82rem; color:var(--text-muted); margin-bottom:6px; }
+    .tp-reason i { margin-top:2px; color:var(--primary); }
+    .tp-bar { height:8px; border-radius:999px; background:linear-gradient(90deg, var(--primary), var(--accent, #6366F1)); margin-top:12px; width:0; transition:width .6s ease; }
+    .tp-info-row { display:flex; align-items:flex-start; gap:10px; padding:8px 0; font-size:0.9rem; }
+    .tp-info-row i { margin-top:3px; color:var(--primary); width:16px; text-align:center; }
+    .tp-section { margin-bottom:24px; }
+    .tp-review { border-bottom:1px solid var(--border); padding:12px 0; }
+    .tp-review:last-child { border-bottom:none; }
+    .tp-dist-bar { display:flex; gap:4px; align-items:center; }
+    .tp-seg { height:6px; border-radius:999px; }
+  </style>
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+  <div id="scroll-progress"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <div class="relative nav-notif-btn">
+          <button class="theme-toggle" id="notif-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="notif-badge" style="display:none;"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-dropdown-header"><span>Notifications</span></div>
+            <div class="notif-dropdown-list"><div class="notif-dropdown-item"><div><p style="font-size:0.85rem;color:var(--text-muted);">Loading notifications...</p></div></div></div>
+          </div>
+        </div>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <aside class="sidebar" id="sidebar"><div class="sidebar-menu"></div></aside>
+
+  <main class="main-content">
+    <!-- Loading -->
+    <div class="card" id="tp-loading" style="padding:48px 24px;text-align:center;">
+      <div class="loader-spinner" style="margin:0 auto 16px;"></div>
+      <p style="color:var(--text-muted);">Loading teacher profile...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="card" id="tp-error" style="display:none;padding:48px 24px;text-align:center;">
+      <i class="fas fa-exclamation-triangle" style="font-size:2.4rem;color:var(--warning);margin-bottom:16px;"></i>
+      <h3 id="tp-error-title" style="margin-bottom:8px;">Something went wrong</h3>
+      <p id="tp-error-msg" style="color:var(--text-muted);margin-bottom:24px;">We couldn't load this teacher's profile.</p>
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='find-match.html'"><i class="fas fa-arrow-left"></i> Back to Find Teachers</button>
+    </div>
+
+    <!-- Content -->
+    <div id="tp-content" style="display:none;">
+      <div style="margin-bottom:16px;">
+        <a href="find-match.html" class="btn btn-ghost btn-sm"><i class="fas fa-arrow-left"></i> Back to Find Teachers</a>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:20px;align-items:start;">
+        <!-- Left: identity + rating + compatibility -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card tp-section" style="padding:24px;margin:0;">
+            <div id="tp-avatar" style="margin-bottom:16px;"></div>
+            <h2 id="tp-name" style="margin:0 0 4px;"></h2>
+            <div id="tp-username" style="color:var(--primary);font-size:0.85rem;margin-bottom:10px;"></div>
+            <div id="tp-rating" style="margin-bottom:16px;"></div>
+            <div class="tp-actions">
+              <button class="btn btn-primary" id="tp-request-swap"><i class="fas fa-exchange-alt"></i> Request Swap</button>
+              <a href="#" class="btn btn-ghost" id="tp-message"><i class="fas fa-comment"></i> Message</a>
+              <button class="btn btn-ghost" id="tp-view-reviews"><i class="fas fa-star"></i> View Reviews</button>
+            </div>
+          </div>
+
+          <div class="card tp-section tp-compat" style="margin:0;">
+            <h3 style="margin:0 0 12px;">Swap Compatibility</h3>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div class="tp-compat-score" id="tp-compat-score">--</div>
+              <div style="flex:1;">
+                <div id="tp-compat-label" style="font-size:0.85rem;font-weight:600;color:var(--text-muted);"></div>
+                <div class="tp-bar" id="tp-compat-bar"></div>
+              </div>
+            </div>
+            <div id="tp-compat-reasons" style="margin-top:16px;"></div>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="card tp-section" style="padding:24px;margin:0;">
+          <h3 class="tp-section-title" style="margin:0 0 12px;"><i class="fas fa-user" style="color:var(--primary);margin-right:8px;"></i>Profile</h3>
+          <div id="tp-details"></div>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="card tp-section" style="padding:24px;margin-top:20px;">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:8px;">
+          <h3 style="margin:0;"><i class="fas fa-star" style="color:var(--warning);margin-right:8px;"></i> Reviews</h3>
+          <div id="tp-reviews-summary" style="font-size:0.85rem;color:var(--text-muted);"></div>
+        </div>
+        <div id="tp-distribution" style="margin-bottom:16px;"></div>
+        <div id="tp-reviews"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Request Swap Modal -->
+  <div class="modal-overlay" id="request-modal" style="display:none;">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 id="request-modal-title">Request Swap</h3>
+        <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);font-size:0.88rem;">Send a swap / connection request to this teacher. They will be notified and can accept or decline.</p>
+        <div class="form-group">
+          <label>Message (optional)</label>
+          <textarea id="request-message" class="form-control" style="padding-left:12px;min-height:100px;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="confirm-swap"><i class="fas fa-paper-plane"></i> Send Request</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"></nav>
+
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+      function esc(v) { return window.escapeHtml(v == null ? '' : v); }
+
+      var id = null;
+      try {
+        id = new URLSearchParams(window.location.search).get('id');
+      } catch (e) {}
+      if (!id) { showError('No teacher selected', 'Please choose a teacher from the Find Teachers page.'); return; }
+
+      var loadingEl = document.getElementById('tp-loading');
+      var errorEl = document.getElementById('tp-error');
+      var contentEl = document.getElementById('tp-content');
+
+      function showError(title, msg) {
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        contentEl.style.display = 'none';
+        document.getElementById('tp-error-title').textContent = title || 'Something went wrong';
+        document.getElementById('tp-error-msg').textContent = msg || 'We couldn\'t load this teacher\'s profile.';
+      }
+
+      function starsFor(avg) {
+        var filled = Math.round(Number(avg) || 0);
+        var s = '';
+        for (var i = 1; i <= 5; i++) s += '<i class="fa ' + (i <= filled ? 'fa-star' : 'far fa-star') + '" style="color:var(--warning);"></i>';
+        return s;
+      }
+
+      var teacher, rating, compat;
+      try {
+        var data = await api.getTeacherProfile(id);
+        teacher = (data && data.teacher) || null;
+        rating = (data && data.rating) || { average: 0, total: 0, distribution: [0,0,0,0,0] };
+        compat = (data && data.compatibility) || { score: 0, mutual: false, reasons: [] };
+        if (!teacher) { showError('Teacher not found', 'This teacher profile could not be found. It may have been removed.'); return; }
+      } catch (e) {
+        var status = (e && e.status) || 0;
+        if (status === 400) { showError('This is your own profile', 'Please use your profile page to view your own account.'); return; }
+        showError('Teacher not found', 'We couldn\'t load this teacher\'s profile. They may have been removed.')
+        console.error('profile error', e);
+        return;
+      }
+
+      loadingEl.style.display = 'none';
+      contentEl.style.display = 'block';
+      errorEl.style.display = 'none';
+
+      document.title = (teacher.fullName || 'Teacher') + ' - Teacher Profile - TeacherSwap';
+
+      document.getElementById('tp-avatar').innerHTML = window.avatarMarkup(teacher, 'ts-av-xl');
+      document.getElementById('tp-name').innerHTML = esc(teacher.fullName || '') +
+        (teacher.isVerified ? ' <span class="tp-verified"><i class="fas fa-check-circle"></i> Verified</span>' : '');
+      document.getElementById('tp-username').textContent = '@' + (teacher.username || '');
+
+      var avg = Number(rating.average) || 0, total = rating.total || 0;
+      var ratingHTML = '';
+      if (avg || total) {
+        ratingHTML = '<span style="font-size:1.1rem;">' + starsFor(avg) + '</span> <strong>' + avg.toFixed(1) + '</strong> <span style="color:var(--text-muted);font-size:0.85rem;">(' + total + ' reviews)</span>';
+      } else {
+        ratingHTML = '<span style="color:var(--text-muted);font-size:0.9rem;"><i class="far fa-star"></i> No reviews yet</span>';
+      }
+      document.getElementById('tp-rating').innerHTML = ratingHTML;
+
+      // Actions wiring
+      document.getElementById('tp-request-swap').addEventListener('click', function() {
+        document.getElementById('request-message').placeholder = 'Hi ' + (teacher.fullName || '') + ', I noticed you want to swap to my region. I\'d love to discuss...';
+        document.getElementById('request-message').value = '';
+        var t = (teacher.fullName || 'Teacher');
+        document.getElementById('request-modal-title').textContent = 'Request Swap - ' + t;
+        document.getElementById('request-modal').style.display = 'flex';
+      });
+      document.getElementById('tp-message').href = 'messages.html?teacher=' + encodeURIComponent(id);
+      document.getElementById('tp-view-reviews').addEventListener('click', function() {
+        var r = document.querySelector('#tp-content .card.tp-section:last-of-type');
+        if (r && r.scrollIntoView) r.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // Compatibility
+      var cs = compat.score || 0;
+      document.getElementById('tp-compat-score').textContent = cs + '%';
+      var label = document.getElementById('tp-compat-label');
+      if (compat.mutual) { label.innerHTML = '<span style="color:var(--success);"><i class="fas fa-heart"></i> Mutual match</span>'; }
+      else if (cs >= 55) { label.textContent = 'Good match'; }
+      else if (cs >= 40) { label.textContent = 'Moderate match'; }
+      else { label.textContent = 'Low match'; }
+      setTimeout(function() {
+        document.getElementById('tp-compat-bar').style.width = cs + '%';
+        var c = document.getElementById('tp-compat-bar');
+        c.style.background = cs >= 70
+          ? 'linear-gradient(90deg, #10B981, #34D399)'
+          : (cs >= 50 ? 'linear-gradient(90deg, #F59E0B, #FBBF24)' : 'linear-gradient(90deg, #EF4444, #F87171)');
+      }, 50);
+      var reasonsEl = document.getElementById('tp-compat-reasons');
+      reasonsEl.innerHTML = (compat.reasons && compat.reasons.length) ? compat.reasons.map(function(rr){
+        return '<div class="tp-reason"><i class="fas fa-check-circle"></i> ' + esc(rr) + '</div>';
+      }).join('') : '<div class="tp-reason"><i class="fas fa-info-circle"></i> ' + (function(){ var r = (cs>=55)?'Your preferences align well with this teacher.':'Consider reaching out to discuss if a swap could work.'; return esc(r); })() + '</div>';
+
+      // Details
+      var details = [];
+      if (teacher.teachingLevel) details.push(iconRow('fa-chalkboard-teacher', 'Teaching Level', toTitle(teacher.teachingLevel)));
+      details.push(iconRow('fa-briefcase', 'Experience', teacher.experience || 'Not specified'));
+      details.push(iconRow('fa-school', 'School', teacher.schoolName || 'Not specified'));
+      details.push(iconRow('fa-map-marker-alt', 'Current Station', (teacher.region || '-') + (teacher.district ? ', ' + teacher.district : '')));
+      if (teacher.swapType) details.push(iconRow('fa-exchange-alt', 'Swap Type', toTitle(teacher.swapType)));
+      if (teacher.preferredRegion) details.push(iconRow('fa-paper-plane', 'Preferred Region', teacher.preferredRegion + (teacher.preferredDistrict ? ' (' + teacher.preferredDistrict + ')' : '')));
+      if (teacher.subjects) details.push(iconRow('fa-book', 'Subjects', (teacher.subjects)));
+      if (teacher.gender) details.push(iconRow('fa-venus-mars', 'Gender', toTitle(teacher.gender)));
+      if (teacher.bio) details.push(iconRow('fa-quote-left', 'Bio', teacher.bio));
+      document.getElementById('tp-details').innerHTML = details.join('');
+
+      // Reviews
+      var summaryEl = document.getElementById('tp-reviews-summary');
+      if (total) {
+        summaryEl.innerHTML = '<strong>' + avg.toFixed(1) + '</strong> average from <strong>' + total + '</strong> review' + (total === 1 ? '' : 's');
+      } else {
+        summaryEl.textContent = 'No reviews yet';
+      }
+      var dist = rating.distribution || [0,0,0,0,0];
+      var maxDist = Math.max.apply(null, dist.concat([1]));
+      var distHTML = [5,4,3,2,1].map(function(star){
+        var cnt = dist[star-1] || 0;
+        var pct = Math.round((cnt / maxDist) * 100);
+        return '<div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;margin-bottom:4px;">' +
+          '<span style="width:30px;">' + star + ' <i class="fa fa-star" style="color:var(--warning);"></i></span>' +
+          '<div style="flex:1;height:6px;background:var(--border);border-radius:999px;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,var(--warning),var(--warning));border-radius:999px;"></div></div>' +
+          '<span style="color:var(--text-muted);width:24px;text-align:right;">' + cnt + '</span>' +
+        '</div>';
+      }).join('');
+      document.getElementById('tp-distribution').innerHTML = distHTML;
+
+      var reviewsHTML = '';
+      if (total) {
+        var reviewsList = [];
+        try {
+          var rv = await api.getUserReviews(id);
+          reviewsList = (rv && rv.reviews) || [];
+        } catch (e) { reviewsList = []; }
+        if (reviewsList.length) {
+          reviewsHTML = reviewsList.map(function(rev){
+            var stars = '';
+            for (var i2 = 1; i2 <= 5; i2++) stars += '<i class="fa ' + (i2 <= (Number(rev.rating)||0) ? 'fa-star' : 'far fa-star') + '" style="color:var(--warning);font-size:0.85rem;"></i> ';
+            return '<div class="tp-review">' +
+              '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
+                '<div style="display:flex;align-items:center;gap:10px;">' + window.avatarMarkup({fullName: rev.fromName, avatar: rev.fromAvatar}, 'ts-av-sm') +
+                  '<div><div style="font-weight:600;font-size:0.9rem;">' + esc(rev.fromName || 'Anonymous') + '</div>' +
+                  (rev.anonymous ? '<div style="font-size:0.72rem;color:var(--text-muted);">Shared anonymously</div>' : '') + '</div></div>' +
+                '<div style="font-size:0.8rem;color:var(--text-muted);">' + esc(rev.date ? new Date(rev.date).toLocaleDateString() : '') + '</div>' +
+              '</div>' +
+              '<div style="margin-top:8px;">' + stars + '</div>' +
+              (rev.feedback ? '<p style="margin:6px 0 0;font-size:0.88rem;">' + esc(rev.feedback) + '</p>' : '') +
+            '</div>';
+          }).join('');
+        } else {
+          reviewsHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">No written reviews yet.</p>';
+        }
+      } else {
+        reviewsHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">This teacher has no reviews yet.</p>';
+      }
+      document.getElementById('tp-reviews').innerHTML = reviewsHTML;
+
+      function toTitle(s) {
+        s = String(s == null ? '' : s);
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
+      function iconRow(icon, label, value) {
+        return '<div class="tp-info-row"><i class="fas ' + icon + '"></i><div><div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--text-muted);">' + label + '</div><div style="font-size:0.92rem;">' + esc(value) + '</div></div></div>';
+      }
+
+      // Modal
+      document.getElementById('modal-close').addEventListener('click', function() { document.getElementById('request-modal').style.display = 'none'; });
+      document.getElementById('modal-cancel').addEventListener('click', function() { document.getElementById('request-modal').style.display = 'none'; });
+      document.getElementById('confirm-swap').addEventListener('click', async function() {
+        var btn = document.getElementById('confirm-swap');
+        btn.disabled = true;
+        try {
+          await api.sendSwapRequest(id, document.getElementById('request-message').value.trim());
+          showToast('Swap request sent to ' + (teacher.fullName || 'teacher') + '!', 'success');
+          document.getElementById('request-modal').style.display = 'none';
+        } catch (e) {
+          showToast((e && e.message) || 'Could not send swap request', 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

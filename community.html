@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+  <div id="scroll-progress"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <div class="relative nav-notif-btn">
+          <button class="theme-toggle" id="notif-btn" aria-label="Notifications"><i class="fas fa-bell"></i><span class="notif-badge" style="display:none;"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown">
+            <div class="notif-dropdown-header"><span>Notifications</span></div>
+            <div class="notif-dropdown-list"><div class="notif-dropdown-item"><div><p style="font-size:0.85rem;color:var(--text-muted);">Loading notifications...</p></div></div></div>
+          </div>
+        </div>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <!-- Sidebar (populated by nav.js) -->
+  <aside class="sidebar" id="sidebar"><div class="sidebar-menu"></div></aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Community</h1>
+      <p>Connect, share, and learn from fellow Tanzanian teachers.</p>
+    </div>
+
+    <div class="community-layout">
+      <!-- Main Feed -->
+      <div class="feed-posts">
+        <!-- Loading -->
+        <div id="feed-loading"><div class="card dt-card-message"><i class="fas fa-spinner fa-spin"></i> Loading community activity...</div></div>
+
+        <!-- Error -->
+        <div id="feed-error" class="card" style="padding:24px;display:none;">
+          <i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i>
+          We couldn't load the community feed.
+          <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="window.location.reload()">Retry</button>
+        </div>
+
+        <!-- Feed list -->
+        <div id="feed-list"></div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="community-sidebar">
+        <div class="card sidebar-card" id="community-stats">
+          <h4><i class="fas fa-chart-line text-primary"></i> Community at a Glance</h4>
+          <div class="empty-inline" style="padding:12px 0;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+
+        <div class="card sidebar-card">
+          <h4><i class="fas fa-users text-primary"></i> About</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.6;">
+            TeacherSwap connects Tanzanian teachers across regions for temporary and permanent swaps.
+            Browse recent sign-ups, completed swaps, and shared feedback from your community.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation (populated by nav.js) -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav"></nav>
+
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notif.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+
+      var loadingEl = document.getElementById('feed-loading');
+      var errorEl = document.getElementById('feed-error');
+      var feedEl = document.getElementById('feed-list');
+
+      function timeAgo(iso) {
+        if (!iso) return '';
+        var d = new Date(String(iso).replace(' ', 'T'));
+        var secs = Math.floor((Date.now() - d.getTime()) / 1000);
+        if (!(secs >= 0) || isNaN(secs)) return '';
+        if (secs < 60) return 'just now';
+        var mins = Math.floor(secs / 60);
+        if (mins < 60) return mins + ' min ago';
+        var hrs = Math.floor(mins / 60);
+        if (hrs < 24) return hrs + ' hr ago';
+        var days = Math.floor(hrs / 24);
+        if (days < 30) return days + ' day ago';
+        return d.toLocaleDateString();
+      }
+
+      function initials(name) {
+        var s = String(name || 'T').trim();
+        var parts = s.split(/\s+/);
+        return (parts[0].charAt(0) + (parts[1] ? parts[1].charAt(0) : '')).toUpperCase();
+      }
+
+      function teacherCard(t) {
+        var av = { fullName: t.fullName || '', avatar: t.avatar || '' };
+        return '<div class="card feed-post">' +
+          '<div class="post-header">' +
+            '<div class="ts-av ts-av-sm">' + window.avatarMarkup(av, 'ts-av-sm') + '</div>' +
+            '<div class="post-author">' +
+              '<h4><a href="profile.html?id=' + encodeURIComponent(t.id) + '" style="color:inherit;text-decoration:none;">' + window.escapeHtml(t.fullName || '') + '</a></h4>' +
+              '<span>' + window.escapeHtml(t.subjects || 'Teacher') + (t.region ? ' &middot; ' + window.escapeHtml(t.region) : '') + ' &middot; ' + timeAgo(t.createdAt) + ' joined</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="post-content"><p><i class="fas fa-hand-sparkles" style="color:var(--primary);"></i> ' + window.escapeHtml(t.fullName || '') + ' is now on TeacherSwap' + (t.schoolName ? ' at ' + window.escapeHtml(t.schoolName) : '') + '.</p></div>' +
+          '<div class="dt-actions"><a class="dt-btn dt-btn-outline" href="profile.html?id=' + encodeURIComponent(t.id) + '"><i class="fas fa-user"></i> View Profile</a></div>' +
+        '</div>';
+      }
+
+      function swapCard(s) {
+        return '<div class="card feed-post">' +
+          '<div class="post-header">' +
+            '<div class="ts-av ts-av-sm"><span class="ts-av-fallback"><i class="fas fa-exchange-alt"></i></span></div>' +
+            '<div class="post-author"><h4>Swap Activity</h4><span>' + timeAgo(s.createdAt) + ' </span></div>' +
+          '</div>' +
+          '<div class="post-content"><p><i class="fas fa-exchange-alt" style="color:var(--success);"></i> ' +
+            window.escapeHtml(s.fromName || 'A teacher') + ' <b>swaps</b> with ' + window.escapeHtml(s.toName || 'a teacher') +
+            ' <span class="request-status ' + ({accepted:'accepted',completed:'accepted',pending:'pending'}[s.status]||'pending') + '" style="margin-left:6px;">' + window.escapeHtml(s.status || '') + '</span>' +
+          '</p></div></div>';
+      }
+
+      function reviewCard(r) {
+        var stars = '<span style="color:var(--warning);">';
+        for (var i = 1; i <= 5; i++) stars += '<i class="fas fa-star' + (i <= Number(r.rating) ? '' : '-o') + '"></i>';
+        stars += '</span>';
+        return '<div class="card feed-post">' +
+          '<div class="post-header">' +
+            '<div class="ts-av ts-av-sm"><span class="ts-av-fallback"><i class="fas fa-star"></i></span></div>' +
+            '<div class="post-author"><h4>New Review</h4><span>' + timeAgo(r.createdAt) + '</span></div>' +
+          '</div>' +
+          '<div class="post-content"><p>' + stars + ' ' + window.escapeHtml(r.fromName || 'A teacher') + ' reviewed ' + window.escapeHtml(r.toName || 'a teacher') +
+            (r.feedback ? '<br><span style="font-size:0.85rem;color:var(--text-muted);">"' + window.escapeHtml(r.feedback) + '"</span>' : '') +
+          '</p></div></div>';
+      }
+
+      var activity = null;
+      var failed = false;
+      try {
+        activity = await api.getCommunityActivity();
+      } catch (e) { failed = true; }
+
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (failed) { if (errorEl) errorEl.style.display = 'block'; return; }
+
+      activity = activity || {};
+      var teachers = (activity.teachers || []).slice(0, 8);
+      var swaps = (activity.swaps || []).slice(0, 8);
+      var reviews = (activity.reviews || []).slice(0, 8);
+
+      // Interleave into a single chronological-looking feed: new teachers, then swaps, then reviews
+      var items = teachers.map(teacherCard).concat(swaps.map(swapCard)).concat(reviews.map(reviewCard));
+
+      if (!items.length) {
+        feedEl.innerHTML = '<div class="card" style="padding:32px;text-align:center;color:var(--text-muted);"><i class="fas fa-users" style="font-size:2rem;display:block;margin-bottom:10px;opacity:0.5;"></i>No community activity yet. Be the first!</div>';
+      } else {
+        feedEl.innerHTML = items.join('');
+      }
+
+      // Sidebar stats
+      var statsEl = document.getElementById('community-stats');
+      statsEl.innerHTML =
+        '<div class="community-stat"><h3>' + teachers.length + '+</h3><span>New Teachers</span></div>' +
+        '<div class="community-stat"><h3>' + swaps.length + '</h3><span>Recent Swaps</span></div>' +
+        '<div class="community-stat"><h3>' + reviews.length + '</h3><span>Recent Reviews</span></div>';
+    });
+  </script>
+</body>
+</html>

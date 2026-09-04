@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - TeacherSwap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div id="loader"><div class="loader-spinner"></div><div class="loader-text">Loading...</div></div>
+  <div id="toast-container"></div>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="flex-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-ghost btn-icon" style="display:flex;background:none;"><i class="fas fa-bars"></i></button>
+        <a href="dashboard.html" class="navbar-brand">
+          <div class="brand-icon"><i class="fas fa-arrows-rotate"></i></div>
+          <span>TeacherSwap</span>
+        </a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="profile.html" class="btn btn-ghost btn-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="sidebar-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:899;display:none;"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+      <div class="sidebar-label">Main Menu</div>
+      <a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="find-match.html" class="sidebar-link"><i class="fas fa-search"></i> Find Match</a>
+      <a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a>
+      <a href="community.html" class="sidebar-link"><i class="fas fa-users"></i> Community</a>
+      <a href="payment.html" class="sidebar-link"><i class="fas fa-credit-card"></i> Payment</a>
+      <div class="sidebar-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><i class="fas fa-user"></i> Profile</a>
+      <a href="settings.html" class="sidebar-link active"><i class="fas fa-cog"></i> Settings</a>
+      <a href="login.html" class="sidebar-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Settings</h1>
+      <p>Manage your account preferences and security.</p>
+    </div>
+
+    <!-- Settings Nav -->
+    <div class="card" style="padding:0;border:none;background:none;">
+      <div class="settings-nav">
+        <button class="settings-nav-item active" data-target="settings-profile"><i class="fas fa-user"></i> Profile</button>
+        <button class="settings-nav-item" data-target="settings-security"><i class="fas fa-shield-alt"></i> Security</button>
+        <button class="settings-nav-item" data-target="settings-notifications"><i class="fas fa-bell"></i> Notifications</button>
+        <button class="settings-nav-item" data-target="settings-appearance"><i class="fas fa-palette"></i> Appearance</button>
+        <button class="settings-nav-item" data-target="settings-privacy"><i class="fas fa-lock"></i> Privacy</button>
+        <button class="settings-nav-item" data-target="settings-danger"><i class="fas fa-trash"></i> Danger Zone</button>
+      </div>
+
+      <!-- Profile Settings -->
+      <div class="card settings-section active" id="settings-profile">
+        <h3>Profile Settings</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Full Name</h4><p id="set-fullname">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Email Address</h4><p id="set-email">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Phone Number</h4><p id="set-phone">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Bio</h4><p id="set-bio">-</p></div>
+          <a href="profile.html" class="btn btn-ghost btn-sm">View</a>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="card settings-section" id="settings-security">
+        <h3>Security</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Password</h4><p>Use your email and password to sign in</p></div>
+          <button class="btn btn-ghost btn-sm">Change</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Two-Factor Authentication</h4><p>Add an extra layer of security</p></div>
+          <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Active Sessions</h4><p>You are currently signed in</p></div>
+          <button class="btn btn-ghost btn-sm">Manage</button>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="card settings-section" id="settings-notifications">
+        <h3>Notification Preferences</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Swap Requests</h4><p>Get notified when someone requests a swap</p></div>
+          <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Messages</h4><p>Notifications for new messages</p></div>
+          <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Match Alerts</h4><p>Weekly summary of potential matches</p></div>
+          <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Community Updates</h4><p>Activity from the community</p></div>
+          <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="card settings-section" id="settings-appearance">
+        <h3>Appearance</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Dark Mode</h4><p>Toggle between light and dark themes</p></div>
+          <label class="toggle-switch"><input type="checkbox" id="dark-mode-toggle"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Language</h4><p>Choose your preferred language</p></div>
+          <select class="sort-select" id="language-select">
+            <option value="en">English</option>
+            <option value="sw">Swahili</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Font Size</h4><p>Adjust text size</p></div>
+          <select class="sort-select">
+            <option>Small</option>
+            <option selected>Medium</option>
+            <option>Large</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="card settings-section" id="settings-privacy">
+        <h3>Privacy</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Profile Visibility</h4><p>Who can see your profile</p></div>
+          <select class="sort-select">
+            <option>Everyone</option>
+            <option>Registered Teachers</option>
+            <option>Only Matches</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Show Email</h4><p>Display email on your profile</p></div>
+          <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Show Phone</h4><p>Display phone number on your profile</p></div>
+          <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Activity Status</h4><p>Show when you're active</p></div>
+          <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="card settings-section" id="settings-danger">
+        <h3 style="color:var(--danger);">Danger Zone</h3>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Delete Account</h4><p>Permanently delete your account and all data</p></div>
+          <button id="delete-account-btn" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete Account</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info"><h4>Export Data</h4><p>Download all your data as JSON</p></div>
+          <button class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> Export</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="index.html" class="mobile-nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="find-match.html" class="mobile-nav-item"><i class="fas fa-search"></i><span>Find</span></a>
+    <a href="dashboard.html" class="mobile-nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="messages.html" class="mobile-nav-item"><i class="fas fa-comments"></i><span>Messages</span></a>
+    <a href="profile.html" class="mobile-nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="lang-toggle-btn active" data-lang="en">EN</button>
+    <button class="lang-toggle-btn" data-lang="sw">SW</button>
+  </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!window.api || !api.isLoggedIn()) { window.location.href = 'login.html'; return; }
+      
+      var langSel = document.getElementById('language-select');
+      if (langSel) {
+        langSel.value = (typeof TS !== 'undefined' && TS.getLang) ? TS.getLang() : 'en';
+        langSel.addEventListener('change', function() {
+          if (window.TS && TS.applyLanguage) TS.applyLanguage(this.value);
+        });
+      }
+
+      api.getProfile().then(function(user) {
+        var fn = document.getElementById('set-fullname');
+        if (fn) fn.textContent = user.fullName || '-';
+        var em = document.getElementById('set-email');
+        if (em) em.textContent = user.email || '-';
+        var ph = document.getElementById('set-phone');
+        if (ph) ph.textContent = user.phone || '-';
+        var bio = document.getElementById('set-bio');
+        if (bio) bio.textContent = user.bio || 'No bio yet';
+      }).catch(function() {});
+
+      var deleteBtn = document.getElementById('delete-account-btn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', async function() {
+          if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
+          try {
+            await api.deleteAccount();
+            localStorage.removeItem('ts-token');
+            localStorage.removeItem('ts-user');
+            window.location.href = 'login.html';
+          } catch(err) {
+            alert('Failed to delete account: ' + (err.message || 'Unknown error'));
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
+
