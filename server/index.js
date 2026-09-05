@@ -13,10 +13,22 @@ const app = express();
 const PORT = config.PORT;
 
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
-// Reflect the request Origin so credentials can be used (the wildcard `*` + `credentials:true`
-// combination is invalid per the CORS spec and breaks credentialed requests from other origins).
+// CORS: allow the local frontend (same-origin/dev) and the deployed GitHub
+// Pages frontend. No wildcard — credentials/authentication require explicit
+// origins to be safe. Requests without an Origin (same-origin server-side)
+// are allowed.
+const ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'http://localhost:8080',
+  /^https:\/\/linc-richard\.github\.io(:\d+)?$/
+];
 app.use(cors({
-  origin: (origin, callback) => callback(null, origin || true),
+  origin: function(origin, callback) {
+    if (!origin || ALLOWED_ORIGINS.some((o) => (o instanceof RegExp ? o.test(origin) : o === origin))) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -107,7 +119,7 @@ async function start() {
     require('./db/seed');
   }
   app.listen(PORT, () => {
-    console.log(`TeacherSwap API running at http://localhost:${PORT}`);
+    console.log(`TeacherSwap API listening on port ${PORT}`);
     console.log(`Serving static files from ${path.join(__dirname, '..')}`);
   });
 }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -270,7 +270,8 @@
     <button class="lang-toggle-btn" data-lang="sw">SW</button>
   </div>
   <script src="js/i18n.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/config.js"></script>
+<script src="js/api.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -451,12 +452,12 @@
           var val = unameInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
           unameInput.value = val;
           if (val.length < 3) { hint.textContent = 'Letters, numbers, and underscores only. At least 3 characters.'; hint.style.color = 'var(--text-muted)'; errEl.textContent = ''; return; }
-          if (val === current) { hint.textContent = 'âœ“ Your current username'; hint.style.color = 'var(--success)'; errEl.textContent = ''; return; }
+          if (val === current) { hint.textContent = '✓ Your current username'; hint.style.color = 'var(--success)'; errEl.textContent = ''; return; }
           hint.textContent = 'Checking availability...'; hint.style.color = 'var(--text-muted)'; errEl.textContent = '';
           usernameTimer = setTimeout(async function() {
             try {
               var res = await api.checkUsername(val);
-              if (res.available) { hint.textContent = 'âœ“ ' + val + ' is available'; hint.style.color = 'var(--success)'; errEl.textContent = ''; }
+              if (res.available) { hint.textContent = '✓ ' + val + ' is available'; hint.style.color = 'var(--success)'; errEl.textContent = ''; }
               else { hint.textContent = ''; errEl.textContent = 'This username is already taken'; errEl.style.color = 'var(--danger)'; }
             } catch(e) { hint.textContent = 'Could not check username'; hint.style.color = 'var(--warning)'; }
           }, 500);

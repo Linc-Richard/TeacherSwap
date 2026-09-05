@@ -10,6 +10,11 @@ module.exports = {
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
   GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000',
+  // Frontend origin used by Google OAuth callback redirects. Empty when the
+  // backend also serves the frontend (dev): the callback stays same-origin and
+  // uses relative /login.html. Set to the deployed frontend origin in
+  // production (e.g. https://linc-richard.github.io/TeacherSwap).
+  FRONTEND_URL: (process.env.FRONTEND_URL || '').replace(/\/+$/, ''),
   JWT_SECRET: jwtSecret,
   PORT: process.env.PORT || 3000
 };

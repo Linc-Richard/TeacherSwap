@@ -2,9 +2,20 @@
 function _resolveApiBase() {
   var origin = window.location.origin;
   var protocol = window.location.protocol;
+  // Local development: the backend serves the frontend from localhost, so always
+  // use the same origin even when js/config.js points at a production backend.
+  var host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+    return origin + '/api';
+  }
   // file:// or null origin: server not serving this page — fallback to localhost
   if (!origin || origin === 'null' || protocol === 'file:') {
     return 'http://localhost:3000/api';
+  }
+  // Explicit override (set in js/config.js, e.g. GitHub Pages -> Railway backend)
+  var cfg = (typeof window.TEACHERSWAP_CONFIG === 'object' && window.TEACHERSWAP_CONFIG) || {};
+  if (cfg.apiBase && typeof cfg.apiBase === 'string' && cfg.apiBase.trim()) {
+    return cfg.apiBase.replace(/\/+$/, '');
   }
   return origin + '/api';
 }

@@ -9,6 +9,14 @@ const config = require('../config');
 
 const router = express.Router();
 
+// Builds the frontend login page URL for Google OAuth callback redirects.
+// When FRONTEND_URL is set (production: GitHub Pages frontend), the callback
+// redirects to that origin. Otherwise it falls back to same-origin /login.html,
+// which is correct in development where the backend serves the frontend.
+function loginPage(path) {
+  return (config.FRONTEND_URL || '') + path;
+}
+
 // ─── Redirect-based OAuth flow ───────────────────────────────────
 // This is the primary Google login flow.  No popup, no window.opener,
 // no postMessage — the browser navigates to Google and back.
@@ -46,18 +54,18 @@ router.get('/google/callback', async (req, res) => {
   const { code, state } = req.query;
 
   if (!code) {
-    return res.redirect('/login.html?error=no_code');
+    return res.redirect(loginPage('/login.html?error=no_code'));
   }
 
   // CSRF check: verify signed state (valid for 10 minutes)
   if (state) {
     const parts = state.split('.');
-    if (parts.length !== 3) return res.redirect('/login.html?error=state_mismatch');
+    if (parts.length !== 3) return res.redirect(loginPage('/login.html?error=state_mismatch'));
     const [tsStr, nonce, sig] = parts;
     const expectedSig = crypto.createHmac('sha256', config.JWT_SECRET).update(tsStr + ':' + nonce).digest('hex');
     const ts = Number(tsStr);
     if (sig !== expectedSig || !ts || Date.now() - ts > 600000) {
-      return res.redirect('/login.html?error=state_mismatch');
+      return res.redirect(loginPage('/login.html?error=state_mismatch'));
     }
   }
 
@@ -71,11 +79,11 @@ router.get('/google/callback', async (req, res) => {
       tokens = (await client.getToken(code)).tokens;
       console.log('[google-callback] Step 3: token exchange SUCCESS, has_id_token=' + !!tokens.id_token);
     } catch (tokenErr) {
-      console.error('[google-callback] Step 3 FAILED: token exchange error:', tokenErr.message);
-      if (tokenErr.response && tokenErr.response.data) {
-        console.error('[google-callback]   Google error details:', JSON.stringify(tokenErr.response.data));
-      }
-      return res.redirect('/login.html?error=token_exchange_failed&detail=' + encodeURIComponent(tokenErr.message));
+        console.error('[google-callback] Step 3 FAILED: token exchange error:', tokenErr.message);
+        if (tokenErr.response && tokenErr.response.data) {
+          console.error('[google-callback]   Google error details:', JSON.stringify(tokenErr.response.data));
+        }
+        return res.redirect(loginPage('/login.html?error=token_exchange_failed&detail=' + encodeURIComponent(tokenErr.message)));
     }
 
     let ticket;
@@ -83,7 +91,7 @@ router.get('/google/callback', async (req, res) => {
       const idToken = tokens.id_token;
       if (!idToken) {
         console.error('[google-callback] Step 4 FAILED: Google did not return an ID token');
-        return res.redirect('/login.html?error=missing_id_token');
+        return res.redirect(loginPage('/login.html?error=missing_id_token'));
       }
       ticket = await client.verifyIdToken({
         idToken: idToken,
@@ -92,13 +100,13 @@ router.get('/google/callback', async (req, res) => {
       console.log('[google-callback] Step 4: token verification SUCCESS');
     } catch (verifyErr) {
       console.error('[google-callback] Step 4 FAILED: verify error:', verifyErr.message);
-      return res.redirect('/login.html?error=token_verify_failed&detail=' + encodeURIComponent(verifyErr.message));
+      return res.redirect(loginPage('/login.html?error=token_verify_failed&detail=' + encodeURIComponent(verifyErr.message)));
     }
 
     const payload = ticket.getPayload();
     if (!payload || !payload.email || payload.email_verified !== true || !payload.sub) {
       console.error('[google-callback] Step 5 FAILED: invalid payload email=' + !!(payload && payload.email) + ' verified=' + (payload && payload.email_verified) + ' sub=' + !!(payload && payload.sub));
-      return res.redirect('/login.html?error=invalid_token');
+      return res.redirect(loginPage('/login.html?error=invalid_token'));
     }
     console.log('[google-callback] Step 5: payload OK, email=' + payload.email.slice(0, 3) + '...');
 
@@ -122,7 +130,7 @@ router.get('/google/callback', async (req, res) => {
       logAudit(user.id, 'GOOGLE_LOGIN', 'User logged in via Google (redirect)');
       token = generateToken({ id: user.id, email: user.email, role: user.role });
       console.log('[google-callback] Step 7a: existing Google user, redirecting with token');
-      return res.redirect(`/login.html?google_token=${encodeURIComponent(token)}&google_user=${encodeURIComponent(JSON.stringify(serializeUser(user, 'google')))}`);
+      return res.redirect(loginPage(`/login.html?google_token=${encodeURIComponent(token)}&google_user=${encodeURIComponent(JSON.stringify(serializeUser(user, 'google')))}`));
     }
 
     // 2) Link to existing email/password account
@@ -135,7 +143,7 @@ router.get('/google/callback', async (req, res) => {
       logAudit(user.id, 'GOOGLE_LINK', 'Google account linked to existing user (redirect)');
       token = generateToken({ id: user.id, email: user.email, role: user.role });
       console.log('[google-callback] Step 7b: linked to existing user, redirecting with token');
-      return res.redirect(`/login.html?google_token=${encodeURIComponent(token)}&google_user=${encodeURIComponent(JSON.stringify(serializeUser(user, 'google')))}`);
+      return res.redirect(loginPage(`/login.html?google_token=${encodeURIComponent(token)}&google_user=${encodeURIComponent(JSON.stringify(serializeUser(user, 'google')))}`));
     }
 
     // 3) Create new account
@@ -151,11 +159,11 @@ router.get('/google/callback', async (req, res) => {
     token = generateToken({ id, email, role: 'teacher' });
     user = { id, email, fullName, role: 'teacher', authProvider: 'google', avatar, isVerified: true };
     console.log('[google-callback] Step 7c: new user created, redirecting with token');
-    return res.redirect(`/login.html?google_token=${encodeURIComponent(token)}&google_user=${encodeURIComponent(JSON.stringify(user))}`);
+    return res.redirect(loginPage(`/login.html?google_token=${encodeURIComponent(token)}&google_user=${encodeURIComponent(JSON.stringify(user))}`));
   } catch (err) {
     console.error('[google-callback] UNHANDLED error:', err && err.message);
     console.error('[google-callback] Stack:', err && err.stack);
-    return res.redirect('/login.html?error=google_auth_failed&detail=' + encodeURIComponent(err && err.message || 'unknown'));
+    return res.redirect(loginPage('/login.html?error=google_auth_failed&detail=' + encodeURIComponent(err && err.message || 'unknown')));
   }
 });
 
@@ -167,7 +175,7 @@ function renderErrorPage(message) {
     <div style="text-align:center;max-width:400px;padding:32px;">
       <h2 style="color:#6366f1;">TeacherSwap</h2>
       <p style="color:#64748b;">${message}</p>
-      <a href="/login.html" style="display:inline-block;margin-top:16px;padding:10px 24px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Back to Login</a>
+      <a href="${loginPage('/login.html')}" style="display:inline-block;margin-top:16px;padding:10px 24px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">Back to Login</a>
     </div></body></html>`;
 }
 

@@ -1,0 +1,9 @@
+**/node_modules
+**/.env
+**/.flaskenv
+.git
+.gitignore
+uploads
+srv.log
+srv.err
+srv.pid

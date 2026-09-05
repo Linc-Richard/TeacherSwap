@@ -9,3 +9,5 @@ server/db/*.db-wal
 server/db/*.db-shm
 uploads/
 .opencode/
+srv.err
+srv.pid
