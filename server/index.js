@@ -10,6 +10,9 @@ const { verifyToken } = require('./middleware/auth');
 const config = require('./config');
 
 const app = express();
+// Trust the first hop (Railway's edge proxy). Their proxy sets X-Forwarded-For,
+// which express-rate-limit requires before it can identify users correctly.
+app.set('trust proxy', 1);
 const PORT = config.PORT;
 
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
